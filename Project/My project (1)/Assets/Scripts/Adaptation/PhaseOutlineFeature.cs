@@ -16,6 +16,8 @@ namespace VRAdaptation
         [System.Serializable]
         public class Settings
         {
+            [Tooltip("체크하면 Fidelity 구간 무시하고 항상 실행 (테스트용)")]
+            public bool    ForceEnable     = false;
             [ColorUsage(false, false)]
             public Color   OutlineColor    = new Color(0.7f, 0.9f, 1.0f);
             [Range(0.5f, 4f)]   public float Thickness      = 1.5f;
@@ -54,7 +56,7 @@ namespace VRAdaptation
             if (renderingData.cameraData.cameraType == CameraType.Preview) return;
 
             float fid = Shader.GetGlobalFloat(s_GlobalFid);
-            if (fid < 0.28f || fid >= 0.72f) return;
+            if (!settings.ForceEnable && (fid < 0.28f || fid >= 0.72f)) return;
 
             m_Material.SetColor(s_OutlineColor,  settings.OutlineColor);
             m_Material.SetFloat(s_Thickness,     settings.Thickness);
