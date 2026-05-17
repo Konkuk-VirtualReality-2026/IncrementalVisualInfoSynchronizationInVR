@@ -219,11 +219,22 @@ Shader "VR/AdaptationProgressive"
                 }
                 else if (fidelity < 0.7)
                 {
-                    // Phase 2 : 어두운 표면 (테두리는 Outline Pass가 담당)
-                    // 알베도 방향으로 서서히 전환 시작
+                    // Phase 2 : Half-Lambert 조명으로 입체감 표현
+                    // ─ 텍스처 없이 조명만으로 형태를 인식할 수 있게 한다.
+                    // Half-Lambert: NdotL * 0.5 + 0.5 → 음영면도 완전히 검지 않아
+                    //               형태 파악이 가능하면서 눈 피로도는 낮게 유지.
                     float t = (fidelity - 0.3) / 0.4;
-                    float3 dark = float3(0.01, 0.01, 0.02);
-                    finalColor = lerp(dark, albedo * 0.25, t); // 25% 알베도까지만
+
+                    float halfLambert = dot(finalNorm, light.direction) * 0.5 + 0.5;
+                    halfLambert = halfLambert * halfLambert; // 제곱 → 명암 대비 강화
+
+                    // 어두운 파랑 계열 (사이버 스페이스 느낌, 전체 밝기 ≤ 25%)
+                    float3 shadedBase = float3(0.02, 0.02, 0.05);
+                    float3 shadedLit  = float3(0.10, 0.13, 0.25);
+                    float3 volumeColor = lerp(shadedBase, shadedLit, halfLambert);
+
+                    // Phase 2 → 3 전환: 점점 알베도 색상으로 이동
+                    finalColor = lerp(volumeColor, albedo * 0.35, t);
                 }
                 else
                 {
