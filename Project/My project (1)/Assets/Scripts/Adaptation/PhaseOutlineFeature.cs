@@ -20,7 +20,7 @@ namespace VRAdaptation
             public Color OutlineColor    = new Color(1f, 1f, 1f);
             [Range(0.5f, 4f)]   public float Thickness      = 1.5f;
             [Range(0f, 0.1f)]   public float DepthThreshold = 0.005f;
-            [Range(0f, 1f)]     public float NormalThreshold= 0.15f;
+            [Range(0f, 1f)]     public float NormalThreshold= 0.5f;
         }
 
         public Settings settings = new();

@@ -7,7 +7,7 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
         _MainTex      ("Source",           2D)                = "white" {}
         _OutlineColor ("Outline Color",    Color)             = (1, 1, 1, 1)
         _DepthThresh  ("Depth Threshold",  Range(0.0001, 0.1)) = 0.005
-        _NormalThresh ("Normal Threshold", Range(0.01, 1.0))   = 0.15
+        _NormalThresh ("Normal Threshold", Range(0.01, 1.0))   = 0.5
         _Thickness    ("Thickness (px)",   Range(0.5, 4.0))    = 1.5
     }
 
@@ -26,7 +26,6 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
 
             // cmd.Blit 이 소스를 _MainTex 로 바인딩
             TEXTURE2D(_MainTex);
@@ -36,7 +35,6 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
                 float4 _MainTex_ST;
                 float4 _OutlineColor;
                 float  _DepthThresh;
-                float  _NormalThresh;
                 float  _Thickness;
             CBUFFER_END
 
@@ -58,33 +56,17 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             {
                 float2 px = _Thickness * rcp(_ScreenParams.xy);
 
-                // ── 깊이 엣지 ──────────────────────────────────────────
+                // ── 깊이 엣지만 사용 ──────────────────────────────────
+                // 법선 엣지는 URP Lit 노멀맵 오브젝트에서 오탐(표면 전체가 엣지)을
+                // 유발하므로 깊이 불연속성만으로 실루엣을 검출한다.
                 float dc = LinearEyeDepth(SampleSceneDepth(uv),                     _ZBufferParams);
                 float d0 = LinearEyeDepth(SampleSceneDepth(uv + float2( px.x, 0)), _ZBufferParams);
                 float d1 = LinearEyeDepth(SampleSceneDepth(uv + float2(-px.x, 0)), _ZBufferParams);
                 float d2 = LinearEyeDepth(SampleSceneDepth(uv + float2(0,  px.y)), _ZBufferParams);
                 float d3 = LinearEyeDepth(SampleSceneDepth(uv + float2(0, -px.y)), _ZBufferParams);
 
-                float maxDiff   = max(max(abs(dc-d0), abs(dc-d1)), max(abs(dc-d2), abs(dc-d3)));
-                float depthEdge = step(_DepthThresh, maxDiff / max(dc, 0.01));
-
-                // ── 법선 엣지 ──────────────────────────────────────────
-                float3 nc = SampleSceneNormals(uv);
-                float3 n0 = SampleSceneNormals(uv + float2( px.x, 0));
-                float3 n1 = SampleSceneNormals(uv + float2(-px.x, 0));
-                float3 n2 = SampleSceneNormals(uv + float2(0,  px.y));
-                float3 n3 = SampleSceneNormals(uv + float2(0, -px.y));
-
-                // 법선이 (0,0,0) 인 픽셀(하늘/배경)은 엣지로 처리하지 않음
-                float skyMask = step(0.1, length(nc));
-
-                float nd = max(max(1.0 - saturate(dot(nc, n0)),
-                                   1.0 - saturate(dot(nc, n1))),
-                               max(1.0 - saturate(dot(nc, n2)),
-                                   1.0 - saturate(dot(nc, n3))));
-                float normalEdge = step(_NormalThresh, nd) * skyMask;
-
-                return saturate(depthEdge + normalEdge);
+                float maxDiff = max(max(abs(dc-d0), abs(dc-d1)), max(abs(dc-d2), abs(dc-d3)));
+                return step(_DepthThresh, maxDiff / max(dc, 0.01));
             }
 
             half4 frag_edge(Vary IN) : SV_Target
