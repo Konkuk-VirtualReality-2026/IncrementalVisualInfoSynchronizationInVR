@@ -1917,7 +1917,7 @@ Transform:
   m_GameObject: {fileID: 561660951}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5, y: -0.03, z: -4.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5823,11 +5823,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_MuzzlePoint: {fileID: 776963161}
-  m_LaserPrefab: {fileID: 0}
-  m_LaserDuration: 0.05
+  m_ShowLaserSight: 1
+  m_LaserSightColor: {r: 1, g: 0.08, b: 0.08, a: 0.9}
+  m_LaserSightWidth: 0.0018
+  m_MuzzleFlashDuration: 0.055
+  m_TracerDuration: 0.06
   m_AudioSource: {fileID: 0}
   m_FireClip: {fileID: 0}
   m_HitClip: {fileID: 0}
+  m_RecoilAmplitude: 0.7
+  m_RecoilDuration: 0.08
+  m_HitBonusAmplitude: 0.35
 --- !u!1 &1672282308
 GameObject:
   m_ObjectHideFlags: 0
@@ -6818,11 +6824,11 @@ MonoBehaviour:
   m_GlobalEffect: {fileID: 1996242402}
   m_AimTrainer: {fileID: 1723789464}
   m_AimTrainerHUD: {fileID: 494612882}
-  m_Phase1Duration: 30
-  m_Phase2Duration: 30
+  m_Phase1Duration: 2
+  m_Phase2Duration: 25
   m_Phase3Duration: 30
   m_AimTrainerDuration: 120
-  m_DebugFastMode: 1
+  m_DebugFastMode: 0
   m_BlackoutPanel: {fileID: 764585895}
   m_BlackoutFadeDuration: 1
   m_AmbientAudioSource: {fileID: 1996242401}
