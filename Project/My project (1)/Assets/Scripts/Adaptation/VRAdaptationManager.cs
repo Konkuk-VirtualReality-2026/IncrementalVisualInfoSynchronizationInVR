@@ -30,12 +30,17 @@ namespace VRAdaptation
 
         [Header("Aim Trainer")]
         [SerializeField] AimTrainer.AimTargetManager m_AimTrainer;
+        [SerializeField] AimTrainer.AimTrainerHUD    m_AimTrainerHUD;
 
         [Header("Phase Durations (Seconds)")]
         [SerializeField] float m_Phase1Duration = 30f;
         [SerializeField] float m_Phase2Duration = 30f;
         [SerializeField] float m_Phase3Duration = 30f;
         [SerializeField] float m_AimTrainerDuration = 120f;
+
+        [Header("Debug")]
+        [Tooltip("true 시 모든 Phase 시간을 1/10로 단축 (테스트용)")]
+        [SerializeField] bool m_DebugFastMode = false;
 
         // Phase 1 uses a full-screen black UI panel (CanvasGroup) to produce true
         // darkness — the material-based shader cannot black out the skybox or the
@@ -111,6 +116,8 @@ namespace VRAdaptation
             }
         }
 
+        float D(float seconds) => m_DebugFastMode ? seconds * 0.1f : seconds;
+
         IEnumerator AdaptationSequence()
         {
             // --- Phase 1: Full Blackout + Audio/Haptic cues only ---
@@ -134,7 +141,7 @@ namespace VRAdaptation
             }
 
             Debug.Log("[VRAdaptation] Starting Phase 1: Full blackout (audio/haptic only)");
-            yield return new WaitForSeconds(m_Phase1Duration);
+            yield return new WaitForSeconds(D(m_Phase1Duration));
 
             // --- Phase 2: Silhouette / Outline view ---
             // Snap fidelity to 0.3 (peak rim/silhouette) immediately, then fade the
@@ -149,7 +156,7 @@ namespace VRAdaptation
             if (m_BlackoutPanel != null)
                 yield return StartCoroutine(FadeBlackout(1f, 0f, m_BlackoutFadeDuration));
 
-            yield return new WaitForSeconds(m_Phase2Duration);
+            yield return new WaitForSeconds(D(m_Phase2Duration));
 
             // --- Phase 3: Progressive quality (Outline → Full PBR) ---
             // 이 시점에서 카메라 배경을 원본(스카이박스)으로 복원한다.
@@ -158,19 +165,23 @@ namespace VRAdaptation
             m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
             OnPhaseChanged.Invoke(m_CurrentPhase);
             Debug.Log("[VRAdaptation] Starting Phase 3: Progressive quality increase");
-            yield return StartCoroutine(SmoothFidelityTransition(0.3f, 1.0f, m_Phase3Duration));
+            yield return StartCoroutine(SmoothFidelityTransition(0.3f, 1.0f, D(m_Phase3Duration)));
 
             // --- Aim Trainer Test Phase ---
             m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
             OnPhaseChanged.Invoke(m_CurrentPhase);
             if (m_AimTrainer != null)
                 m_AimTrainer.StartAimTrainer("PostAdaptation");
-            
+            if (m_AimTrainerHUD != null)
+                m_AimTrainerHUD.StartHUD(D(m_AimTrainerDuration), m_XRCamera?.transform);
+
             Debug.Log("[VRAdaptation] Starting Aim Trainer Test Phase");
-            yield return new WaitForSeconds(m_AimTrainerDuration);
-            
+            yield return new WaitForSeconds(D(m_AimTrainerDuration));
+
             if (m_AimTrainer != null)
                 m_AimTrainer.StopAimTrainer();
+            if (m_AimTrainerHUD != null)
+                m_AimTrainerHUD.StopHUD();
 
             m_CurrentPhase = AdaptationPhase.Complete;
             OnPhaseChanged.Invoke(m_CurrentPhase);

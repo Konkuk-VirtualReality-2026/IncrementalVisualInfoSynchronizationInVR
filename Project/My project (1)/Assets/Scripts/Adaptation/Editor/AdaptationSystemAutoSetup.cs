@@ -75,14 +75,17 @@ namespace VRAdaptation.Editor
             var dataLogger = aimTrainerObj.GetComponent<ExperimentDataLogger>();
             if (dataLogger == null) dataLogger = aimTrainerObj.AddComponent<ExperimentDataLogger>();
 
+            // AimTarget 프리팹 생성 후 연결
+            AimTarget aimTargetPrefab = CreateAimTargetPrefab();
+
             // Try to find main camera for tracking
             Camera mainCam = Camera.main;
+            var targetSO = new SerializedObject(targetManager);
+            if (aimTargetPrefab != null)
+                targetSO.FindProperty("m_TargetPrefab").objectReferenceValue = aimTargetPrefab;
             if (mainCam != null)
-            {
-                var targetSO = new SerializedObject(targetManager);
                 targetSO.FindProperty("m_PlayerHead").objectReferenceValue = mainCam.transform;
-                targetSO.ApplyModifiedProperties();
-            }
+            targetSO.ApplyModifiedProperties();
 
             // 6. Blackout Canvas (Phase 1 완전 암흑용)
             // 오브젝트 셰이더는 스카이박스·오브젝트 사이 공간을 가릴 수 없으므로
@@ -148,15 +151,78 @@ namespace VRAdaptation.Editor
             imageRect.offsetMin = Vector2.zero;
             imageRect.offsetMax = Vector2.zero;
 
-            // 7. Manager에 모든 레퍼런스 연결
+            // ── 7. AimTrainer HUD ────────────────────────────────────────────
+            // AimTrainer 단계에서 점수·정확도·타이머를 표시하는 World Space UI
+            GameObject hudObj = GameObject.Find("AimTrainerHUD");
+            if (hudObj == null)
+            {
+                hudObj = new GameObject("AimTrainerHUD");
+                Undo.RegisterCreatedObjectUndo(hudObj, "Create AimTrainer HUD");
+            }
+
+            Canvas hudCanvas = hudObj.GetComponent<Canvas>();
+            if (hudCanvas == null) hudCanvas = hudObj.AddComponent<Canvas>();
+            hudCanvas.renderMode = RenderMode.WorldSpace;
+
+            if (hudObj.GetComponent<CanvasGroup>() == null)
+            {
+                var cg = hudObj.AddComponent<CanvasGroup>();
+                cg.interactable = false; cg.blocksRaycasts = false;
+            }
+
+            // 크기: 80cm × 30cm, 카메라 기준 포지션은 런타임에 AimTrainerHUD.Update()가 처리
+            RectTransform hudRect = hudObj.GetComponent<RectTransform>();
+            hudRect.sizeDelta = new Vector2(800f, 300f);
+            hudObj.transform.localScale = Vector3.one * 0.002f;
+
+            // HUD 컴포넌트
+            AimTrainerHUD hudComp = hudObj.GetComponent<AimTrainerHUD>();
+            if (hudComp == null) hudComp = hudObj.AddComponent<AimTrainerHUD>();
+
+            // 텍스트 패널 3개 생성 (Score / Accuracy / Timer)
+            string[] panelNames = { "ScorePanel", "AccPanel", "TimerPanel" };
+            Text[] texts = new Text[3];
+            for (int i = 0; i < 3; i++)
+            {
+                Transform existing = hudObj.transform.Find(panelNames[i]);
+                GameObject panelGO = existing != null ? existing.gameObject : new GameObject(panelNames[i]);
+                if (existing == null) Undo.RegisterCreatedObjectUndo(panelGO, "Create HUD Panel");
+                panelGO.transform.SetParent(hudObj.transform, false);
+
+                RectTransform pr = panelGO.GetComponent<RectTransform>();
+                if (pr == null) pr = panelGO.AddComponent<RectTransform>();
+                pr.sizeDelta        = new Vector2(200f, 280f);
+                pr.anchoredPosition = new Vector2((i - 1) * 250f, 0f);
+
+                Text t = panelGO.GetComponent<Text>();
+                if (t == null) t = panelGO.AddComponent<Text>();
+                t.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                t.fontSize  = 60;
+                t.fontStyle = FontStyle.Bold;
+                t.alignment = TextAnchor.MiddleCenter;
+                t.color     = Color.white;
+                texts[i]    = t;
+            }
+
+            // HUD 컴포넌트에 텍스트 참조 연결
+            var hudSO = new SerializedObject(hudComp);
+            hudSO.FindProperty("m_ScoreText").objectReferenceValue    = texts[0];
+            hudSO.FindProperty("m_AccuracyText").objectReferenceValue = texts[1];
+            hudSO.FindProperty("m_TimerText").objectReferenceValue    = texts[2];
+            if (mainCam != null)
+                hudSO.FindProperty("m_FollowTarget").objectReferenceValue = mainCam.transform;
+            hudSO.ApplyModifiedProperties();
+
+            // ── 8. Manager에 모든 레퍼런스 연결
             var managerSO = new SerializedObject(manager);
             managerSO.FindProperty("m_GlobalEffect").objectReferenceValue       = globalEffect;
             managerSO.FindProperty("m_AmbientAudioSource").objectReferenceValue = audioSource;
             managerSO.FindProperty("m_AimTrainer").objectReferenceValue         = targetManager;
             managerSO.FindProperty("m_BlackoutPanel").objectReferenceValue      = canvasGroup;
+            managerSO.FindProperty("m_AimTrainerHUD").objectReferenceValue      = hudComp;
             managerSO.ApplyModifiedProperties();
 
-            // ── 8. VR 총 (RaycastWeapon + VRGunController) ──────────────────
+            // ── 9. VR 총 (RaycastWeapon + VRGunController) ──────────────────
             // Right Hand Controller를 찾아 총 컴포넌트를 부착한다.
             GameObject rightController = FindRightController();
             if (rightController != null)
@@ -205,7 +271,7 @@ namespace VRAdaptation.Editor
                 Debug.LogWarning("[VRAdaptation] Right Hand Controller를 찾지 못했습니다. XR Origin 하위에 'Right'가 포함된 오브젝트가 있어야 합니다.");
             }
 
-            // ── 9. 이동/회전 (Locomotion) ────────────────────────────────────
+            // ── 10. 이동/회전 (Locomotion) ───────────────────────────────────
             // XR Origin에 Continuous Move + Snap Turn 프로바이더를 추가한다.
             // 이미 존재하는 경우 중복 추가하지 않는다.
             var xrOrigin = Object.FindAnyObjectByType<Unity.XR.CoreUtils.XROrigin>();
@@ -267,7 +333,55 @@ namespace VRAdaptation.Editor
             }
 
             Selection.activeGameObject = managerObj;
-            Debug.Log("[VRAdaptation] Auto setup complete: Manager + AimTrainer + BlackoutCanvas + Gun + Locomotion 완료.");
+            Debug.Log("[VRAdaptation] Auto setup complete: Manager + AimTrainer + HUD + BlackoutCanvas + Gun + Locomotion 완료.");
+        }
+
+        // 빨간 구체 AimTarget 프리팹을 생성하거나 기존 것을 반환한다.
+        static AimTarget CreateAimTargetPrefab()
+        {
+            const string prefabDir  = "Assets/Prefabs";
+            const string prefabPath = prefabDir + "/AimTarget.prefab";
+
+            // 이미 존재하면 기존 프리팹 반환
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (existing != null)
+            {
+                Debug.Log("[VRAdaptation] 기존 AimTarget 프리팹 사용.");
+                return existing.GetComponent<AimTarget>();
+            }
+
+            if (!AssetDatabase.IsValidFolder(prefabDir))
+                AssetDatabase.CreateFolder("Assets", "Prefabs");
+
+            // 구체 임시 오브젝트 생성
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.name = "AimTarget";
+            sphere.transform.localScale = Vector3.one * 0.2f; // 20 cm
+
+            // 밝은 빨강 URP 머티리얼
+            Shader urpLit = Shader.Find("Universal Render Pipeline/Lit");
+            if (urpLit == null) urpLit = Shader.Find("Standard");
+            Material mat = new Material(urpLit);
+            mat.color = new Color(1f, 0.15f, 0.05f);
+            AssetDatabase.CreateAsset(mat, prefabDir + "/AimTargetMat.mat");
+            sphere.GetComponent<Renderer>().sharedMaterial = mat;
+
+            sphere.AddComponent<AimTarget>();
+            // SphereCollider는 CreatePrimitive에서 자동 생성됨
+
+            bool success;
+            GameObject prefabGO = PrefabUtility.SaveAsPrefabAsset(sphere, prefabPath, out success);
+            Object.DestroyImmediate(sphere);
+
+            if (!success)
+            {
+                Debug.LogError("[VRAdaptation] AimTarget 프리팹 저장 실패!");
+                return null;
+            }
+
+            AssetDatabase.Refresh();
+            Debug.Log($"[VRAdaptation] AimTarget 프리팹 생성: {prefabPath}");
+            return prefabGO.GetComponent<AimTarget>();
         }
 
         // XR Origin 하위에서 Right Hand Controller 오브젝트를 탐색한다.

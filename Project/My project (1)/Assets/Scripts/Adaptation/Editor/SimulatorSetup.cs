@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.PackageManager;
+using UnityEditor.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation;
-using System.IO;
 
 namespace VRAdaptation.Editor
 {
@@ -40,8 +39,8 @@ namespace VRAdaptation.Editor
                 GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                 Undo.RegisterCreatedObjectUndo(instance, "Add XR Device Simulator");
                 // 프리팹에 이미 액션이 연결돼 있지 않으면 수동으로 연결한다.
-                var sim = instance.GetComponent<XRDeviceSimulator>();
-                if (sim != null) AssignActionAssets(sim);
+                var prefabSim = instance.GetComponent<XRDeviceSimulator>();
+                if (prefabSim != null) AssignActionAssets(prefabSim);
                 Selection.activeGameObject = instance;
                 Debug.Log("[SimulatorSetup] XR Device Simulator 프리팹을 씬에 추가했습니다.");
                 ShowControls();
@@ -83,14 +82,15 @@ namespace VRAdaptation.Editor
             var ctrlActions = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(ControllerActionsPath);
             var handActions = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(HandActionsPath);
 
-            var so = new SerializedObject(sim);
-            if (simActions  != null) so.FindProperty("m_DeviceSimulatorActionAsset").objectReferenceValue = simActions;
-            if (ctrlActions != null) so.FindProperty("m_ControllerActionAsset").objectReferenceValue      = ctrlActions;
-            if (handActions != null) so.FindProperty("m_HandActionAsset").objectReferenceValue            = handActions;
-            so.ApplyModifiedProperties();
+            if (simActions  != null) sim.deviceSimulatorActionAsset = simActions;
+            if (ctrlActions != null) sim.controllerActionAsset      = ctrlActions;
+            if (handActions != null) sim.handActionAsset            = handActions;
+
+            EditorUtility.SetDirty(sim);
+            EditorSceneManager.MarkSceneDirty(sim.gameObject.scene);
 
             if (simActions == null || ctrlActions == null || handActions == null)
-                Debug.LogWarning("[SimulatorSetup] 일부 Action Asset을 찾지 못했습니다. Inspector에서 수동으로 연결하세요.");
+                Debug.LogWarning($"[SimulatorSetup] 일부 Action Asset을 찾지 못했습니다.\n  Simulator: {SimulatorActionsPath}\n  Controller: {ControllerActionsPath}\n  Hand: {HandActionsPath}");
             else
                 Debug.Log("[SimulatorSetup] Device Simulator / Controller / Hand Action Asset 연결 완료.");
         }

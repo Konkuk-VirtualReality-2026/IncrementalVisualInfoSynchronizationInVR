@@ -43,6 +43,7 @@ namespace VRAdaptation.AimTrainer
             if (Time.time - m_LastFireTime < m_FireCooldown) return;
             m_LastFireTime = Time.time;
             m_Weapon.Fire();
+            AimTrainerHUD.Instance?.RegisterShot();
         }
     }
 }

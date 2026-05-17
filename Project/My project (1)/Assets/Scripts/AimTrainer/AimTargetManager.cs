@@ -87,6 +87,7 @@ namespace VRAdaptation.AimTrainer
         {
             float reactionTime = (Time.time - target.GetSpawnTime()) * 1000f; // ms
             ExperimentDataLogger.Instance.LogEvent(condition, "Hit", reactionTime, target.transform.position, GetHeadRotation());
+            AimTrainerHUD.Instance?.RegisterHit();
             m_ActiveTargets.Remove(target);
             Destroy(target.gameObject);
         }
