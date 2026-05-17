@@ -231,7 +231,6 @@ Shader "VR/AdaptationProgressive"
             }
             ENDHLSL
         }
-    }
 
         // ────────────────────────────────────────────────────────────────────
         // Pass 3 : DepthNormals
