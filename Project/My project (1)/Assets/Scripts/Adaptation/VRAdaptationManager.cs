@@ -19,6 +19,8 @@ namespace VRAdaptation
     [System.Serializable]
     public class PhaseChangeEvent : UnityEvent<AdaptationPhase> { }
 
+    // GlobalAdaptationEffect.Awake() 보다 먼저 실행되도록 우선순위 설정
+    [DefaultExecutionOrder(-100)]
     public class VRAdaptationManager : MonoBehaviour
     {
         public static VRAdaptationManager Instance { get; private set; }
@@ -94,10 +96,25 @@ namespace VRAdaptation
                 m_OriginalClearFlags       = m_XRCamera.clearFlags;
                 m_OriginalBackgroundColor  = m_XRCamera.backgroundColor;
             }
+
+            // 대조군은 Awake 단계에서 미리 fidelity=1.0 설정.
+            // GlobalAdaptationEffect.Awake()가 뒤이어 실행될 때
+            // _GlobalVisualFidelity=1.0 상태로 셰이더가 적용되므로 검정 화면이 없다.
+            bool isControlEarly = m_ForceControlGroup
+                || ExperimentCondition.SelectedGroup == ExperimentGroup.Control;
+            if (isControlEarly)
+            {
+                m_CurrentFidelity = 1.0f;
+                UpdateGlobalFidelity();
+                if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
+            }
         }
 
         void Start()
         {
+            if (ExperimentCondition.SelectedGroup == ExperimentGroup.NotSelected && !m_ForceControlGroup)
+                Debug.LogWarning("[VRAdaptation] 실험 그룹이 선택되지 않았습니다. LobbyScene을 먼저 실행하세요. 기본값(실험군)으로 진행합니다.");
+
             bool isControl = m_ForceControlGroup
                 || ExperimentCondition.SelectedGroup == ExperimentGroup.Control;
 
@@ -106,6 +123,8 @@ namespace VRAdaptation
                 m_CurrentFidelity = 1.0f;
                 UpdateGlobalFidelity();
                 SetCameraBackground(blackout: false);
+                if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
+                if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
                 StartCoroutine(ControlSequence());
             }
             else
@@ -118,6 +137,18 @@ namespace VRAdaptation
 
         IEnumerator ControlSequence()
         {
+            // Phase 3 시각 상태로 초기화 (blackout 없음, fidelity=1.0, 원본 머티리얼)
+            m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+            SetCameraBackground(blackout: false);
+            if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
+            m_CurrentFidelity = 1.0f;
+            UpdateGlobalFidelity();
+            if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
+
+            // 한 프레임 대기 후 AimTrainer 시작 (렌더링 반영 보장)
+            yield return null;
+
             m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
             OnPhaseChanged.Invoke(m_CurrentPhase);
 

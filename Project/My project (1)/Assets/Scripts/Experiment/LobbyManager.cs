@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
+using UnityEngine.UI;
 
 namespace VRAdaptation.Experiment
 {
     public class LobbyManager : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] TMP_InputField m_ParticipantIDField;
+        [SerializeField] InputField m_ParticipantIDField;
         [SerializeField] GameObject m_SelectionPanel;
         [SerializeField] GameObject m_ConfirmPanel;
-        [SerializeField] TMP_Text m_ConfirmText;
+        [SerializeField] Text m_ConfirmText;
 
         [Header("Scene")]
         [SerializeField] string m_ExperimentSceneName = "BasicScene";

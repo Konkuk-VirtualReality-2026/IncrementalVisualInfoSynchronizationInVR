@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using VRAdaptation.Experiment;
 
 namespace VRAdaptation
@@ -8,7 +8,7 @@ namespace VRAdaptation
     public class ExperimentInstructionUI : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] TMP_Text m_InstructionText;
+        [SerializeField] Text m_InstructionText;
         [SerializeField] CanvasGroup m_CanvasGroup;
 
         [Header("Follow Settings")]
