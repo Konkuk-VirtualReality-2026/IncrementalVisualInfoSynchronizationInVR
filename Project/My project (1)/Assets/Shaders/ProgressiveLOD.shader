@@ -72,9 +72,9 @@ Shader "VR/AdaptationProgressive"
                 #endif
                 OUT.fidelity = fid;
 
-                // Phase 2(0.3~0.7)에서만 두께 적용
-                float t2    = saturate((fid - 0.3) / 0.4);
-                float scale = (1.0 - t2) * step(0.3, fid);
+                // 인플레이션 아웃라인은 PhaseOutlineFeature(화면 공간 법선+깊이)로 대체.
+                // back-face 팽창 방식은 특정 각도에만 보이는 문제가 있으므로 비활성화.
+                float scale = 0.0;
 
                 float3 normWS = normalize(TransformObjectToWorldNormal(IN.normOS));
                 float3 posWS  = TransformObjectToWorld(IN.posOS.xyz);
@@ -219,27 +219,8 @@ Shader "VR/AdaptationProgressive"
                 }
                 else if (fidelity < 0.7)
                 {
-                    // Phase 2 : 월드 공간 고정 조명 — 카메라/씬 조명 완전 무관
-                    // NdotV·NdotL 은 카메라가 향하는 반대 면을 완전히 검게 만든다.
-                    // 월드 법선 Y·XZ 만 쓰면 어느 각도에서 봐도 모든 면이 항상 보인다.
-                    float t = (fidelity - 0.3) / 0.4;
-                    float3 n = finalNorm;
-
-                    // 하늘 항 : 위를 향할수록 밝고 아래를 향해도 완전히 검지 않음
-                    //   floor(y=+1)=1.0  wall(y=0)=0.75  ceiling(y=-1)=0.5
-                    float skyTerm  = n.y * 0.25 + 0.75;
-
-                    // 수평 항 : abs() 덕분에 +X 벽과 -X 벽이 같은 밝기
-                    //   E/W 벽에 0.15, N/S 벽에 0.10 추가
-                    float horzTerm = abs(n.x) * 0.15 + abs(n.z) * 0.10;
-
-                    float intensity = saturate((skyTerm + horzTerm) * 0.8);
-
-                    float3 shadedBase = float3(0.02, 0.02, 0.05);
-                    float3 shadedLit  = float3(0.12, 0.16, 0.30);
-                    float3 volumeColor = lerp(shadedBase, shadedLit, intensity);
-
-                    finalColor = lerp(volumeColor, albedo * 0.35, t);
+                    // Phase 2 : 완전 검정 — 엣지는 PhaseOutlineFeature(화면 공간)가 담당
+                    finalColor = float3(0.0, 0.0, 0.0);
                 }
                 else
                 {
