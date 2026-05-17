@@ -219,19 +219,25 @@ Shader "VR/AdaptationProgressive"
                 }
                 else if (fidelity < 0.7)
                 {
-                    // Phase 2 : Half-Lambert 조명으로 입체감 표현
-                    // ─ 텍스처 없이 조명만으로 형태를 인식할 수 있게 한다.
-                    // Half-Lambert: NdotL * 0.5 + 0.5 → 음영면도 완전히 검지 않아
-                    //               형태 파악이 가능하면서 눈 피로도는 낮게 유지.
+                    // Phase 2 : 뷰 방향 기반 입체감
+                    // ─ 씬 조명 방향에 의존하면 특정 면(천장·뒷벽 등)이 완전히 검어짐.
+                    //   카메라를 향한 정도(NdotV)를 주 광원으로 써서
+                    //   "카메라에 보이는 면은 항상 보이는" 보장을 만든다.
                     float t = (fidelity - 0.3) / 0.4;
 
-                    float halfLambert = dot(finalNorm, light.direction) * 0.5 + 0.5;
-                    halfLambert = halfLambert * halfLambert; // 제곱 → 명암 대비 강화
+                    // NdotV: 카메라를 향할수록 밝음 (0.5 ~ 1.0 범위로 리매핑)
+                    float NdotV = saturate(dot(finalNorm, viewDir));
+                    float viewTerm = NdotV * 0.5 + 0.5;   // 에지 = 0.5, 정면 = 1.0
 
-                    // 어두운 파랑 계열 (사이버 스페이스 느낌, 전체 밝기 ≤ 25%)
+                    // NdotL(씬 조명) 보조: 너무 평평해 보이지 않게 약간 기여
+                    float NdotL = dot(finalNorm, light.direction) * 0.5 + 0.5;
+
+                    float intensity = saturate(viewTerm * 0.7 + NdotL * 0.3);
+                    intensity = intensity * intensity; // 명암 대비 강화
+
                     float3 shadedBase = float3(0.02, 0.02, 0.05);
-                    float3 shadedLit  = float3(0.10, 0.13, 0.25);
-                    float3 volumeColor = lerp(shadedBase, shadedLit, halfLambert);
+                    float3 shadedLit  = float3(0.10, 0.13, 0.28);
+                    float3 volumeColor = lerp(shadedBase, shadedLit, intensity);
 
                     // Phase 2 → 3 전환: 점점 알베도 색상으로 이동
                     finalColor = lerp(volumeColor, albedo * 0.35, t);
