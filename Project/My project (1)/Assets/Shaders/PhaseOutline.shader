@@ -34,7 +34,6 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             SAMPLER(sampler_BlitTexture);
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _BlitTexture_TexelSize;
                 float4 _OutlineColor;
                 float  _DepthThresh;
                 float  _Thickness;
@@ -59,14 +58,18 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             // → 거리 변화에 강인하고 모든 각도에서 물체 경계를 검출
             float CalcEdge(float2 uv)
             {
-                float2 step = _Thickness * _BlitTexture_TexelSize.xy;
+                // _ScreenParams.xy = (width, height) — _BlitTexture_TexelSize 는
+                // Blitter 가 MaterialPropertyBlock 으로 설정하므로 UnityPerMaterial
+                // CBUFFER 에서 읽으면 항상 0 이 된다. _ScreenParams 는 Unity 빌트인이라 안전.
+                // 주의: 변수명 'step' 은 HLSL 내장 함수와 충돌하므로 'px' 사용
+                float2 px = _Thickness * rcp(_ScreenParams.xy);
 
                 // 5점 샘플 (중앙 + 상하좌우)
-                float dc = LinearEyeDepth(SampleSceneDepth(uv),              _ZBufferParams);
-                float d0 = LinearEyeDepth(SampleSceneDepth(uv + float2( step.x, 0)),  _ZBufferParams);
-                float d1 = LinearEyeDepth(SampleSceneDepth(uv + float2(-step.x, 0)),  _ZBufferParams);
-                float d2 = LinearEyeDepth(SampleSceneDepth(uv + float2(0,  step.y)),  _ZBufferParams);
-                float d3 = LinearEyeDepth(SampleSceneDepth(uv + float2(0, -step.y)),  _ZBufferParams);
+                float dc = LinearEyeDepth(SampleSceneDepth(uv),                       _ZBufferParams);
+                float d0 = LinearEyeDepth(SampleSceneDepth(uv + float2( px.x, 0)),    _ZBufferParams);
+                float d1 = LinearEyeDepth(SampleSceneDepth(uv + float2(-px.x, 0)),    _ZBufferParams);
+                float d2 = LinearEyeDepth(SampleSceneDepth(uv + float2(0,  px.y)),    _ZBufferParams);
+                float d3 = LinearEyeDepth(SampleSceneDepth(uv + float2(0, -px.y)),    _ZBufferParams);
 
                 // 중앙과의 최대 차이 → 엣지 강도
                 float maxDiff = max(max(abs(dc - d0), abs(dc - d1)),
