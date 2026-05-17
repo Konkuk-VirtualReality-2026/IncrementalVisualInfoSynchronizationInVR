@@ -1,9 +1,14 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.RenderGraphModule;
 
 namespace VRAdaptation
 {
+    /// <summary>
+    /// Phase 2 화면 공간 아웃라인 Renderer Feature.
+    /// Unity 6 RenderGraph API(RecordRenderGraph) + 구 호환 API(Execute) 모두 구현.
+    /// </summary>
     public class PhaseOutlineFeature : ScriptableRendererFeature
     {
         [System.Serializable]
@@ -12,7 +17,7 @@ namespace VRAdaptation
             [Tooltip("Fidelity 구간 무시하고 항상 실행 (테스트용)")]
             public bool  ForceEnable     = false;
             [ColorUsage(false, false)]
-            public Color OutlineColor    = new Color(1f, 1f, 1f);   // 흰색: 잘 보이게
+            public Color OutlineColor    = new Color(1f, 1f, 1f);
             [Range(0.5f, 4f)]   public float Thickness      = 1.5f;
             [Range(0f, 0.1f)]   public float DepthThreshold = 0.005f;
             [Range(0f, 1f)]     public float NormalThreshold= 0.15f;
@@ -37,7 +42,6 @@ namespace VRAdaptation
                 Debug.LogError("[PhaseOutline] 셰이더를 찾지 못했습니다: Hidden/VRAdaptation/PhaseOutline");
                 return;
             }
-            Debug.Log("[PhaseOutline] Create() — 셰이더 발견, Material 생성");
             m_Material = CoreUtils.CreateEngineMaterial(shader);
             m_Pass     = new PhaseOutlinePass(m_Material);
             m_Pass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
@@ -50,7 +54,6 @@ namespace VRAdaptation
 
             float fid = Shader.GetGlobalFloat(s_GlobalFid);
             bool inPhase2 = fid >= 0.28f && fid < 0.72f;
-
             if (!settings.ForceEnable && !inPhase2) return;
 
             m_Material.SetColor(s_OutlineColor, settings.OutlineColor);
@@ -58,7 +61,6 @@ namespace VRAdaptation
             m_Material.SetFloat(s_DepthThresh,  settings.DepthThreshold);
             m_Material.SetFloat(s_NormalThresh, settings.NormalThreshold);
 
-            Debug.Log($"[PhaseOutline] 패스 등록 — fid={fid:F2} forceEnable={settings.ForceEnable}");
             renderer.EnqueuePass(m_Pass);
         }
 
@@ -72,8 +74,15 @@ namespace VRAdaptation
         class PhaseOutlinePass : ScriptableRenderPass
         {
             readonly Material m_Mat;
-            RTHandle          m_TempRT;
+            RTHandle          m_TempRT;   // Compatibility Mode 용
             bool              m_Logged;
+
+            // RenderGraph 패스 데이터
+            class PassData
+            {
+                internal Material      mat;
+                internal TextureHandle src;
+            }
 
             public PhaseOutlinePass(Material mat)
             {
@@ -87,13 +96,71 @@ namespace VRAdaptation
                 m_TempRT = null;
             }
 
+            // ── Unity 6 RenderGraph API ───────────────────────────────────
+            public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+            {
+                if (m_Mat == null) return;
+                if (!m_Logged)
+                {
+                    Debug.Log("[PhaseOutline] RecordRenderGraph 호출됨 — RenderGraph 모드");
+                    m_Logged = true;
+                }
+
+                var resourceData = frameData.Get<UniversalResourceData>();
+                var cameraData   = frameData.Get<UniversalCameraData>();
+
+                TextureHandle colorHandle = resourceData.activeColorTexture;
+
+                // 핑퐁 블릿용 중간 버퍼
+                RenderTextureDescriptor desc = cameraData.cameraTargetDescriptor;
+                desc.depthBufferBits = 0;
+                TextureHandle tempHandle = UniversalRenderer.CreateRenderGraphTexture(
+                    renderGraph, desc, "_PhaseOutlineTemp", false);
+
+                // ─ Pass 1: color → temp  (아웃라인 셰이더) ─────────────
+                using (var builder = renderGraph.AddRasterRenderPass<PassData>(
+                           "PhaseOutline_Apply", out var pd))
+                {
+                    pd.mat = m_Mat;
+                    pd.src = colorHandle;
+
+                    builder.UseTexture(colorHandle);           // Read
+                    builder.SetRenderAttachment(tempHandle, 0); // Write
+                    builder.AllowPassCulling(false);
+
+                    builder.SetRenderFunc<PassData>(static (data, ctx) =>
+                    {
+                        Blitter.BlitTexture(ctx.cmd, data.src,
+                            new Vector4(1, 1, 0, 0), data.mat, 0);
+                    });
+                }
+
+                // ─ Pass 2: temp → color  (결과 복사) ───────────────────
+                using (var builder = renderGraph.AddRasterRenderPass<PassData>(
+                           "PhaseOutline_CopyBack", out var pd))
+                {
+                    pd.src = tempHandle;
+
+                    builder.UseTexture(tempHandle);             // Read
+                    builder.SetRenderAttachment(colorHandle, 0); // Write
+                    builder.AllowPassCulling(false);
+
+                    builder.SetRenderFunc<PassData>(static (data, ctx) =>
+                    {
+                        Blitter.BlitTexture(ctx.cmd, data.src,
+                            new Vector4(1, 1, 0, 0), 0, false);
+                    });
+                }
+            }
+
+            // ── Compatibility Mode (RenderGraph 비활성화 시) ──────────────
+#pragma warning disable CS0618
             public override void Execute(ScriptableRenderContext ctx, ref RenderingData data)
             {
                 if (m_Mat == null) return;
-
                 if (!m_Logged)
                 {
-                    Debug.Log("[PhaseOutline] Execute() 호출됨 — 셰이더 실행 중");
+                    Debug.Log("[PhaseOutline] Execute 호출됨 — Compatibility Mode");
                     m_Logged = true;
                 }
 
@@ -106,22 +173,16 @@ namespace VRAdaptation
 
                 RenderingUtils.ReAllocateIfNeeded(ref m_TempRT, desc, name: "_PhaseOutlineTemp");
 
-                // cmd.Blit 은 내부에서 quad(4 vertex) 를 쓰기 때문에
-                // SV_VertexID 기반 fullscreen-triangle 셰이더와 UV 가 맞지 않는다.
-                // DrawProcedural(Triangles, 3) 으로 정확히 3개 꼭짓점만 넘겨야 한다.
                 cmd.SetGlobalTexture(Shader.PropertyToID("_MainTex"), colorTarget);
                 cmd.SetRenderTarget(m_TempRT.nameID,
                     RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, m_Mat, 0, MeshTopology.Triangles, 3);
-
-                // 결과를 color target 으로 복사 (단순 픽셀 복사 — UV 무관)
-#pragma warning disable CS0618
                 cmd.Blit(m_TempRT.nameID, colorTarget);
-#pragma warning restore CS0618
 
                 ctx.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
+#pragma warning restore CS0618
         }
     }
 }
