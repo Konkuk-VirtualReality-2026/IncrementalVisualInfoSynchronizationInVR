@@ -44,14 +44,13 @@ Shader "VR/AdaptationProgressive"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _OutlineColor;
-                float  _OutlineWidth;
-                float  _VisualFidelity;
-                // (다른 프로퍼티도 같은 CBUFFER에 있어야 URP 배칭이 올바름)
                 float4 _BaseColor;
                 float4 _BaseMap_ST;
+                float4 _OutlineColor;
+                float  _OutlineWidth;
                 float  _Metallic;
                 float  _Smoothness;
+                float  _VisualFidelity;
             CBUFFER_END
 
             float _GlobalVisualFidelity;
@@ -151,7 +150,6 @@ Shader "VR/AdaptationProgressive"
                 float4 _BaseMap_ST;
                 float4 _OutlineColor;
                 float  _OutlineWidth;
-                float  _RimPower;
                 float  _Metallic;
                 float  _Smoothness;
                 float  _VisualFidelity;
@@ -254,13 +252,12 @@ Shader "VR/AdaptationProgressive"
             #pragma vertex   vert_dn
             #pragma fragment frag_dn
             #pragma multi_compile_instancing
-            #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
-                float4 _BaseMap_ST;
                 float4 _BaseColor;
+                float4 _BaseMap_ST;
                 float4 _OutlineColor;
                 float  _OutlineWidth;
                 float  _Metallic;
@@ -272,15 +269,12 @@ Shader "VR/AdaptationProgressive"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
-                float4 tangentOS  : TANGENT;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
             struct Vary_DN
             {
                 float4 positionCS : SV_POSITION;
                 float3 normalWS   : TEXCOORD0;
-                float4 tangentWS  : TEXCOORD1;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -288,20 +282,16 @@ Shader "VR/AdaptationProgressive"
             {
                 Vary_DN OUT = (Vary_DN)0;
                 UNITY_SETUP_INSTANCE_ID(IN);
-                UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
                 OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
                 OUT.normalWS   = TransformObjectToWorldNormal(IN.normalOS);
-                OUT.tangentWS  = float4(TransformObjectToWorldDir(IN.tangentOS.xyz), IN.tangentOS.w);
                 return OUT;
             }
 
-            // DepthNormals 패스는 법선을 [0,1] 범위로 인코딩해서 출력한다.
             float4 frag_dn(Vary_DN IN) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
-                float3 normalWS = normalize(IN.normalWS);
-                return float4(normalWS * 0.5 + 0.5, 0.0);
+                return float4(normalize(IN.normalWS) * 0.5 + 0.5, 1.0);
             }
             ENDHLSL
         }
