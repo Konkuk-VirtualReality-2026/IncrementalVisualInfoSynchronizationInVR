@@ -213,7 +213,29 @@ namespace VRAdaptation.Editor
                 hudSO.FindProperty("m_FollowTarget").objectReferenceValue = mainCam.transform;
             hudSO.ApplyModifiedProperties();
 
-            // ── 8. Manager에 모든 레퍼런스 연결
+            // ── 8. ProximityFeedback (벽 근접 소리·진동) ─────────────────────
+            // XR Origin에 부착 — AudioSource + ProximityFeedback
+            if (xrOrigin != null)
+            {
+                var proxAudio = xrOrigin.gameObject.GetComponent<AudioSource>();
+                if (proxAudio == null) proxAudio = xrOrigin.gameObject.AddComponent<AudioSource>();
+                proxAudio.playOnAwake  = false;
+                proxAudio.loop         = true;
+                proxAudio.spatialBlend = 0f;
+
+                var prox = xrOrigin.gameObject.GetComponent<ProximityFeedback>();
+                if (prox == null) prox = xrOrigin.gameObject.AddComponent<ProximityFeedback>();
+
+                var proxSO = new SerializedObject(prox);
+                proxSO.FindProperty("m_PlayerRoot").objectReferenceValue = xrOrigin.transform;
+                // 벽 레이어: Default(0) + CQB 맵 오브젝트는 Default
+                proxSO.FindProperty("m_WallLayer").intValue = ~0; // 전체
+                proxSO.ApplyModifiedProperties();
+
+                Debug.Log("[VRAdaptation] ProximityFeedback → XR Origin 부착 완료.");
+            }
+
+            // ── 10. Manager에 모든 레퍼런스 연결
             var managerSO = new SerializedObject(manager);
             managerSO.FindProperty("m_GlobalEffect").objectReferenceValue       = globalEffect;
             managerSO.FindProperty("m_AmbientAudioSource").objectReferenceValue = audioSource;
