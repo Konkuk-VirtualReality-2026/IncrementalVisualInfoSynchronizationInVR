@@ -72,7 +72,8 @@ namespace VRAdaptation
         class PhaseOutlinePass : ScriptableRenderPass
         {
             readonly Material m_Mat;
-            bool m_Logged;
+            RTHandle          m_TempRT;
+            bool              m_Logged;
 
             public PhaseOutlinePass(Material mat)
             {
@@ -80,9 +81,12 @@ namespace VRAdaptation
                 ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
             }
 
-            public void Dispose() { }
+            public void Dispose()
+            {
+                m_TempRT?.Release();
+                m_TempRT = null;
+            }
 
-#pragma warning disable CS0618
             public override void Execute(ScriptableRenderContext ctx, ref RenderingData data)
             {
                 if (m_Mat == null) return;
@@ -95,24 +99,29 @@ namespace VRAdaptation
 
                 CommandBuffer cmd = CommandBufferPool.Get("PhaseOutline");
 
-                RenderTargetIdentifier src = data.cameraData.renderer.cameraColorTargetHandle;
+                RTHandle colorTarget = data.cameraData.renderer.cameraColorTargetHandle;
                 RenderTextureDescriptor desc = data.cameraData.cameraTargetDescriptor;
                 desc.depthBufferBits = 0;
                 desc.msaaSamples     = 1;
 
-                int tempID = Shader.PropertyToID("_PhaseOutlineTemp");
-                cmd.GetTemporaryRT(tempID, desc);
+                RenderingUtils.ReAllocateIfNeeded(ref m_TempRT, desc, name: "_PhaseOutlineTemp");
 
-                // src → temp (아웃라인 셰이더 적용)
-                cmd.Blit(src, tempID, m_Mat, 0);
-                // temp → src (결과 복사)
-                cmd.Blit(tempID, src);
+                // cmd.Blit 은 내부에서 quad(4 vertex) 를 쓰기 때문에
+                // SV_VertexID 기반 fullscreen-triangle 셰이더와 UV 가 맞지 않는다.
+                // DrawProcedural(Triangles, 3) 으로 정확히 3개 꼭짓점만 넘겨야 한다.
+                cmd.SetGlobalTexture(Shader.PropertyToID("_MainTex"), colorTarget);
+                cmd.SetRenderTarget(m_TempRT.nameID,
+                    RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+                cmd.DrawProcedural(Matrix4x4.identity, m_Mat, 0, MeshTopology.Triangles, 3);
 
-                cmd.ReleaseTemporaryRT(tempID);
+                // 결과를 color target 으로 복사 (단순 픽셀 복사 — UV 무관)
+#pragma warning disable CS0618
+                cmd.Blit(m_TempRT.nameID, colorTarget);
+#pragma warning restore CS0618
+
                 ctx.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
-#pragma warning restore CS0618
         }
     }
 }
