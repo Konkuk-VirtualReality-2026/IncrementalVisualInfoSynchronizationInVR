@@ -219,27 +219,26 @@ Shader "VR/AdaptationProgressive"
                 }
                 else if (fidelity < 0.7)
                 {
-                    // Phase 2 : 뷰 방향 기반 입체감
-                    // ─ 씬 조명 방향에 의존하면 특정 면(천장·뒷벽 등)이 완전히 검어짐.
-                    //   카메라를 향한 정도(NdotV)를 주 광원으로 써서
-                    //   "카메라에 보이는 면은 항상 보이는" 보장을 만든다.
+                    // Phase 2 : 월드 공간 고정 조명 — 카메라/씬 조명 완전 무관
+                    // NdotV·NdotL 은 카메라가 향하는 반대 면을 완전히 검게 만든다.
+                    // 월드 법선 Y·XZ 만 쓰면 어느 각도에서 봐도 모든 면이 항상 보인다.
                     float t = (fidelity - 0.3) / 0.4;
+                    float3 n = finalNorm;
 
-                    // NdotV: 카메라를 향할수록 밝음 (0.5 ~ 1.0 범위로 리매핑)
-                    float NdotV = saturate(dot(finalNorm, viewDir));
-                    float viewTerm = NdotV * 0.5 + 0.5;   // 에지 = 0.5, 정면 = 1.0
+                    // 하늘 항 : 위를 향할수록 밝고 아래를 향해도 완전히 검지 않음
+                    //   floor(y=+1)=1.0  wall(y=0)=0.75  ceiling(y=-1)=0.5
+                    float skyTerm  = n.y * 0.25 + 0.75;
 
-                    // NdotL(씬 조명) 보조: 너무 평평해 보이지 않게 약간 기여
-                    float NdotL = dot(finalNorm, light.direction) * 0.5 + 0.5;
+                    // 수평 항 : abs() 덕분에 +X 벽과 -X 벽이 같은 밝기
+                    //   E/W 벽에 0.15, N/S 벽에 0.10 추가
+                    float horzTerm = abs(n.x) * 0.15 + abs(n.z) * 0.10;
 
-                    float intensity = saturate(viewTerm * 0.7 + NdotL * 0.3);
-                    intensity = intensity * intensity; // 명암 대비 강화
+                    float intensity = saturate((skyTerm + horzTerm) * 0.8);
 
                     float3 shadedBase = float3(0.02, 0.02, 0.05);
-                    float3 shadedLit  = float3(0.10, 0.13, 0.28);
+                    float3 shadedLit  = float3(0.12, 0.16, 0.30);
                     float3 volumeColor = lerp(shadedBase, shadedLit, intensity);
 
-                    // Phase 2 → 3 전환: 점점 알베도 색상으로 이동
                     finalColor = lerp(volumeColor, albedo * 0.35, t);
                 }
                 else
