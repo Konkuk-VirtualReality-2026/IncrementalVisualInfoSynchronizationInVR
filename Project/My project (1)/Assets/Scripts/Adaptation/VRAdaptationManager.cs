@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using VRAdaptation.Experiment;
 
 namespace VRAdaptation
 {
@@ -37,6 +38,10 @@ namespace VRAdaptation
         [SerializeField] float m_Phase2Duration = 30f;
         [SerializeField] float m_Phase3Duration = 30f;
         [SerializeField] float m_AimTrainerDuration = 120f;
+
+        [Header("Experiment Condition")]
+        [Tooltip("대조군(1군)으로 강제 설정 (Inspector 디버그용)")]
+        [SerializeField] bool m_ForceControlGroup = false;
 
         [Header("Debug")]
         [Tooltip("true 시 모든 Phase 시간을 1/10로 단축 (테스트용)")]
@@ -93,9 +98,49 @@ namespace VRAdaptation
 
         void Start()
         {
-            StartCoroutine(AdaptationSequence());
-            if (m_EnableHeartbeatHaptics)
-                StartCoroutine(HeartbeatHapticsRoutine());
+            bool isControl = m_ForceControlGroup
+                || ExperimentCondition.SelectedGroup == ExperimentGroup.Control;
+
+            if (isControl)
+            {
+                m_CurrentFidelity = 1.0f;
+                UpdateGlobalFidelity();
+                SetCameraBackground(blackout: false);
+                StartCoroutine(ControlSequence());
+            }
+            else
+            {
+                StartCoroutine(AdaptationSequence());
+                if (m_EnableHeartbeatHaptics)
+                    StartCoroutine(HeartbeatHapticsRoutine());
+            }
+        }
+
+        IEnumerator ControlSequence()
+        {
+            m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+
+            if (m_AimTrainer != null)
+                m_AimTrainer.StartAimTrainer(ExperimentCondition.GetConditionName());
+            if (m_AimTrainerHUD != null)
+                m_AimTrainerHUD.StartHUD(D(m_AimTrainerDuration), m_XRCamera?.transform);
+
+            Debug.Log("[VRAdaptation] Control Group: Starting Aim Trainer directly.");
+            yield return new WaitForSeconds(D(m_AimTrainerDuration));
+
+            if (m_AimTrainer != null) m_AimTrainer.StopAimTrainer();
+            if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
+
+            m_CurrentPhase = AdaptationPhase.Complete;
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+            m_CurrentFidelity = 1.0f;
+            UpdateGlobalFidelity();
+
+            if (m_GlobalEffect != null)
+                m_GlobalEffect.RestoreEffect();
+
+            Debug.Log("[VRAdaptation] Control Group: Complete.");
         }
 
         // Phase 1·2 동안 스카이박스 대신 순수 검정을 배경으로 설정한다.
@@ -171,7 +216,7 @@ namespace VRAdaptation
             m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
             OnPhaseChanged.Invoke(m_CurrentPhase);
             if (m_AimTrainer != null)
-                m_AimTrainer.StartAimTrainer("PostAdaptation");
+                m_AimTrainer.StartAimTrainer(ExperimentCondition.GetConditionName());
             if (m_AimTrainerHUD != null)
                 m_AimTrainerHUD.StartHUD(D(m_AimTrainerDuration), m_XRCamera?.transform);
 
