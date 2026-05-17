@@ -72,13 +72,26 @@ Shader "VR/AdaptationProgressive"
                 #endif
                 OUT.fidelity = fid;
 
-                // Phase 2(0.3~0.7)에서만 두께 적용. 바깥에서는 두께=0 → 그려지지 않음
-                float t2 = saturate((fid - 0.3) / 0.4);          // 0.3→0  /  0.7→1
-                float width = _OutlineWidth * (1.0 - t2) * step(0.3, fid); // 0.3 이전도 0
+                // Phase 2(0.3~0.7)에서만 두께 적용
+                float t2    = saturate((fid - 0.3) / 0.4);
+                float scale = (1.0 - t2) * step(0.3, fid);
 
                 float3 normWS = normalize(TransformObjectToWorldNormal(IN.normOS));
-                float3 posWS  = TransformObjectToWorld(IN.posOS.xyz) + normWS * width;
-                OUT.posCS = TransformWorldToHClip(posWS);
+                float3 posWS  = TransformObjectToWorld(IN.posOS.xyz);
+                float4 clipPos = TransformWorldToHClip(posWS);
+
+                // ── 클립 공간 법선 확장 ─────────────────────────────────────
+                // 뷰 공간 법선의 XY를 화면 공간 방향으로 사용하면
+                // 각도·거리에 무관하게 균일한 두께의 테두리를 얻을 수 있다.
+                float3 normVS  = normalize(mul((float3x3)UNITY_MATRIX_V, normWS));
+                float2 normDir = normalize(normVS.xy + float2(0.0001, 0.0001));
+                // 화면 비율 보정 (가로로 눌리지 않도록)
+                normDir.x *= _ScreenParams.y / _ScreenParams.x;
+                normDir    = normalize(normDir);
+                // clipPos.w 를 곱해 원근 보정 → NDC 상 고정 두께
+                clipPos.xy += normDir * (_OutlineWidth * scale) * clipPos.w;
+
+                OUT.posCS = clipPos;
                 return OUT;
             }
 
@@ -225,5 +238,5 @@ Shader "VR/AdaptationProgressive"
         }
     }
 
-    FallBack "Universal Render Pipeline/Lit"
+    FallBack "None"
 }

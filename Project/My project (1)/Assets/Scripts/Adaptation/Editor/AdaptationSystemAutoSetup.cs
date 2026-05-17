@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;   // ContinuousMoveProvider
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;    // SnapTurnProvider
 using VRAdaptation;
@@ -215,21 +216,21 @@ namespace VRAdaptation.Editor
 
             // ── 8. ProximityFeedback (벽 근접 소리·진동) ─────────────────────
             // XR Origin에 부착 — AudioSource + ProximityFeedback
-            if (xrOrigin != null)
+            var proxOrigin = Object.FindAnyObjectByType<Unity.XR.CoreUtils.XROrigin>();
+            if (proxOrigin != null)
             {
-                var proxAudio = xrOrigin.gameObject.GetComponent<AudioSource>();
-                if (proxAudio == null) proxAudio = xrOrigin.gameObject.AddComponent<AudioSource>();
+                var proxAudio = proxOrigin.gameObject.GetComponent<AudioSource>();
+                if (proxAudio == null) proxAudio = proxOrigin.gameObject.AddComponent<AudioSource>();
                 proxAudio.playOnAwake  = false;
                 proxAudio.loop         = true;
                 proxAudio.spatialBlend = 0f;
 
-                var prox = xrOrigin.gameObject.GetComponent<ProximityFeedback>();
-                if (prox == null) prox = xrOrigin.gameObject.AddComponent<ProximityFeedback>();
+                var prox = proxOrigin.gameObject.GetComponent<ProximityFeedback>();
+                if (prox == null) prox = proxOrigin.gameObject.AddComponent<ProximityFeedback>();
 
                 var proxSO = new SerializedObject(prox);
-                proxSO.FindProperty("m_PlayerRoot").objectReferenceValue = xrOrigin.transform;
-                // 벽 레이어: Default(0) + CQB 맵 오브젝트는 Default
-                proxSO.FindProperty("m_WallLayer").intValue = ~0; // 전체
+                proxSO.FindProperty("m_PlayerRoot").objectReferenceValue = proxOrigin.transform;
+                proxSO.FindProperty("m_WallLayer").intValue = ~0;
                 proxSO.ApplyModifiedProperties();
 
                 Debug.Log("[VRAdaptation] ProximityFeedback → XR Origin 부착 완료.");
@@ -356,6 +357,52 @@ namespace VRAdaptation.Editor
 
             Selection.activeGameObject = managerObj;
             Debug.Log("[VRAdaptation] Auto setup complete: Manager + AimTrainer + HUD + BlackoutCanvas + Gun + Locomotion 완료.");
+        }
+
+        // ── Phase Outline Renderer Feature 추가 ─────────────────────────────
+        [MenuItem("VR Adaptation/Setup Phase Outline Feature (DepthNormals)")]
+        public static void SetupPhaseOutlineFeature()
+        {
+            // 프로젝트 내 UniversalRendererData 탐색
+            string[] guids = AssetDatabase.FindAssets("t:UniversalRendererData");
+            if (guids.Length == 0)
+            {
+                Debug.LogError("[VRAdaptation] UniversalRendererData를 찾지 못했습니다.");
+                return;
+            }
+
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(path);
+                if (rendererData == null) continue;
+
+                // DepthNormals 패스 활성화 (PhaseOutlineFeature가 법선 텍스처를 필요로 함)
+                rendererData.renderingMode = RenderingMode.Forward;
+
+                // 이미 추가된 경우 스킵
+                bool alreadyAdded = false;
+                foreach (var f in rendererData.rendererFeatures)
+                {
+                    if (f is PhaseOutlineFeature) { alreadyAdded = true; break; }
+                }
+                if (alreadyAdded)
+                {
+                    Debug.Log($"[VRAdaptation] PhaseOutlineFeature 이미 존재: {path}");
+                    continue;
+                }
+
+                // Feature 생성 후 추가
+                var feature = ScriptableObject.CreateInstance<PhaseOutlineFeature>();
+                feature.name = "Phase Outline (VR Adaptation)";
+                AssetDatabase.AddObjectToAsset(feature, path);
+                rendererData.rendererFeatures.Add(feature);
+                EditorUtility.SetDirty(rendererData);
+                Debug.Log($"[VRAdaptation] PhaseOutlineFeature 추가 완료: {path}");
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log("[VRAdaptation] Phase Outline Feature 설정 완료. URP Renderer에서 확인하세요.");
         }
 
         // 빨간 구체 AimTarget 프리팹을 생성하거나 기존 것을 반환한다.
