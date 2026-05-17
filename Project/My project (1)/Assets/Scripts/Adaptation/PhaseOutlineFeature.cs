@@ -4,25 +4,18 @@ using UnityEngine.Rendering.Universal;
 
 namespace VRAdaptation
 {
-    /// <summary>
-    /// URP ScriptableRendererFeature — 화면 공간 깊이+법선 엣지 검출로
-    /// Phase 2(fidelity 0.3~0.7) 구간에서만 아웃라인을 그린다.
-    ///
-    /// 사용법:
-    ///  에디터 메뉴 VR Adaptation > Setup Phase Outline Feature (DepthNormals) 실행
-    /// </summary>
     public class PhaseOutlineFeature : ScriptableRendererFeature
     {
         [System.Serializable]
         public class Settings
         {
-            [Tooltip("체크하면 Fidelity 구간 무시하고 항상 실행 (테스트용)")]
-            public bool    ForceEnable     = false;
+            [Tooltip("Fidelity 구간 무시하고 항상 실행 (테스트용)")]
+            public bool  ForceEnable     = false;
             [ColorUsage(false, false)]
-            public Color   OutlineColor    = new Color(0.7f, 0.9f, 1.0f);
+            public Color OutlineColor    = new Color(1f, 1f, 1f);   // 흰색: 잘 보이게
             [Range(0.5f, 4f)]   public float Thickness      = 1.5f;
-            [Range(0f,   0.5f)] public float DepthThreshold = 0.015f;
-            [Range(0f,   1f)]   public float NormalThreshold= 0.25f;
+            [Range(0f, 0.1f)]   public float DepthThreshold = 0.005f;
+            [Range(0f, 1f)]     public float NormalThreshold= 0.15f;
         }
 
         public Settings settings = new();
@@ -30,39 +23,42 @@ namespace VRAdaptation
         PhaseOutlinePass m_Pass;
         Material         m_Material;
 
-        static readonly int s_OutlineColor  = Shader.PropertyToID("_OutlineColor");
-        static readonly int s_Thickness     = Shader.PropertyToID("_Thickness");
-        static readonly int s_DepthThresh   = Shader.PropertyToID("_DepthThresh");
-        static readonly int s_NormalThresh  = Shader.PropertyToID("_NormalThresh");
-        static readonly int s_GlobalFid     = Shader.PropertyToID("_GlobalVisualFidelity");
+        static readonly int s_OutlineColor = Shader.PropertyToID("_OutlineColor");
+        static readonly int s_Thickness    = Shader.PropertyToID("_Thickness");
+        static readonly int s_DepthThresh  = Shader.PropertyToID("_DepthThresh");
+        static readonly int s_NormalThresh = Shader.PropertyToID("_NormalThresh");
+        static readonly int s_GlobalFid    = Shader.PropertyToID("_GlobalVisualFidelity");
 
         public override void Create()
         {
             var shader = Shader.Find("Hidden/VRAdaptation/PhaseOutline");
             if (shader == null)
             {
-                Debug.LogWarning("[VRAdaptation] PhaseOutline 셰이더를 찾지 못했습니다.");
+                Debug.LogError("[PhaseOutline] 셰이더를 찾지 못했습니다: Hidden/VRAdaptation/PhaseOutline");
                 return;
             }
-
+            Debug.Log("[PhaseOutline] Create() — 셰이더 발견, Material 생성");
             m_Material = CoreUtils.CreateEngineMaterial(shader);
-            m_Pass = new PhaseOutlinePass(m_Material);
+            m_Pass     = new PhaseOutlinePass(m_Material);
             m_Pass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         }
 
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData data)
         {
             if (m_Pass == null || m_Material == null) return;
-            if (renderingData.cameraData.cameraType == CameraType.Preview) return;
+            if (data.cameraData.cameraType == CameraType.Preview) return;
 
             float fid = Shader.GetGlobalFloat(s_GlobalFid);
-            if (!settings.ForceEnable && (fid < 0.28f || fid >= 0.72f)) return;
+            bool inPhase2 = fid >= 0.28f && fid < 0.72f;
 
-            m_Material.SetColor(s_OutlineColor,  settings.OutlineColor);
-            m_Material.SetFloat(s_Thickness,     settings.Thickness);
-            m_Material.SetFloat(s_DepthThresh,   settings.DepthThreshold);
-            m_Material.SetFloat(s_NormalThresh,  settings.NormalThreshold);
+            if (!settings.ForceEnable && !inPhase2) return;
 
+            m_Material.SetColor(s_OutlineColor, settings.OutlineColor);
+            m_Material.SetFloat(s_Thickness,    settings.Thickness);
+            m_Material.SetFloat(s_DepthThresh,  settings.DepthThreshold);
+            m_Material.SetFloat(s_NormalThresh, settings.NormalThreshold);
+
+            Debug.Log($"[PhaseOutline] 패스 등록 — fid={fid:F2} forceEnable={settings.ForceEnable}");
             renderer.EnqueuePass(m_Pass);
         }
 
@@ -72,44 +68,51 @@ namespace VRAdaptation
             CoreUtils.Destroy(m_Material);
         }
 
+        // ── Inner Pass ────────────────────────────────────────────────────
         class PhaseOutlinePass : ScriptableRenderPass
         {
             readonly Material m_Mat;
-            RTHandle          m_TempRT;
+            bool m_Logged;
 
             public PhaseOutlinePass(Material mat)
             {
                 m_Mat = mat;
-                // 법선+깊이 프리패스 요청 — Normal 이 있어야 법선 엣지 검출 가능
                 ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
             }
 
-            public void Dispose()
-            {
-                m_TempRT?.Release();
-                m_TempRT = null;
-            }
+            public void Dispose() { }
 
+#pragma warning disable CS0618
             public override void Execute(ScriptableRenderContext ctx, ref RenderingData data)
             {
                 if (m_Mat == null) return;
 
+                if (!m_Logged)
+                {
+                    Debug.Log("[PhaseOutline] Execute() 호출됨 — 셰이더 실행 중");
+                    m_Logged = true;
+                }
+
                 CommandBuffer cmd = CommandBufferPool.Get("PhaseOutline");
 
+                RenderTargetIdentifier src = data.cameraData.renderer.cameraColorTargetHandle;
                 RenderTextureDescriptor desc = data.cameraData.cameraTargetDescriptor;
                 desc.depthBufferBits = 0;
+                desc.msaaSamples     = 1;
 
-                RenderingUtils.ReAllocateIfNeeded(ref m_TempRT, desc, name: "_PhaseOutlineTemp");
+                int tempID = Shader.PropertyToID("_PhaseOutlineTemp");
+                cmd.GetTemporaryRT(tempID, desc);
 
-                RTHandle colorTarget = data.cameraData.renderer.cameraColorTargetHandle;
+                // src → temp (아웃라인 셰이더 적용)
+                cmd.Blit(src, tempID, m_Mat, 0);
+                // temp → src (결과 복사)
+                cmd.Blit(tempID, src);
 
-                // Blitter 는 _BlitTexture + _BlitTexture_TexelSize 를 올바르게 바인딩
-                Blitter.BlitCameraTexture(cmd, colorTarget, m_TempRT,   m_Mat, 0);
-                Blitter.BlitCameraTexture(cmd, m_TempRT,   colorTarget);
-
+                cmd.ReleaseTemporaryRT(tempID);
                 ctx.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
+#pragma warning restore CS0618
         }
     }
 }

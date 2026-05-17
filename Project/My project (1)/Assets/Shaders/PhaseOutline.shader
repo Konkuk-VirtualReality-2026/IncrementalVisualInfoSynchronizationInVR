@@ -1,13 +1,13 @@
-// 화면 공간 깊이+법선 기반 엣지 검출 셰이더
-// Phase 2: 비엣지 = 완전 검정, 엣지 = 아웃라인 색상
+// 화면 공간 깊이+법선 엣지 검출
+// cmd.Blit 은 소스를 _MainTex 에 바인딩한다 → _MainTex 선언 필요
 Shader "Hidden/VRAdaptation/PhaseOutline"
 {
     Properties
     {
-        _BlitTexture  ("Source",           2D)                = "white" {}
-        _OutlineColor ("Outline Color",    Color)             = (0.7, 0.9, 1.0, 1.0)
-        _DepthThresh  ("Depth Threshold",  Range(0.0001, 0.1)) = 0.015
-        _NormalThresh ("Normal Threshold", Range(0.01, 1.0))   = 0.25
+        _MainTex      ("Source",           2D)                = "white" {}
+        _OutlineColor ("Outline Color",    Color)             = (1, 1, 1, 1)
+        _DepthThresh  ("Depth Threshold",  Range(0.0001, 0.1)) = 0.005
+        _NormalThresh ("Normal Threshold", Range(0.01, 1.0))   = 0.15
         _Thickness    ("Thickness (px)",   Range(0.5, 4.0))    = 1.5
     }
 
@@ -23,16 +23,17 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             HLSLPROGRAM
             #pragma vertex   vert_fs
             #pragma fragment frag_edge
-            #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
 
-            TEXTURE2D_X(_BlitTexture);
-            SAMPLER(sampler_BlitTexture);
+            // cmd.Blit 이 소스를 _MainTex 로 바인딩
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
 
             CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
                 float4 _OutlineColor;
                 float  _DepthThresh;
                 float  _NormalThresh;
@@ -57,7 +58,7 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             {
                 float2 px = _Thickness * rcp(_ScreenParams.xy);
 
-                // ── 깊이 엣지 ───────────────────────────────────────────────
+                // ── 깊이 엣지 ──────────────────────────────────────────
                 float dc = LinearEyeDepth(SampleSceneDepth(uv),                     _ZBufferParams);
                 float d0 = LinearEyeDepth(SampleSceneDepth(uv + float2( px.x, 0)), _ZBufferParams);
                 float d1 = LinearEyeDepth(SampleSceneDepth(uv + float2(-px.x, 0)), _ZBufferParams);
@@ -67,18 +68,21 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
                 float maxDiff   = max(max(abs(dc-d0), abs(dc-d1)), max(abs(dc-d2), abs(dc-d3)));
                 float depthEdge = step(_DepthThresh, maxDiff / max(dc, 0.01));
 
-                // ── 법선 엣지: 인접 픽셀 법선 차이 → 기하 경계 (모든 각도) ─
+                // ── 법선 엣지 ──────────────────────────────────────────
                 float3 nc = SampleSceneNormals(uv);
                 float3 n0 = SampleSceneNormals(uv + float2( px.x, 0));
                 float3 n1 = SampleSceneNormals(uv + float2(-px.x, 0));
                 float3 n2 = SampleSceneNormals(uv + float2(0,  px.y));
                 float3 n3 = SampleSceneNormals(uv + float2(0, -px.y));
 
+                // 법선이 (0,0,0) 인 픽셀(하늘/배경)은 엣지로 처리하지 않음
+                float skyMask = step(0.1, length(nc));
+
                 float nd = max(max(1.0 - saturate(dot(nc, n0)),
                                    1.0 - saturate(dot(nc, n1))),
                                max(1.0 - saturate(dot(nc, n2)),
                                    1.0 - saturate(dot(nc, n3))));
-                float normalEdge = step(_NormalThresh, nd);
+                float normalEdge = step(_NormalThresh, nd) * skyMask;
 
                 return saturate(depthEdge + normalEdge);
             }
@@ -86,7 +90,6 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             half4 frag_edge(Vary IN) : SV_Target
             {
                 float edge = CalcEdge(IN.uv);
-                // Phase 2: 검정 배경 + 엣지만 표시
                 return half4(lerp(float3(0, 0, 0), _OutlineColor.rgb, edge), 1.0);
             }
             ENDHLSL
