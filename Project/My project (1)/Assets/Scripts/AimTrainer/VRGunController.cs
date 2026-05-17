@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 namespace VRAdaptation.AimTrainer
 {
     /// <summary>
-    /// XRI 컨트롤러 트리거 입력을 RaycastWeapon.Fire()로 연결한다.
-    /// Right Hand Controller 오브젝트에 RaycastWeapon과 함께 부착한다.
+    /// XRI 컨트롤러 트리거 입력 → RaycastWeapon.Fire() 연결.
+    /// 반동 햅틱은 RaycastWeapon 내부에서 처리.
     /// </summary>
     [RequireComponent(typeof(RaycastWeapon))]
     public class VRGunController : MonoBehaviour
@@ -14,16 +14,13 @@ namespace VRAdaptation.AimTrainer
         [Tooltip("XRI Right Hand Interaction/Activate 액션을 연결한다.")]
         [SerializeField] InputActionReference m_FireAction;
 
-        [Header("Cooldown")]
+        [Header("발사 설정")]
         [SerializeField, Min(0f)] float m_FireCooldown = 0.15f;
 
         RaycastWeapon m_Weapon;
-        float m_LastFireTime = -999f;
+        float         m_LastFireTime = -999f;
 
-        void Awake()
-        {
-            m_Weapon = GetComponent<RaycastWeapon>();
-        }
+        void Awake()  => m_Weapon = GetComponent<RaycastWeapon>();
 
         void OnEnable()
         {
@@ -42,7 +39,10 @@ namespace VRAdaptation.AimTrainer
         {
             if (Time.time - m_LastFireTime < m_FireCooldown) return;
             m_LastFireTime = Time.time;
-            m_Weapon.Fire();
+
+            bool isHit = m_Weapon.Fire();
+
+            // HUD: 샷은 항상, 히트는 AimTargetManager의 OnHit 콜백에서 처리
             AimTrainerHUD.Instance?.RegisterShot();
         }
     }
