@@ -7,11 +7,11 @@ Shader "VR/AdaptationProgressive"
         [Normal] _BumpMap("Normal Map", 2D) = "bump" {}
         _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
         _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
-        
-        [Header(Interaction)]
-        _RimColor("Rim Color (XRI Support)", Color) = (0.0, 0.5, 1.0, 1)
-        _RimPower("Rim Power (XRI Support)", Range(0.5, 8.0)) = 2.0
-        
+
+        [Header(Silhouette Outline Phase 2)]
+        _OutlineColor("Outline Color", Color) = (0.2, 0.6, 1.0, 1)
+        _OutlineWidth("Outline Width (m)", Range(0.0, 0.05)) = 0.012
+
         [Header(Testing)]
         _VisualFidelity("Manual Fidelity Override", Range(0.0, 1.0)) = 0.0
         [Toggle(USE_MANUAL_FIDELITY)] _UseManualFidelity("Use Manual Override", Float) = 0
@@ -22,6 +22,80 @@ Shader "VR/AdaptationProgressive"
         Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
         LOD 100
 
+        // ────────────────────────────────────────────────────────────────────
+        // Pass 1 : Outline  (뒷면 법선 방향으로 확장 → 파란 테두리)
+        // Phase 2(0.3~0.7)에서만 두께가 생기고, 그 외에는 두께=0(보이지 않음)
+        // ────────────────────────────────────────────────────────────────────
+        Pass
+        {
+            Name "Outline"
+            Tags { "LightMode" = "SRPDefaultUnlit" }
+            Cull Front
+            ZWrite On
+            ZTest LEqual
+
+            HLSLPROGRAM
+            #pragma vertex   vert_ol
+            #pragma fragment frag_ol
+            #pragma shader_feature USE_MANUAL_FIDELITY
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            CBUFFER_START(UnityPerMaterial)
+                float4 _OutlineColor;
+                float  _OutlineWidth;
+                float  _VisualFidelity;
+                // (다른 프로퍼티도 같은 CBUFFER에 있어야 URP 배칭이 올바름)
+                float4 _BaseColor;
+                float4 _BaseMap_ST;
+                float  _Metallic;
+                float  _Smoothness;
+            CBUFFER_END
+
+            float _GlobalVisualFidelity;
+
+            struct Attr_OL { float4 posOS : POSITION; float3 normOS : NORMAL; UNITY_VERTEX_INPUT_INSTANCE_ID };
+            struct Vary_OL { float4 posCS : SV_POSITION; float fidelity : TEXCOORD0; UNITY_VERTEX_INPUT_INSTANCE_ID UNITY_VERTEX_OUTPUT_STEREO };
+
+            Vary_OL vert_ol(Attr_OL IN)
+            {
+                Vary_OL OUT = (Vary_OL)0;
+                UNITY_SETUP_INSTANCE_ID(IN);
+                UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+
+                float fid = _GlobalVisualFidelity;
+                #if defined(USE_MANUAL_FIDELITY)
+                    fid = _VisualFidelity;
+                #endif
+                OUT.fidelity = fid;
+
+                // Phase 2(0.3~0.7)에서만 두께 적용. 바깥에서는 두께=0 → 그려지지 않음
+                float t2 = saturate((fid - 0.3) / 0.4);          // 0.3→0  /  0.7→1
+                float width = _OutlineWidth * (1.0 - t2) * step(0.3, fid); // 0.3 이전도 0
+
+                float3 normWS = normalize(TransformObjectToWorldNormal(IN.normOS));
+                float3 posWS  = TransformObjectToWorld(IN.posOS.xyz) + normWS * width;
+                OUT.posCS = TransformWorldToHClip(posWS);
+                return OUT;
+            }
+
+            half4 frag_ol(Vary_OL IN) : SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+                return half4(_OutlineColor.rgb, 1.0);
+            }
+            ENDHLSL
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+        // Pass 2 : Main Surface
+        // Phase 1 → 검정
+        // Phase 2 → 어두운 단색 (표면은 검정, 테두리는 Pass1이 담당)
+        // Phase 3 → 알베도 → 풀 PBR
+        // ────────────────────────────────────────────────────────────────────
         Pass
         {
             Name "AdaptationForward"
@@ -31,7 +105,6 @@ Shader "VR/AdaptationProgressive"
             #pragma vertex vert
             #pragma fragment frag
             #pragma shader_feature USE_MANUAL_FIDELITY
-
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
             #pragma multi_compile _ DOTS_INSTANCING_ON
@@ -43,19 +116,19 @@ Shader "VR/AdaptationProgressive"
             struct Attributes
             {
                 float4 positionOS : POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normalOS : NORMAL;
-                float4 tangentOS : TANGENT;
+                float2 uv         : TEXCOORD0;
+                float3 normalOS   : NORMAL;
+                float4 tangentOS  : TANGENT;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normalWS : TEXCOORD1;
+                float2 uv         : TEXCOORD0;
+                float3 normalWS   : TEXCOORD1;
                 float3 positionWS : TEXCOORD2;
-                float4 tangentWS : TEXCOORD3;
+                float4 tangentWS  : TEXCOORD3;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -63,98 +136,85 @@ Shader "VR/AdaptationProgressive"
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseColor;
                 float4 _BaseMap_ST;
-                float4 _RimColor;
-                float _RimPower;
-                float _Metallic;
-                float _Smoothness;
-                float _VisualFidelity;
+                float4 _OutlineColor;
+                float  _OutlineWidth;
+                float  _RimPower;
+                float  _Metallic;
+                float  _Smoothness;
+                float  _VisualFidelity;
             CBUFFER_END
 
             float _GlobalVisualFidelity;
 
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
-            TEXTURE2D(_BumpMap);
-            SAMPLER(sampler_BumpMap);
+            TEXTURE2D(_BaseMap);  SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_BumpMap);  SAMPLER(sampler_BumpMap);
 
-            Varyings vert(Attributes input)
+            Varyings vert(Attributes IN)
             {
-                Varyings output = (Varyings)0;
-                UNITY_SETUP_INSTANCE_ID(input);
-                UNITY_TRANSFER_INSTANCE_ID(input, output);
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+                Varyings OUT = (Varyings)0;
+                UNITY_SETUP_INSTANCE_ID(IN);
+                UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
-                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
-                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
-                output.normalWS = TransformObjectToWorldNormal(input.normalOS);
-                output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
-                
-                float3 worldTangent = TransformObjectToWorldDir(input.tangentOS.xyz);
-                float3 worldBitangent = cross(output.normalWS, worldTangent) * input.tangentOS.w;
-                output.tangentWS = float4(worldTangent, input.tangentOS.w);
-                
-                return output;
+                OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.uv         = TRANSFORM_TEX(IN.uv, _BaseMap);
+                OUT.normalWS   = TransformObjectToWorldNormal(IN.normalOS);
+                OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
+
+                float3 worldTan = TransformObjectToWorldDir(IN.tangentOS.xyz);
+                OUT.tangentWS   = float4(worldTan, IN.tangentOS.w);
+                return OUT;
             }
 
-            half4 frag(Varyings input) : SV_Target
+            half4 frag(Varyings IN) : SV_Target
             {
-                UNITY_SETUP_INSTANCE_ID(input);
-                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+                UNITY_SETUP_INSTANCE_ID(IN);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
                 float fidelity = _GlobalVisualFidelity;
                 #if defined(USE_MANUAL_FIDELITY)
                     fidelity = _VisualFidelity;
                 #endif
-                
-                float3 viewDirWS = normalize(GetCameraPositionWS() - input.positionWS);
-                float3 normalWS = normalize(input.normalWS);
-                
-                // 1. SILHOUETTE (Phase 1 Focus)
-                float fresnel = 1.0 - saturate(dot(normalWS, viewDirWS));
-                float3 rim = _RimColor.rgb * pow(fresnel, _RimPower);
 
-                // 2. TEXTURE & PBR (Phase 2 & 3)
-                half4 tex = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
+                // ── 텍스처 & PBR 계산 (Phase 3용) ───────────────────────────
+                half4 tex    = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);
                 float3 albedo = tex.rgb * _BaseColor.rgb;
-                
-                // Normal Mapping for Phase 3
-                float3 normalTS = UnpackNormal(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, input.uv));
-                float3 bitangentWS = cross(normalWS, input.tangentWS.xyz) * input.tangentWS.w;
-                float3x3 tbn = float3x3(input.tangentWS.xyz, bitangentWS, normalWS);
-                float3 finalNormalWS = lerp(normalWS, normalize(mul(normalTS, tbn)), fidelity);
 
-                // Lighting
-                Light mainLight = GetMainLight();
-                
-                // Diffuse
-                float3 diffuse = albedo * saturate(dot(finalNormalWS, mainLight.direction)) * mainLight.color;
-                
-                // Specular (Roughness based)
-                float3 halfDir = normalize(mainLight.direction + viewDirWS);
-                float spec = pow(saturate(dot(finalNormalWS, halfDir)), _Smoothness * 128.0);
-                float3 specular = mainLight.color * spec * _Metallic;
-                
-                float3 ambient = SampleSH(finalNormalWS) * albedo;
-                float3 fullPBR = diffuse + specular + ambient;
+                float3 normalWS   = normalize(IN.normalWS);
+                float3 normalTS   = UnpackNormal(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, IN.uv));
+                float3 bitangentWS = cross(normalWS, IN.tangentWS.xyz) * IN.tangentWS.w;
+                float3x3 tbn      = float3x3(IN.tangentWS.xyz, bitangentWS, normalWS);
+                float3 finalNorm  = lerp(normalWS, normalize(mul(normalTS, tbn)), saturate((fidelity - 0.7) / 0.3));
 
-                // --- TRANSITION LOGIC ---
+                float3 viewDir  = normalize(GetCameraPositionWS() - IN.positionWS);
+                Light  light    = GetMainLight();
+
+                float3 diffuse  = albedo * saturate(dot(finalNorm, light.direction)) * light.color;
+                float3 halfDir  = normalize(light.direction + viewDir);
+                float  spec     = pow(saturate(dot(finalNorm, halfDir)), _Smoothness * 128.0);
+                float3 specular = light.color * spec * _Metallic;
+                float3 ambient  = SampleSH(finalNorm) * albedo;
+                float3 fullPBR  = diffuse + specular + ambient;
+
+                // ── 페이즈 분기 ───────────────────────────────────────────────
                 float3 finalColor;
-                
-                if (fidelity < 0.3) 
+
+                if (fidelity < 0.3)
                 {
-                    // Phase 1 (0.0 -> 0.3): Smooth fading in silhouettes
-                    float t = fidelity / 0.3;
-                    finalColor = lerp(float3(0.01, 0.01, 0.02), rim, t);
+                    // Phase 1 : 완전 암흑 (블랙아웃 캔버스가 덮지만, 셰이더도 검정 유지)
+                    finalColor = float3(0.0, 0.0, 0.0);
                 }
-                else if (fidelity < 0.7) 
+                else if (fidelity < 0.7)
                 {
-                    // Phase 2 (0.3 -> 0.7): Fade Silhouettes into Unlit Textures
+                    // Phase 2 : 어두운 표면 (테두리는 Outline Pass가 담당)
+                    // 알베도 방향으로 서서히 전환 시작
                     float t = (fidelity - 0.3) / 0.4;
-                    finalColor = lerp(rim, albedo, t);
+                    float3 dark = float3(0.01, 0.01, 0.02);
+                    finalColor = lerp(dark, albedo * 0.25, t); // 25% 알베도까지만
                 }
-                else 
+                else
                 {
-                    // Phase 3 (0.7 -> 1.0): Fade Unlit into Full PBR (Normal maps, reflections)
+                    // Phase 3 : 알베도 → 풀 PBR
                     float t = (fidelity - 0.7) / 0.3;
                     finalColor = lerp(albedo, fullPBR, t);
                 }
@@ -164,5 +224,6 @@ Shader "VR/AdaptationProgressive"
             ENDHLSL
         }
     }
-    FallBack "None"
+
+    FallBack "Universal Render Pipeline/Lit"
 }
