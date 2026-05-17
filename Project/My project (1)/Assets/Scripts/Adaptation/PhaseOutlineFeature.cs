@@ -109,7 +109,9 @@ namespace VRAdaptation
                 var resourceData = frameData.Get<UniversalResourceData>();
                 var cameraData   = frameData.Get<UniversalCameraData>();
 
-                TextureHandle colorHandle = resourceData.activeColorTexture;
+                TextureHandle colorHandle   = resourceData.activeColorTexture;
+                TextureHandle depthHandle   = resourceData.cameraDepthTexture;
+                TextureHandle normalsHandle = resourceData.cameraNormalsTexture;
 
                 // 핑퐁 블릿용 중간 버퍼
                 RenderTextureDescriptor desc = cameraData.cameraTargetDescriptor;
@@ -124,7 +126,11 @@ namespace VRAdaptation
                     pd.mat = m_Mat;
                     pd.src = colorHandle;
 
-                    builder.UseTexture(colorHandle);           // Read
+                    builder.UseTexture(colorHandle);           // Read color
+                    // depth/normals 는 셰이더가 전역 텍스처로 접근하지만,
+                    // RenderGraph 가 프리패스를 cull 하지 않도록 명시적으로 선언한다.
+                    if (depthHandle.IsValid())   builder.UseTexture(depthHandle);
+                    if (normalsHandle.IsValid()) builder.UseTexture(normalsHandle);
                     builder.SetRenderAttachment(tempHandle, 0); // Write
                     builder.AllowPassCulling(false);
 

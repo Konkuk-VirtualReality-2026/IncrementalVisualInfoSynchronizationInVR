@@ -235,5 +235,77 @@ Shader "VR/AdaptationProgressive"
         }
     }
 
+        // ────────────────────────────────────────────────────────────────────
+        // Pass 3 : DepthNormals
+        // PhaseOutlineFeature 의 법선+깊이 엣지 검출에 필요.
+        // 이 패스가 없으면 _CameraNormalsTexture 에 법선이 기록되지 않아
+        // 평면 오브젝트의 엣지가 전혀 검출되지 않는다.
+        // ────────────────────────────────────────────────────────────────────
+        Pass
+        {
+            Name "DepthNormals"
+            Tags { "LightMode" = "DepthNormals" }
+
+            ZWrite On
+            ZTest LEqual
+            Cull Back
+
+            HLSLPROGRAM
+            #pragma vertex   vert_dn
+            #pragma fragment frag_dn
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            CBUFFER_START(UnityPerMaterial)
+                float4 _BaseMap_ST;
+                float4 _BaseColor;
+                float4 _OutlineColor;
+                float  _OutlineWidth;
+                float  _Metallic;
+                float  _Smoothness;
+                float  _VisualFidelity;
+            CBUFFER_END
+
+            struct Attr_DN
+            {
+                float4 positionOS : POSITION;
+                float3 normalOS   : NORMAL;
+                float4 tangentOS  : TANGENT;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
+            struct Vary_DN
+            {
+                float4 positionCS : SV_POSITION;
+                float3 normalWS   : TEXCOORD0;
+                float4 tangentWS  : TEXCOORD1;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+                UNITY_VERTEX_OUTPUT_STEREO
+            };
+
+            Vary_DN vert_dn(Attr_DN IN)
+            {
+                Vary_DN OUT = (Vary_DN)0;
+                UNITY_SETUP_INSTANCE_ID(IN);
+                UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+                OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.normalWS   = TransformObjectToWorldNormal(IN.normalOS);
+                OUT.tangentWS  = float4(TransformObjectToWorldDir(IN.tangentOS.xyz), IN.tangentOS.w);
+                return OUT;
+            }
+
+            // DepthNormals 패스는 법선을 [0,1] 범위로 인코딩해서 출력한다.
+            float4 frag_dn(Vary_DN IN) : SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+                float3 normalWS = normalize(IN.normalWS);
+                return float4(normalWS * 0.5 + 0.5, 0.0);
+            }
+            ENDHLSL
+        }
+    }
+
     FallBack "None"
 }
