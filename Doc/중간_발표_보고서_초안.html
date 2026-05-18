@@ -27,8 +27,8 @@
       <div class="crossnote markdown-preview  ">
       
 <h1 id="가상현실-중간-발표-보고서">[가상현실 중간 발표 보고서] </h1>
-<h1 id="vr-멀미-저감을-위한-교차-감각cross-modal-기반-점진적-시각-동기화-기법-연구">VR 멀미 저감을 위한 교차 감각(Cross-modal) 기반 점진적 시각 동기화 기법 연구 </h1>
-<h2 id="-뇌-가소성과-예측-모델-초기화-및-신체화embodiment-패러다임을-중심으로">: 뇌 가소성과 예측 모델 초기화 및 신체화(Embodiment) 패러다임을 중심으로 </h2>
+<h1 id="교차-감각cross-modal-기반-점진적-시각-동기화를-통한-vr-사이버-멀미-저감-연구">교차 감각(Cross-modal) 기반 점진적 시각 동기화를 통한 VR 사이버 멀미 저감 연구 </h1>
+<h2 id="-뇌-가소성과-예측-모델-초기화neural-priming-기법을-중심으로">: 뇌 가소성과 예측 모델 초기화(Neural Priming) 기법을 중심으로 </h2>
 <p><strong>과목명:</strong> 가상현실[3221]<br>
 <strong>담당 교수:</strong> 김형석 교수님<br>
 <strong>팀명:</strong> 3팀<br>
@@ -36,233 +36,528 @@
 <strong>제출일:</strong> 2026년 5월 19일<br>
 <strong>개발 환경:</strong> Unity 6 (6000.2.8f1), Meta Quest 3</p>
 <hr>
-<h2 id="i-서론-introduction">Ⅰ. 서론 (Introduction) </h2>
-<h3 id="11-연구-배경-vr-산업의-성장과-멀미라는-장벽">1.1 연구 배경: VR 산업의 성장과 '멀미'라는 장벽 </h3>
-<p>최근 가상현실(VR) 및 혼합현실(MR) 기술은 엔터테인먼트, 교육, 의료, 국방 등 사회 전반에서 필수적인 도구로 자리매김하고 있습니다. 특히 메타 퀘스트 3와 같은 독립형 기기의 보급으로 대중화의 급물살을 타고 있습니다. 그러나 이러한 기술적 진보에도 불구하고, 사용자 경험(UX) 측면에서 여전히 해결되지 않은 가장 치명적인 장애물은 '사이버 멀미(Cybersickness)'입니다. 사이버 멀미는 VR의 지속적인 사용을 방해하며, 시장 생태계 확장의 최대 걸림돌로 지목되고 있습니다.</p>
-<h3 id="12-vr의-황금비golden-ratio와-실재감-멀미의-트레이드오프">1.2 VR의 황금비(Golden Ratio)와 실재감-멀미의 트레이드오프 </h3>
-<p>본 강의(W13)에서 강조된 <strong>'황금비(Golden Ratio)'</strong> 이론에 따르면, VR 설계는 실재감(Presence)의 극대화와 멀미(Sickness)의 최소화 사이에서 정교한 균형을 잡는 최적화 문제입니다. 몰입도를 높이기 위해 시각적 자극을 강화하면 멀미가 증가하고, 멀미를 줄이기 위해 시각 정보를 제한(Vignetting 등)하면 실재감이 붕괴되는 강한 트레이드오프(Trade-off) 관계가 존재합니다. 본 연구는 이 균형점을 온보딩 단계에서의 '사전 적응'을 통해 상향 평준화하려는 시도입니다.</p>
-<h3 id="13-기존-연구의-한계점-사후-완화mitigation-vs-사전-적응adaptation">1.3 기존 연구의 한계점: 사후 완화(Mitigation) vs 사전 적응(Adaptation) </h3>
-<p>기존의 대표적인 멀미 완화 기법들은 주로 콘텐츠가 진행되는 도중(In-game)에 개입하는 방식입니다.</p>
+<h2 id="i-연구의-핵심-목표-및-내용-main-proposal">Ⅰ. 연구의 핵심 목표 및 내용 (Main Proposal) </h2>
+<p>본 연구의 목표는 가상현실(VR) 환경에서 발생하는 사이버 멀미(Cybersickness)를 줄이기 위한 새로운 사용자 적응 방법을 제안하고 검증하는 것이다. 기존 연구에서는 시각적 요소를 줄이거나(vignetting), 고정된 시각 기준(rest frame)을 제공하거나, 추가적인 하드웨어를 활용하여 멀미를 완화하는 방법이 주로 사용되어 왔다. 그러나 이러한 방법들은 몰입감 감소, 추가 비용 발생, 콘텐츠 설계의 제약 등의 한계를 가진다.</p>
+<p>본 연구에서는 이러한 접근 방식과 달리, 사용자의 뇌가 기존 현실 세계에서 형성한 감각 예측 모델을 일시적으로 약화시키고 새로운 가상 환경에 대한 예측 모델을 의도적인 디자인의 환경을 통해 점진적으로 형성하도록 유도하는 <strong>'점진적 시각 동기화(Progressive Visual Synchronization)'</strong> 방법을 제안한다.</p>
+<p>핵심 아이디어: <strong>뇌의 연결(예측치)이 약한 감각을 통한 공간 인식 이후 점진적인 시각 동기화</strong></p>
+<h3 id="11-시각-차단-이후-타-감각을-통한-공간-인지-유도">1.1 시각 차단 이후 타 감각을 통한 공간 인지 유도 </h3>
+<p>초기 단계에서는 이용자가 시각을 완전히 차단한 어둠속에서 가상현실을 체험하게 된다. 이때 이용자는 촉각(컨트롤러 햅틱 진동), 청각 등을 통해 공간의 형태를 스스로 상상하고 인지하도록 유도된다.</p>
+<h3 id="12-저정보량-시각-매칭을-통한-동기화">1.2 저정보량 시각 매칭을 통한 동기화 </h3>
+<p>다음 단계에서는 어두운 환경에서 흐릿한 윤곽선이나 모자이크로 된 선 등 최소한의 시각 정보만을 제공한다. 이용자는 이전 단계에서 비시각적 감각을 통해 상상했던 공간 구조와 현재 제공되는 시각 정보를 점진적으로 매칭하면서 가상 공간에 대한 인식을 형성하게 된다.</p>
+<p>이 과정을 통해 실제 세계에 익숙해져있는 뇌가 실제 세계의 예측치를 잊고, 가상 세계에 예측치를 새로 형성하도록 유도한다.</p>
+<h3 id="13-점진적으로-정보를-추가한-시각-매칭을-통한-고도화">1.3 점진적으로 정보를 추가한 시각 매칭을 통한 고도화 </h3>
+<p>마지막 단계에서는 화질, 광원, 정보량, 선명도 등을 점진적으로 증가시키며 시각 정보를 확장한다. 이 과정을 통해 이용자의 뇌가 형성된 가상 공간 인식에 적응할 시간을 제공하고, 최종적으로는 원래 의도된 가상현실 콘텐츠 수준의 시각 정보를 제공하게 된다.</p>
+<p>이와 같이 단계적 동기화 과정을 거치며 멀미 문제를 해결할 수 있다고 본 게 본 연구의 가설이다. 또한 이는 감각과 예측의 불일치로 인한 부정적인 요소를 없애는 것으로 차후 콘텐츠를 디자인하며 몰입감을 높이는 데에 있어 긍정적인 효과를 일으킬 수 있다는 결론을 도출할 수 있다.</p>
+<p>위 절차는 인간의 뇌 가소성(neuroplasticity)과 감각 예측 모델(predictive model) 형성 과정을 활용하여 VR 환경에 대한 적응 과정을 의도적으로 설계한다는 점에서 기존 연구와 차별성을 가진다.</p>
+<h3 id="14-기대-효과-및-연구-방향">1.4 기대 효과 및 연구 방향 </h3>
+<p>연구를 통해 실질적으로 멀미에 대한 긍정적인 개선 효과가 나타나게 될 시, 새로운 '패러다임'을 제시할 수 있다.</p>
+<p>현재의 멀미 저감 기술들은 콘텐츠의 종류나 개인의 선호 및 체질에 따라 효과가 달라질 수 있다. 이는 멀미의 원인이 개인의 예측 모델과 감각 불일치에서 기인하기 때문이다. 따라서 향후 콘텐츠를 개발할 때, VR 콘텐츠 시작 단계에서 사용자의 기존 예측치를 초기화하고 새로운 예측치를 형성하도록 돕는 동기화 과정을 제공하는 것이 하나의 새로운 패러다임이 될 수 있다.</p>
+<p>확장 가능한 연구분야로는 레이싱, 비행 시뮬레이션, FPS, 1인칭 격투, 단순한 대화 게임 등 다양한 VR 콘텐츠에 장르별로 요구되는 감각 예측과 동기화 방식이 어떻게 다른지를 분석하고 연구해 이를 수치화하여 장르에 맞게 최적화된 동기화(예측 학습) 과정이 존재한다.</p>
+<p>이를 위해 감각 동기화 절차 과정에 대한 디자인 연구뿐만 아니라, 기존 콘텐츠의 시각적 렌더링 측면에서 정보량을 절차적으로 낮출 수 있는 렌더링 과정에 대한 기술적 구현 연구도 필요할 것으로 보인다.</p>
+<hr>
+<h2 id="ii-연구-배경-및-필요성-background--problem-definition">Ⅱ. 연구 배경 및 필요성 (Background &amp; Problem Definition) </h2>
+<h3 id="21-가상현실-사이버-멀미의-인체학적-영향">2.1 가상현실 사이버 멀미의 인체학적 영향 </h3>
+<p>인간은 뇌와 인지 능력 측면에서 높은 적응력을 가지고 있지만, 현실 세계에서 오랜 시간 동안 학습해 온 감각 간의 연결(예측치)이 존재한다. 즉 뇌의 처리능력과 전정기관과 같은 감각의 불일치 현상이 발생할 때, '멀미'라는 반응이 나올 것을 예측할 수 있다. VR과 같은 증강현실에서 FOV, 정보량, 속도감, 키, 화면 흔들림 등의 현상은 앞서 언급된 감각과 예측치의 불일치를 빈번하게 유발시킨다.</p>
+<p>가상현실의 환경에서는 현실 세계에서 형성된 뇌의 학습된 예측모델과, 실제 입력되는 감각(뇌 속의 전정기관이 뇌에게 보내는 운동감)의 불일치가 매우 쉽게 발생한다. 특히 사람은 시각적 정보에 상당수를 의존하기에, 헤드기어를 장착하는 것으로 가상세계에 진입하는 현대 VR 개념에서의 뇌는 급격한 실제 세계와 가상 세계간의 괴리를 처리하고 적응해야 한다.</p>
+<p>이는 VR 발전과 콘텐츠 몰입에 부정적인 영향을 미치는 요소이며, 괴리 즉 "멀미"를 정복하는 것은 VR 및 가상현실 분야에서 중요한 연구 주제 중 하나로 판단된다.</p>
+<h3 id="22-기존-연구의-한계와-trade-off">2.2 기존 연구의 한계와 Trade-off </h3>
+<p>기존 연구에서는 몰입감을 높이기 위해 추가적인 하드웨어를 사용하는 방법 등이 연구되어 왔다. 하지만 위와 같은 방식들은 결국 Trade-off 발생, 비용 증가, 효율성 저하 등과 같은 한계를 지니게 된다.</p>
+<p>VR 환경에서 발생하는 멀미는 시각 정보와 전정기관 정보 간의 불일치(sensory conflict) 때문에 발생하는 것으로 널리 알려져 있다. 현실 세계에서는 인간의 뇌가 오랜 경험을 통해 시각, 전정 감각, 촉각 사이의 관계를 학습하여 안정적인 예측 모델을 형성했다. 그러나 VR 환경에서는 이러한 예측 모델이 실제 감각 입력과 일치하지 않기 때문에 멀미, 어지러움, 피로감 등의 증상이 발생한다.</p>
+<ul>
+<li><strong>실재감(Presence) 감소:</strong> 정보를 인위적으로 제한하여 '그곳에 있다'는 느낌을 훼손합니다.</li>
+<li><strong>비용 및 공간적 제약:</strong> 고가의 하드웨어나 넓은 공간이 필요합니다.</li>
+<li><strong>범용성 결여:</strong> 콘텐츠 설계에 있어 강력한 제약 조건을 부과합니다.</li>
+</ul>
+<h3 id="23-강의-이론과의-연계-vr의-황금비golden-ratio">2.3 강의 이론과의 연계: VR의 황금비(Golden Ratio) </h3>
+<p>본 강의(W13)에서 다룬 <strong>'황금비(Golden Ratio)'</strong> 이론에 의하면, 몰입 강도(Immersion Intensity)와 멀미(Sickness) 사이의 최적 균형점을 찾는 것이 성공적인 VR 설계의 핵심입니다. 본 연구는 '적응 유도'를 통해 이 균형점 자체를 상향 이동시켜, 높은 실재감과 낮은 멀미를 동시에 달성하고자 합니다.</p>
+<hr>
+<h2 id="iii-이론적-근거-및-과학적-타당성-theoretical-basis">Ⅲ. 이론적 근거 및 과학적 타당성 (Theoretical Basis) </h2>
+<h3 id="31-뇌-가소성neuroplasticity의-적용">3.1 뇌 가소성(Neuroplasticity)의 적용 </h3>
+<p>인지과학 및 신경과학 연구에서는 인간의 뇌가 반복적인 감각 경험을 통해 새로운 환경에 적응할 수 있다는 <strong>'뇌 가소성(Neuroplasticity)'</strong> 개념이 제시되어 왔다. 예를 들어 선원이나 항해사는 반복적인 멀미 환경에 노출되면서 멀미에 대한 적응 능력이 향상되는 것으로 알려져 있다. 또한 **전정 재활 훈련(Vestibular Rehabilitation Therapy, VRT)**은 어지럼증 환자를 대상으로 반복적인 감각 자극을 제공하여 뇌가 새로운 감각 관계를 학습하도록 하는 치료 방법이다.</p>
+<p>본 연구는 위 언급된 '뇌 가소성'을 VR 환경에 적용하여 사용자가 가상 환경에 진입하는 초기 단계에서 감각 정보를 단계적으로 제공함으로써 새로운 감각 예측 모델을 형성하도록 유도하는 방법을 제안한다.</p>
+<h3 id="32-사이버-멀미-발생의-5대-주요-이론-w13-심화">3.2 사이버 멀미 발생의 5대 주요 이론 (W13 심화) </h3>
 <ol>
-<li><strong>동적 FOV 축소 (Vignetting):</strong> 효과적이지만 시야를 제한하여 몰입감을 심각하게 저해합니다.</li>
-<li><strong>고정된 기준 프레임 (Rest Frame):</strong> 특정 장르에만 국한되는 경향이 있습니다.</li>
-<li><strong>이동 방식의 제한 (Teleport):</strong> 게임플레이의 연속성을 끊습니다.<br>
-본 연구는 이러한 '사후 대증 요법'에서 벗어나, 뇌의 인지 구조를 활용하여 멀미의 원인 자체를 차단하는 <strong>'적응 유도(Induced Adaptation)'</strong> 패러다임을 제안합니다.</li>
+<li><strong>감각 충돌 이론 (Sensory Conflict Theory):</strong> 시각과 전정 감각의 불일치를 멀미의 원인으로 파악합니다.</li>
+<li><strong>독소 이론 (Toxin Theory):</strong> 감각 불일치를 중독 상태로 오인한 생존 방어 기제입니다.</li>
+<li><strong>자세 불안정 이론 (Postural Instability Theory):</strong> 새로운 환경에서의 자세 제어 전략 부재를 원인으로 봅니다.</li>
+<li><strong>안구운동 이론 (Eye Movement Theory):</strong> 부자연스러운 시선 유지로 인한 외안근 피로가 원인입니다.</li>
+<li><strong>Rest-frame 가설 (Prothero, 2003):</strong> 뇌가 정지해 있다고 믿는 기준 프레임의 충돌이 멀미를 유발합니다.</li>
 </ol>
-<h3 id="14-연구-목표-및-핵심-가설">1.4 연구 목표 및 핵심 가설 </h3>
-<p>본 연구의 목표는 사용자가 새로운 가상 공간에 진입할 때, 현실 세계의 감각 예측 모델을 일시적으로 약화시키고 가상 환경에 맞는 새로운 모델을 단계적으로 형성하도록 돕는 것입니다.</p>
+<h3 id="33-신체화embodiment와-실재감의-3요소-w11-연계">3.3 신체화(Embodiment)와 실재감의 3요소 (W11 연계) </h3>
+<p>실재감은 '보는 것' 이상의 '행동하는 것'에서 나옵니다.</p>
 <ul>
-<li><strong>핵심 가설:</strong> 비시각적 감각(청각, 촉각) 선행 자극 후 시각 정보를 점진적으로 고도화하는 3단계 적응 과정이 사용자의 가상 공간 예측 모델(Mental Model) 형성을 도와 감각 충돌을 최소화할 것이다.</li>
+<li><strong>Sense of Body Ownership (SoBO):</strong> 가상 신체의 소유감.</li>
+<li><strong>Sense of Agency (SoA):</strong> 가상 환경에서의 능동적 행동 통제감.</li>
+<li><strong>Sense of Self-Location (SoSL):</strong> 공간 내 자기 위치 인지.</li>
 </ul>
+<p>본 연구는 적응 과정 중에도 능동적 조작을 유도하여 이 3요소를 유지시키고, 이를 통해 실재감을 보호합니다.</p>
+<h3 id="34-피실험자-행동-표준화의-중요성">3.4 피실험자 행동 표준화의 중요성 </h3>
+<p>적응 속도는 피실험자가 적응 과정 중 <strong>어떤 행동을 하는가</strong>에 의해 결정됩니다. 따라서 모든 실험 조건에서 피실험자의 행동을 동일하게 통제하는 것이 변인 순수성의 핵심입니다. 본 연구는 각 Phase마다 피실험자에게 명확한 행동 지침을 VR 내 텍스트로 안내하여 이를 해결합니다.</p>
 <hr>
-<h2 id="ii-이론적-배경-및-강의-내용-연계-theoretical-background">Ⅱ. 이론적 배경 및 강의 내용 연계 (Theoretical Background) </h2>
-<p>본 연구는 인지심리학, 신경과학 및 강의자료(W01, W11, W13)의 핵심 이론들을 기반으로 설계되었습니다.</p>
-<h3 id="21-사이버-멀미-발생의-5대-주요-이론-w13">2.1 사이버 멀미 발생의 5대 주요 이론 (W13) </h3>
-<ol>
-<li><strong>감각 충돌 이론 (Sensory Conflict Theory):</strong> 현재 입력되는 시각 정보와 전정기관 정보의 불일치, 그리고 과거 경험 기반의 예측치와의 괴리가 멀미를 유발합니다.</li>
-<li><strong>독소 이론 (Toxin/Evolutionary Theory):</strong> 뇌가 감각 불일치를 신경 독소 섭취로 오인하여 구토와 발한 등의 생존 방어 기제를 작동시킵니다.</li>
-<li><strong>자세 불안정 이론 (Postural Instability Theory):</strong> 새로운 환경에서 신체 중심을 잡는 전략을 습득하지 못한 상태가 멀미의 근본 원인입니다.</li>
-<li><strong>안구운동 이론 (Eye Movement Theory):</strong> 부자연스러운 시야 안정화 과정에서 발생하는 안구 피로가 미주신경을 자극합니다.</li>
-<li><strong>Rest-frame 가설:</strong> 뇌가 정지해 있다고 믿는 기준 프레임(Rest Frame)의 충돌이 멀미를 유발합니다.</li>
-</ol>
-<h3 id="22-뇌-가소성neuroplasticity과-전정-재활-훈련vrt">2.2 뇌 가소성(Neuroplasticity)과 전정 재활 훈련(VRT) </h3>
-<p>인간의 뇌는 새로운 자극에 적응하는 <strong>뇌 가소성</strong>을 가집니다. 항해사들이 배의 흔들림에 적응하는 현상이나, 어지럼증 환자를 위한 **전정 재활 훈련(VRT)**은 반복 노출을 통해 뇌가 새로운 감각 관계를 학습함을 보여줍니다. 본 연구의 3단계 적응은 일종의 'VR용 VRT' 과정이라 할 수 있습니다.</p>
-<h3 id="23-예측-코딩predictive-coding과-멘탈-모델">2.3 예측 코딩(Predictive Coding)과 멘탈 모델 </h3>
-<p>뇌는 외부 세계에 대한 '예측 모델'을 끊임없이 업데이트하는 예측 엔진입니다. VR 진입 시 발생하는 예측 오류(Prediction Error)를 단계적으로 분산시켜 처리하게 함으로써 인지적 부하를 낮추는 것이 본 기법의 핵심입니다.</p>
-<h3 id="24-실재감의-3요소와-신체화embodiment-이론-w11">2.4 실재감의 3요소와 신체화(Embodiment) 이론 (W11) </h3>
-<p>실재감(Presence)은 단순히 시각적 화질이 아닌, 가상 신체와의 일체감에서 나옵니다.</p>
-<ol>
-<li><strong>Sense of Body Ownership (SoBO):</strong> 가상의 몸을 내 것으로 인지하는 감각.</li>
-<li><strong>Sense of Agency (SoA):</strong> 내 의지가 가상 세계의 결과를 만든다는 감각.</li>
-<li><strong>Sense of Self-Location (SoSL):</strong> 공간 내 나의 위치에 대한 확신.<br>
-본 연구는 Aim Trainer의 <strong>능동적 상호작용</strong>을 통해 SoA와 SoBO를 극대화하여 멀미 저감 상황에서도 높은 실재감을 유지하도록 설계되었습니다.</li>
-</ol>
-<hr>
-<h2 id="iii-시스템-설계-및-개발-프로세스-system-design--scene-flow">Ⅲ. 시스템 설계 및 개발 프로세스 (System Design &amp; Scene Flow) </h2>
-<p>사용자의 실제 체험 흐름(User Journey)에 따라 시스템을 단계별로 구축하였습니다.</p>
-<h3 id="31-로비-시스템-및-실험-조건-설정-lobby--setup">3.1 로비 시스템 및 실험 조건 설정 (Lobby &amp; Setup) </h3>
-<ul>
-<li><strong>기능:</strong> 사용자가 처음 진입하여 조작법을 익히고 실험 조건을 선택하는 공간입니다.</li>
-<li><strong>상호작용:</strong> 'Condition A (즉시 진입)'와 'Condition C (교차 감각 적응)' 버튼을 통해 실험군/대조군 분기 처리가 이루어집니다.<br>
-<em>(이 위치에 <strong>Lobby 화면 스크린샷</strong> 배치)</em></li>
-</ul>
-<h3 id="32-시나리오-안내-및-공간-프라이밍-scenario">3.2 시나리오 안내 및 공간 프라이밍 (Scenario) </h3>
-<ul>
-<li><strong>기능:</strong> 본격적인 실험 전, 맵의 전경 사진이나 3D 프리뷰를 10초간 노출합니다.</li>
-<li><strong>목적:</strong> 뇌가 공간의 물리적 규모(Scale)를 미리 '예측'하게 하는 힌트를 제공합니다.<br>
-<em>(이 위치에 <strong>시나리오 및 맵 전경 사진</strong> 배치)</em></li>
-</ul>
-<h3 id="33-핵심-기법-3단계-점진적-적응-3-phase-adaptation-sequence">3.3 핵심 기법: 3단계 점진적 적응 (3-Phase Adaptation Sequence) </h3>
-<h4 id="phase-1-비시각적-기반-형성-blackout-phase">Phase 1: 비시각적 기반 형성 (Blackout Phase) </h4>
-<ul>
-<li><strong>구현:</strong> <code>CanvasGroup</code> Overlay를 통한 100% 암흑 처리.</li>
-<li><strong>자극:</strong> 심박수 주기(60-70 BPM)의 컨트롤러 햅틱 + 정면 방향의 공간 음향(Beacon).</li>
-<li><strong>효과:</strong> 시각 자극이 전무한 상태에서 뇌가 '소리'와 '진동'만으로 공간의 뼈대(Rest Frame)를 형성하게 유도합니다.<br>
-<em>(이 위치에 <strong>Phase 1 암흑/햅틱 도식 사진</strong> 배치)</em></li>
-</ul>
-<h4 id="phase-2-저정보-시각-매칭-outline-phase">Phase 2: 저정보 시각 매칭 (Outline Phase) </h4>
-<ul>
-<li><strong>구현:</strong> 글로벌 셰이더 오버라이드를 통한 실시간 윤곽선(Outline) 렌더링.</li>
-<li><strong>효과:</strong> 어둠이 걷히고 사물의 뼈대만 노출됩니다. 사용자는 Phase 1에서 상상했던 공간 구조와 실제 시각적 배치를 동기화하며 예측 모델을 업데이트합니다.<br>
-<em>(이 위치에 <strong>Phase 2 윤곽선 렌더링 사진</strong> 배치)</em></li>
-</ul>
-<h4 id="phase-3-고정보-시각-동기화-progressive-lod-phase">Phase 3: 고정보 시각 동기화 (Progressive LOD Phase) </h4>
-<ul>
-<li><strong>구현:</strong> Shader Visual Fidelity 파라미터 제어를 통한 텍스처/광원/LOD 점진적 상향.</li>
-<li><strong>효과:</strong> 최종적인 풀 렌더링 환경에 도달합니다. 인지적 단절 없이 부드럽게 고품질 환경에 동기화됩니다.<br>
-<em>(이 위치에 <strong>Phase 3 점진적 재질 복구 사진</strong> 배치)</em></li>
-</ul>
-<h3 id="34-메인-측정-콘텐츠-cqb-aim-shooter">3.4 메인 측정 콘텐츠: CQB Aim Shooter </h3>
-<ul>
-<li><strong>장르:</strong> 실내 근접 전투(CQB) 배경의 FPS Aim Trainer.</li>
-<li><strong>변인 통제:</strong> 제자리 회전 조준만 허용하여 이동 멀미 변수를 완벽히 통제했습니다.</li>
-<li><strong>데이터 측정:</strong> 사방에서 나타나는 타겟을 사격하며 명중률, 오발률, 반응 시간(ms)을 측정합니다.<br>
-<em>(이 위치에 <strong>Aim Shooter 플레이 사진</strong> 배치)</em></li>
-</ul>
-<hr>
-<h2 id="iv-기술적-구현-및-최적화-상세-technical-implementation">Ⅳ. 기술적 구현 및 최적화 상세 (Technical Implementation) </h2>
-<p>Unity 6 (URP) 환경에서의 고급 기술 구현 사항입니다.</p>
-<h3 id="41-global-adaptation-effect-시스템">4.1 Global Adaptation Effect 시스템 </h3>
-<p>씬 내의 수백 개의 개별 오브젝트의 재질을 단일 매니저로 제어하는 시스템입니다.</p>
-<ul>
-<li><strong>Renderer Caching:</strong> <code>Awake</code> 단계에서 모든 렌더러 상태를 캐싱하여 런타임 탐색 비용을 제거했습니다.</li>
-<li><strong>Material Property Block (MPB):</strong> 재질 자체를 인스턴싱하지 않고 GPU 메모리 단의 속성값만 일괄 업데이트하여 <strong>드로우콜(Draw Call)을 획기적으로 절약</strong>하고 90FPS를 사수했습니다.</li>
-</ul>
-<h3 id="42-haptic-및-spatial-audio-동기화">4.2 Haptic 및 Spatial Audio 동기화 </h3>
-<ul>
-<li>XR Interaction Toolkit을 통해 진동의 진폭과 주기를 정밀 제어하였습니다.</li>
-<li>Unity Audio Spatializer를 적용하여 사용자의 고개 회전에 따른 완벽한 방향성을 구현했습니다.</li>
-</ul>
-<h3 id="43-experiment-data-logger-아키텍처">4.3 Experiment Data Logger 아키텍처 </h3>
-<ul>
-<li>비동기 StreamWriter를 사용하여 게임플레이 프레임에 영향을 주지 않고 모든 행동 데이터를 CSV로 실시간 기록합니다.</li>
-<li>기록 항목: 타임스탬프, 이벤트 타입, 타겟 좌표, 반응 속도, HMD 회전 데이터.</li>
-</ul>
-<hr>
-<h2 id="v-진행-현황-및-중간-성과-progress--deliverables">Ⅴ. 진행 현황 및 중간 성과 (Progress &amp; Deliverables) </h2>
-<p>본 프로젝트는 현재 평가 기준 대비 <strong>95% 이상의 개발을 완료</strong>한 상태입니다.</p>
-<h3 id="51-전체-개발-진척도-요약">5.1 전체 개발 진척도 요약 </h3>
+<h2 id="iv-실험-설계-experiment-design">Ⅳ. 실험 설계 (Experiment Design) </h2>
+<h3 id="41-실험-설계-방식-집단-간-설계-between-subjects-design">4.1 실험 설계 방식: 집단 간 설계 (Between-Subjects Design) </h3>
+<p>교수 조언에 따라 실험 설계를 **집단 간 설계(Between-Subjects Design)**로 확정하였습니다. 한 피실험자가 두 조건을 모두 경험하는 경우 순서 효과(Carryover Effect) 및 학습 효과(Learning Effect)가 발생하여 데이터 순수성이 훼손될 수 있기 때문입니다.</p>
 <table>
 <thead>
 <tr>
 <th style="text-align:left">구분</th>
-<th style="text-align:left">세부 항목</th>
-<th style="text-align:left">완료율</th>
-<th style="text-align:left">성과물</th>
+<th style="text-align:left">1군 (대조군, Control)</th>
+<th style="text-align:left">2군 (실험군, Adaptation)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><strong>시스템</strong></td>
-<td style="text-align:left">로비, 전환 시스템, 렌더링 엔진</td>
-<td style="text-align:left"><strong>100%</strong></td>
-<td style="text-align:left">Unity 6 Project</td>
+<td style="text-align:left"><strong>적응 절차</strong></td>
+<td style="text-align:left">없음</td>
+<td style="text-align:left">3단계 적응 시퀀스 적용</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>콘텐츠</strong></td>
-<td style="text-align:left">Aim Shooter 로직, 타겟 알고리즘</td>
-<td style="text-align:left"><strong>100%</strong></td>
-<td style="text-align:left">핵심 게임플레이 모듈</td>
+<td style="text-align:left"><strong>AimTrainer</strong></td>
+<td style="text-align:left">즉시 시작</td>
+<td style="text-align:left">적응 완료 후 시작</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>데이터</strong></td>
-<td style="text-align:left">CSV 로거, 설문 UI 시스템</td>
-<td style="text-align:left"><strong>100%</strong></td>
-<td style="text-align:left">데이터 파이프라인</td>
+<td style="text-align:left"><strong>측정 조건명</strong></td>
+<td style="text-align:left"><code>Control</code></td>
+<td style="text-align:left"><code>PostAdaptation</code></td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>실험</strong></td>
-<td style="text-align:left">파일럿 테스트, IRB 프로토콜 확립</td>
-<td style="text-align:left"><strong>95%</strong></td>
-<td style="text-align:left">본 실험 수행 중</td>
+<td style="text-align:left"><strong>CSV 파일명</strong></td>
+<td style="text-align:left"><code>VR_Experiment_Log_Control_...csv</code></td>
+<td style="text-align:left"><code>VR_Experiment_Log_PostAdaptation_...csv</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="52-구현-결과물-확인">5.2 구현 결과물 확인 </h3>
+<blockquote>
+<p><strong>개인 편차 통제:</strong> 개인마다 멀미 민감도가 다를 수 있으나, VRSQ 등 VR 표준화 설문이 이를 충분히 보정합니다.</p>
+</blockquote>
+<h3 id="42-독립변인-및-종속변인">4.2 독립변인 및 종속변인 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">구분</th>
+<th style="text-align:left">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>독립변인</strong></td>
+<td style="text-align:left">점진적 시각 동기화 적응 절차 유무 (1군 vs. 2군)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>종속변인 1</strong></td>
+<td style="text-align:left">사이버 멀미 정도 (VRSQ / SSQ 점수)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>종속변인 2</strong></td>
+<td style="text-align:left">AimTrainer 수행 능력 (명중률, 평균 반응시간)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>종속변인 3</strong></td>
+<td style="text-align:left">실재감 (SUS 설문)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-콘텐츠-선정-근거-cqb-fps-aim-trainer">4.3 콘텐츠 선정 근거: CQB FPS Aim Trainer </h3>
+<p>교수 조언에 따라 콘텐츠를 <strong>단일 콘텐츠로 고정</strong>하였습니다.</p>
 <ul>
-<li><strong>동영상:</strong> [YouTube 링크 삽입 예정]</li>
-<li><strong>결과:</strong> 목표 대비 70% 이상의 환경 구성을 완벽히 마쳤으므로 '진행 현황' 만점 확보 가능.</li>
+<li><strong>수직 회전 운동의 멀미 유발 효과 활용:</strong> 수직 회전이 멀미를 가장 많이 유발한다는 점을 활용하여, 상하좌우 랜덤 타겟팅을 통해 균일한 멀미 유발 환경을 조성합니다.</li>
+<li><strong>이동 변인 통제:</strong> 제자리 조준 방식으로 이동 멀미 변수를 완전 제거합니다.</li>
+<li><strong>행동 표준화:</strong> 모든 피실험자가 동일한 행동(조준 → 발사)을 반복하여 적응 과정에서의 행동 변인을 통제합니다.</li>
+<li><strong>정량 측정 가능:</strong> 명중률, 반응시간이 CSV로 자동 기록됩니다.</li>
 </ul>
 <hr>
-<h2 id="vi-문제점-및-해결-방안-issues--solutions">Ⅵ. 문제점 및 해결 방안 (Issues &amp; Solutions) </h2>
-<p>프로젝트 수행 중 마주한 핵심 과제들에 대한 합리적 해결 과정입니다.</p>
-<h3 id="61-기술적-한계-셰이더-기반-암흑-처리의-불완전성">6.1 기술적 한계: 셰이더 기반 암흑 처리의 불완전성 </h3>
+<h2 id="v-시스템-설계-및-구현-현황-implementation">Ⅴ. 시스템 설계 및 구현 현황 (Implementation) </h2>
+<blockquote>
+<p><strong>현재 개발 상태:</strong> 실제 피실험자를 대상으로 한 실험 환경 구축 이전 단계로, 핵심 기능 구현을 우선 완료하였습니다. 적응 시퀀스의 기술적 동작(암흑 처리 → 엣지 뷰 → 풀 렌더링)과 실험 분기 아키텍처는 모두 검증되었으며, 향후 몰입도 강화 시나리오 및 콘텐츠 고도화를 진행할 예정입니다.</p>
+</blockquote>
+<h3 id="51-전체-씬-흐름-scene-flow">5.1 전체 씬 흐름 (Scene Flow) </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>LobbyScene (실험자가 조작)
+  └─ 피실험자 번호 입력
+  └─ 실험 그룹 선택 (1군 / 2군)
+  └─ "실험 시작" 버튼
+      └─ BasicScene 로드
+          ├─ 1군 (대조군): 즉시 AimTrainer 시작
+          └─ 2군 (실험군): Phase1 → Phase2 → Phase3 → AimTrainer
+</code></pre><h3 id="52-lobbyscene-실험-조건-선택-ui">5.2 LobbyScene: 실험 조건 선택 UI </h3>
+<p>피실험자가 HMD를 착용하기 전, 실험자가 로비에서 조건을 선택합니다. XR 컨트롤러 레이캐스트로 버튼 클릭이 가능한 World Space Canvas UI를 구현하였습니다.</p>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%A1%9C%EB%B9%84.png" alt="Lobby"></p>
 <ul>
-<li><strong>문제:</strong> 전역 조명을 꺼도 Skybox나 Emissive(발광) 재질이 희미하게 남아 완벽한 암흑(Phase 1) 구현에 실패했습니다.</li>
-<li><strong>해결:</strong> HMD 렌즈 전면을 덮는 <strong>최상단 CanvasGroup 오버레이</strong>를 배치하고 스크립트에서 알파값을 제어함으로써 물리적으로 완벽한 시각 차단 환경을 구축했습니다.</li>
+<li><strong>피실험자 번호 입력 필드:</strong> CSV 로그 파일에 ID가 자동 포함됩니다.</li>
+<li><strong>1군/2군 선택 버튼:</strong> 선택 즉시 확인 패널로 전환되어 오조작을 방지합니다.</li>
+<li><strong>씬 전환:</strong> <code>ExperimentCondition</code> static 클래스가 씬 전환 간 선택된 그룹 정보를 유지합니다.</li>
 </ul>
-<h3 id="62-성능-이슈-실시간-재질-교체-시의-프레임-드랍">6.2 성능 이슈: 실시간 재질 교체 시의 프레임 드랍 </h3>
+<p>아래는 로비 화면과 대조군/실험군 조건 비교 스크린샷입니다.</p>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%8C%80%EC%A1%B0%EA%B5%B0.png" alt="대조군 — AimTrainer 전경"></p>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%B9%84%EA%B5%90%EA%B5%B0.png" alt="Phase 2 비교군 — 적응 효과 비교"></p>
+<h3 id="53-피실험자-행동-통제-시스템-instructionui">5.3 피실험자 행동 통제 시스템 (InstructionUI) </h3>
+<p>적응 속도가 피실험자의 행동에 의해 결정되므로, 각 Phase 진입 시 VR 공간 내에서 부유하는 안내 텍스트를 표시하여 <strong>모든 피실험자의 행동을 동일하게 통제</strong>합니다. 텍스트 패널은 카메라 전방을 부드럽게 추적하여 항상 시야 내에 위치합니다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Phase</th>
+<th style="text-align:left">1군 (대조군)</th>
+<th style="text-align:left">2군 (실험군)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AimTrainer 시작</td>
+<td style="text-align:left">"조준 훈련을 시작합니다. 빨간 구체 타겟이 나타나면 컨트롤러를 조준해 트리거를 당기세요."</td>
+<td style="text-align:left">"적응 과정이 완료되었습니다. 조준 훈련을 시작합니다."</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 1</td>
+<td style="text-align:left">(해당 없음)</td>
+<td style="text-align:left">"편안히 서서 정면을 바라봐 주세요. 소리와 진동을 느끼며 공간에 집중하세요."</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 2</td>
+<td style="text-align:left">(해당 없음)</td>
+<td style="text-align:left">"천천히 고개를 돌려 주변 공간을 살펴보세요."</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 3</td>
+<td style="text-align:left">(해당 없음)</td>
+<td style="text-align:left">"주변을 자연스럽게 둘러보세요. 잠시 후 조준 훈련이 시작됩니다."</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-단계별-동기화-시퀀스-3-phase-adaptation">5.4 단계별 동기화 시퀀스 (3-Phase Adaptation) </h3>
+<h4 id="phase-1-비시각적-공간-인식-단계-blackout-30초--기능-구현-완료--시나리오-고도화-예정">Phase 1: 비시각적 공간 인식 단계 (Blackout, 30초) — <em>기능 구현 완료 / 시나리오 고도화 예정</em> </h4>
+<p>사용자는 거의 시각 정보가 없는 어두운 환경에서 VR을 시작한다. 이 단계에서는 아래 요소만을 사용하며, 사용자는 촉각과 청각을 기반으로 공간 구조를 추론하게 된다.</p>
 <ul>
-<li><strong>문제:</strong> 수백 개의 오브젝트 재질 속성을 실시간으로 변경할 때 발생하는 CPU 스파이크가 오히려 멀미를 유발했습니다.</li>
-<li><strong>해결:</strong> 렌더러 상태를 사전에 캐싱하고 GPU 인스턴싱 최적화를 통해 안정적인 90FPS 환경을 사수했습니다.</li>
+<li><strong>구현 완료:</strong> <code>CanvasGroup</code> Overlay를 통한 100% 암흑 처리. 카메라 배경을 Solid Black으로 전환하여 스카이박스까지 완전 차단.</li>
+<li><strong>구현 완료 — 컨트롤러 햅틱 진동:</strong> 심박수 리듬 주기(1.5초)의 햅틱 피드백으로 신체 존재감 유지.</li>
+<li><strong>구현 완료 — 공간 음향:</strong> 앰비언트 오디오 소스를 통한 배경음 재생.</li>
+<li><strong>구현 완료 — 상호작용 요소:</strong> VR 내 안내 텍스트(InstructionUI)를 통한 행동 지침 제공.</li>
+<li><strong>향후 고도화 계획:</strong> 거리 기반 3D 공간음(발소리, 환경음)과 시각 차단 단계에서 파티클 적용 등 공간 구조 추론에 도움을 주는 기법 적용 검토. 피실험자가 어둠 속에서도 공간을 적극적으로 인지하도록 유도하는 구체적 시나리오 구조화 예정.</li>
 </ul>
-<h3 id="63-실험적-변인-개인별-멀미-감수성-편차">6.3 실험적 변인: 개인별 멀미 감수성 편차 </h3>
+<h4 id="phase-2-저정보량-시각-동기화-단계-outline-30초--기능-구현-완료--시나리오-고도화-예정">Phase 2: 저정보량 시각 동기화 단계 (Outline, 30초) — <em>기능 구현 완료 / 시나리오 고도화 예정</em> </h4>
+<p>다음 단계에서는 와이어프레임, 윤곽선, 모자이크 형태의 시각 정보를 제공한다. 이 과정에서 사용자는 기존에 형성한 공간 인식과 시각 정보를 매칭하게 된다.</p>
 <ul>
-<li><strong>문제:</strong> 평소 멀미를 느끼는 정도의 차이가 기법의 효과를 가릴 위험이 있었습니다.</li>
-<li><strong>해결:</strong> **집단 내 설계(Within-subjects Design)**를 채택하고, ITQ(몰입 성향) 설문을 통제 변수로 활용하여 데이터의 신뢰도를 확보했습니다.</li>
+<li><strong>구현 완료:</strong> URP Renderer Feature와 글로벌 셰이더(<code>_GlobalVisualFidelity</code>)를 통해 씬 내 모든 오브젝트를 윤곽선(엣지) 뷰로 전환하는 기능을 성공적으로 구현했습니다.</li>
+</ul>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%B9%84%EA%B5%90%EA%B5%B01png.png" alt="Phase 2 Outline — 엣지만 표시되는 윤곽선 뷰"></p>
+<ul>
+<li><strong>향후 고도화 계획:</strong> 단순히 엣지가 보이는 것에 그치지 않고, 피실험자가 윤곽선만으로도 공간과 오브젝트를 적극적으로 파악하도록 유도하는 시나리오(예: 특정 오브젝트 응시 유도, 공간 크기 탐색 지시)를 구조화할 계획입니다.</li>
+</ul>
+<h4 id="phase-3-점진적-시각-확장-단계-30초--기능-구현-완료">Phase 3: 점진적 시각 확장 단계 (30초) — <em>기능 구현 완료</em> </h4>
+<p>마지막 단계에서는 해상도, 텍스처, 광원, 오브젝트 디테일 등을 점진적으로 증가시켜 완전한 VR 환경으로 전환한다.</p>
+<ul>
+<li><strong>구현 완료:</strong> <code>_GlobalVisualFidelity</code> 파라미터를 0.3→1.0으로 선형 보간하여 텍스처·광원·색상이 점진적으로 복원되는 풀 렌더링 전환 기능을 구현했습니다. VR 콘텐츠에서 점진적 시각 동기화를 위한 전용 글로벌 셰이더 파라미터 제어 시스템으로 구현하였습니다.</li>
+</ul>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%B9%84%EA%B5%90%EA%B5%B02png.png" alt="Phase 3 — 풀 렌더링으로 점진 전환"></p>
+<h4 id="aimtrainer-test-120초--기능-구현-완료--콘텐츠-고도화-예정">AimTrainer Test (120초) — <em>기능 구현 완료 / 콘텐츠 고도화 예정</em> </h4>
+<ul>
+<li><strong>구현 완료:</strong> 랜덤 위치에서 출현하는 구체 타겟을 조준·사격하는 기본 콘텐츠와 CSV 데이터 로깅이 완성되어 있습니다.</li>
+</ul>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%8C%80%EC%A1%B0%EA%B5%B0%20%EC%A1%B0%EC%A4%80%ED%9B%88%EB%A0%A8%201.png" alt="AimTrainer — 조준 훈련 1"></p>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%8C%80%EC%A1%B0%EA%B5%B0%20%EC%A1%B0%EC%A4%80%ED%9B%88%EB%A0%A82.png" alt="AimTrainer — 조준 훈련 2"></p>
+<p><img src="%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%20%EC%82%AC%EC%A7%84/%EB%8C%80%EC%A1%B0%EA%B5%B0%20%EC%A1%B0%EC%A4%80%ED%9B%88%EB%A0%A83.png" alt="AimTrainer — 조준 훈련 3"></p>
+<ul>
+<li><strong>향후 고도화 계획:</strong> 현재의 구체(Sphere) 타겟을 CQB(Close Quarters Battle) 방식의 인체형 적 캐릭터 메시로 교체하고, 실내 방 구조물 내에서 적이 등장하는 형태로 콘텐츠를 고도화할 예정입니다. 이를 위해 적응 셰이더가 캐릭터 메시에도 동일하게 적용되도록(Phase 2에서는 인체 실루엣, Phase 3에서는 완전한 캐릭터 텍스처) 시스템을 확장할 계획입니다.</li>
 </ul>
 <hr>
-<h2 id="vii-시험-및-실험-계획-full-validation-protocol">Ⅶ. 시험 및 실험 계획 (Full Validation Protocol) </h2>
-<h3 id="71-피실험자-선정-및-표본">7.1 피실험자 선정 및 표본 </h3>
+<h2 id="vi-기술적-구현-상세-technical-deep-dive">Ⅵ. 기술적 구현 상세 (Technical Deep Dive) </h2>
+<h3 id="61-global-adaptation-effect-시스템">6.1 Global Adaptation Effect 시스템 </h3>
+<p>씬 내 모든 렌더러의 재질을 일괄 교체하는 시스템입니다.</p>
 <ul>
-<li>대학생 16~20명을 모집하며, 성별 및 VR 경험 유무를 균형 있게 배정합니다.</li>
-<li>폐소공포증 및 전정기관 질환자는 사전에 스크리닝하여 제외합니다.</li>
+<li><strong>Renderer Caching:</strong> 씬 로드 시 <code>FindObjectsByType&lt;Renderer&gt;</code>로 대상 렌더러를 구조체 리스트에 사전 저장하여 런타임 탐색 부하를 제거합니다.</li>
+<li><strong>Material 복사 및 복원:</strong> 원본 재질을 저장해두고 실험 종료 시 <code>RestoreEffect()</code>로 완전 복원합니다.</li>
+<li><strong>전역 셰이더 파라미터:</strong> <code>Shader.SetGlobalFloat("_GlobalVisualFidelity", value)</code>로 모든 적응 셰이더가 동시에 갱신됩니다.</li>
 </ul>
-<h3 id="72-실험-변인-independentdependent-variables">7.2 실험 변인 (Independent/Dependent Variables) </h3>
+<h3 id="62-실험-분기-아키텍처">6.2 실험 분기 아키텍처 </h3>
+<p>씬 전환 후에도 실험 조건을 유지하기 위해 C# static 클래스를 활용합니다. Unity에서 static 필드는 씬 전환 후에도 메모리에 유지됩니다.</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>ExperimentCondition (static)
+  └── SelectedGroup: Control | Adaptation
+  └── ParticipantID: string
+  └── GetConditionName(): "Control" | "PostAdaptation"
+
+VRAdaptationManager.Start()
+  └── isControl? → ControlSequence()   (1군: fidelity=1.0, 즉시 AimTrainer)
+               → AdaptationSequence()  (2군: Phase1→2→3→AimTrainer)
+</code></pre><h3 id="63-데이터-로깅-파이프라인">6.3 데이터 로깅 파이프라인 </h3>
 <ul>
-<li><strong>독립 변인:</strong> 적응 단계의 처리 수준 (대조군 vs 시각 적응군 vs 교차 감각 적응군).</li>
-<li><strong>종속 변인:</strong>
-<ol>
-<li><strong>VRSQ/SSQ:</strong> 멀미 강도 측정.</li>
-<li><strong>SUS (Presence):</strong> 실재감 측정.</li>
-<li><strong>행동 데이터:</strong> 명중률 및 반응 시간(수행 능력).</li>
-</ol>
-</li>
+<li>데이터 기록 시의 멈춤(Hang)은 멀미를 유발합니다. 이를 방지하기 위해 버퍼링(<code>List&lt;string&gt;</code>) 후 일괄 기록(<code>File.AppendText</code>) 방식을 채택하여 실시간 성능 영향을 최소화했습니다.</li>
+<li>조건명이 CSV 파일명에 자동 포함되어 데이터 분류가 용이합니다.</li>
 </ul>
-<h3 id="73-실험-절차-detailed-procedure">7.3 실험 절차 (Detailed Procedure) </h3>
-<ol>
-<li><strong>사전 조사 (10분):</strong> ITQ 및 베이스라인 SSQ 작성.</li>
-<li><strong>튜토리얼 (5분):</strong> 기본 조작 숙지.</li>
-<li><strong>조건 수행 (라틴 방격법 적용):</strong> 조건 수행 -&gt; 사후 설문(VRSQ, SUS) -&gt; 회복 휴식을 3회 반복.</li>
-<li><strong>최종 분석:</strong> 수집된 CSV 및 설문 데이터를 반복측정 분산분석(Repeated Measures ANOVA)으로 검증.</li>
-</ol>
+<p><strong>기록 항목:</strong> <code>Timestamp, Condition, Event(Hit/Miss/Spawn), ReactionTime_ms, TargetPos(X/Y/Z), HeadRot(X/Y/Z)</code></p>
 <hr>
-<h2 id="viii-역할-분담-및-일정-role--schedule">Ⅷ. 역할 분담 및 일정 (Role &amp; Schedule) </h2>
+<h2 id="vii-문제점-및-해결-방안-issues--solutions">Ⅶ. 문제점 및 해결 방안 (Issues &amp; Solutions) </h2>
+<h3 id="71-셰이더-기반-시각-차단의-기술적-구멍">7.1 셰이더 기반 시각 차단의 기술적 구멍 </h3>
+<ul>
+<li><strong>문제:</strong> 조명을 꺼도 발광(Emissive) 재질이나 Skybox가 가려지지 않아 완벽한 암흑 환경 조성에 실패했습니다.</li>
+<li><strong>해결:</strong> HMD 렌즈 전면을 덮는 **최상단 UI Canvas(Black Overlay)**를 카메라 자식으로 배치하고 <code>CanvasGroup.alpha</code>를 스크립트로 제어함으로써, 스카이박스와 발광 재질을 포함한 완벽한 시각 차단을 실현했습니다. 동시에 <code>Camera.clearFlags</code>를 <code>SolidColor(Black)</code>으로 전환하여 이중 방어합니다.</li>
+</ul>
+<h3 id="72-실시간-재질-교체-시의-프레임-드랍">7.2 실시간 재질 교체 시의 프레임 드랍 </h3>
+<ul>
+<li><strong>문제:</strong> 셰이더 전환 시 발생하는 CPU 스파이크가 멀미 유발 요인이 되었습니다.</li>
+<li><strong>해결:</strong> 씬 시작 시 렌더러 상태를 사전 캐싱하고, 런타임에는 <code>Shader.SetGlobalFloat()</code> 단 하나의 API 호출로 모든 오브젝트를 동시 갱신하여 렌더링 지연을 방어했습니다.</li>
+</ul>
+<h3 id="73-실험-조건-오염-방지-행동-표준화">7.3 실험 조건 오염 방지 (행동 표준화) </h3>
+<ul>
+<li><strong>문제:</strong> 적응 과정에서 피실험자마다 다른 행동(가만히 서있기 vs. 이리저리 움직이기)이 적응 속도에 영향을 주어 변인이 오염될 수 있습니다.</li>
+<li><strong>해결:</strong> 각 Phase 진입 시 VR 내부에서 부유하는 안내 텍스트(InstructionUI)를 통해 구체적인 행동 지침을 제시합니다. 패널은 카메라를 부드럽게 추적하며 항상 시야 내에 위치합니다.</li>
+</ul>
+<h3 id="74-대조군-초기-화면-암흑-버그">7.4 대조군 초기 화면 암흑 버그 </h3>
+<ul>
+<li><strong>문제:</strong> <code>GlobalAdaptationEffect.Awake()</code>가 먼저 실행되어 <code>_GlobalVisualFidelity=0</code> 상태의 적응 셰이더가 적용된 후 한 프레임이 렌더링되어 대조군에서도 순간적으로 검정 화면이 보였습니다.</li>
+<li><strong>해결:</strong> <code>VRAdaptationManager</code>에 <code>[DefaultExecutionOrder(-100)]</code>을 부여하여 Awake 실행 순서를 GlobalAdaptationEffect보다 먼저 보장하고, Awake 단계에서 대조군의 <code>_GlobalVisualFidelity</code>를 1.0으로 선제 설정합니다.</li>
+</ul>
+<hr>
+<h2 id="viii-진행-현황-current-progress">Ⅷ. 진행 현황 (Current Progress) </h2>
+<h3 id="81-개발-완료-항목">8.1 개발 완료 항목 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">항목</th>
+<th style="text-align:center">완료도</th>
+<th style="text-align:left">비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">URP 적응 셰이더 — Phase 2 엣지 뷰</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">씬 전체 오브젝트 윤곽선 전환</td>
+</tr>
+<tr>
+<td style="text-align:left">URP 적응 셰이더 — Phase 3 풀 렌더링</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">fidelity 0.3→1.0 선형 보간</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 관리자 (VRAdaptationManager)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">3단계 시퀀스 + 대조군 분기</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 1 암흑 처리 (BlackoutPanel)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">스카이박스 포함 완전 차단</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 1 햅틱 피드백</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">심박수 리듬 진동</td>
+</tr>
+<tr>
+<td style="text-align:left">LobbyScene UI (실험 조건 선택)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">World Space Canvas, XR 컨트롤러 조작</td>
+</tr>
+<tr>
+<td style="text-align:left">실험 분기 시스템 (Between-Subjects)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">1군/2군 분기, CSV 파일명 자동 분류</td>
+</tr>
+<tr>
+<td style="text-align:left">피실험자 행동 통제 InstructionUI</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">Phase별 안내 텍스트, 카메라 추적</td>
+</tr>
+<tr>
+<td style="text-align:left">AimTrainer (타겟 스폰 + HUD)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">랜덤 스폰, 명중률/반응시간 측정</td>
+</tr>
+<tr>
+<td style="text-align:left">데이터 로깅 (CSV)</td>
+<td style="text-align:center">✅ 완료</td>
+<td style="text-align:left">Hit/Miss/Spawn 이벤트 자동 기록</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-향후-고도화-과제">8.2 향후 고도화 과제 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">항목</th>
+<th style="text-align:left">내용</th>
+<th style="text-align:left">목표 시기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Phase 1 몰입 시나리오 강화</td>
+<td style="text-align:left">거리 기반 3D 공간음 추가, 어둠 속 공간 탐색 유도 절차 구조화</td>
+<td style="text-align:left">5월 4주차</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 2 몰입 시나리오 강화</td>
+<td style="text-align:left">윤곽선만으로 공간 파악하도록 유도하는 행동 시나리오 설계</td>
+<td style="text-align:left">5월 4주차</td>
+</tr>
+<tr>
+<td style="text-align:left">CQB 적 캐릭터 메시 교체</td>
+<td style="text-align:left">구체 타겟 → 인체형 메시, Phase 2에서 실루엣으로도 표현되도록 셰이더 확장</td>
+<td style="text-align:left">5월 4주차</td>
+</tr>
+<tr>
+<td style="text-align:left">SSQ/VRSQ 설문 시스템</td>
+<td style="text-align:left">실험 전후 설문 자동 진행 및 결과 CSV 병합</td>
+<td style="text-align:left">5월 4주차</td>
+</tr>
+<tr>
+<td style="text-align:left">본 실험 진행 (16명)</td>
+<td style="text-align:left">1군 8명, 2군 8명 데이터 수집</td>
+<td style="text-align:left">6월 1주차</td>
+</tr>
+<tr>
+<td style="text-align:left">데이터 분석 완료</td>
+<td style="text-align:left">Independent t-test, 상관 분석</td>
+<td style="text-align:left">6월 2주차</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="ix-시험-및-실험-계획-experiment-plan">Ⅸ. 시험 및 실험 계획 (Experiment Plan) </h2>
+<h3 id="91-피실험자-및-일정">9.1 피실험자 및 일정 </h3>
+<ul>
+<li><strong>대상:</strong> 대학생 16명 (1군 8명, 2군 8명)</li>
+<li><strong>실험 설계:</strong> 집단 간 설계(Between-Subjects) — 각 피실험자는 한 조건만 경험</li>
+<li><strong>본 실험 시작:</strong> 2026년 6월 1주차 (연구윤리위원회 가이드라인 수령 후)</li>
+</ul>
+<h3 id="92-실험-절차-1인당-소요시간-약-2030분">9.2 실험 절차 (1인당 소요시간: 약 20~30분) </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>① 사전 설명 및 서면 동의 (5분)
+② 사전 설문: VRSQ 기저선 측정, VR 경험 여부 확인 (5분)
+③ HMD 착용 및 조건 선택 (실험자가 LobbyScene에서 선택)
+④-A [1군] AimTrainer 120초 즉시 진행
+④-B [2군] Phase1(30초) → Phase2(30초) → Phase3(30초) → AimTrainer 120초
+⑤ 즉시 사후 설문: VRSQ 멀미 정도, SUS 실재감 측정 (5분)
+⑥ 인터뷰 (선택): 주관적 경험 청취 (2~3분)
+</code></pre><h3 id="93-측정-도구">9.3 측정 도구 </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">도구</th>
+<th style="text-align:left">측정 대상</th>
+<th style="text-align:left">시점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">VRSQ (VR Sickness Questionnaire)</td>
+<td style="text-align:left">사이버 멀미 정도</td>
+<td style="text-align:left">실험 전·후</td>
+</tr>
+<tr>
+<td style="text-align:left">SSQ (Simulator Sickness Questionnaire)</td>
+<td style="text-align:left">멀미 세부 증상 (안구, 불쾌, 방향감)</td>
+<td style="text-align:left">실험 후</td>
+</tr>
+<tr>
+<td style="text-align:left">SUS (Sense of Presence Scale)</td>
+<td style="text-align:left">실재감</td>
+<td style="text-align:left">실험 후</td>
+</tr>
+<tr>
+<td style="text-align:left">CSV 행동 로그</td>
+<td style="text-align:left">명중률, 반응시간(ms)</td>
+<td style="text-align:left">실험 중 자동 기록</td>
+</tr>
+</tbody>
+</table>
+<h3 id="94-논문-추진-과정">9.4 논문 추진 과정 </h3>
+<p><strong>a. 선행 연구 조사</strong><br>
+VR 멀미와 관련된 기존 연구들을 조사하여 주요 변수와 연구 설계 방법을 정리합니다.</p>
+<ul>
+<li>뇌 가소성 관련 연구</li>
+<li>VR 멀미를 줄이기 위한 최소 Rest Frame에 관한 연구</li>
+<li>Presence 관련 논문</li>
+<li>점진적 시각 정보(추상화→실제화)에 따른 멀미 감소 및 적응력 유지</li>
+<li>VR 게임과 시뮬레이터 멀미 질문지(SSQ)를 활용한 VR 멀미 측정과 사용자 행동량 분석</li>
+<li>가상현실 콘텐츠의 시각 요인과 사이버 멀미에 관한 연구</li>
+<li>전정 재활훈련, 뇌 가소성 연구를 통한 뇌에 대한 이론적 접근 및 방법론 구상</li>
+</ul>
+<p><strong>b. 기존 연구의 한계점 및 성과 분석</strong></p>
+<p><strong>c. 연구 설계</strong></p>
+<ul>
+<li>가설 설정</li>
+<li>변수 통제 (Immersiveness, Presence 요소 분석, HW/SW 환경 구상)</li>
+<li>Unity 6 기반 개발 과정에 직접 적용하여 연구 환경 구성</li>
+</ul>
+<p><strong>d. 임상 실험으로 결과 수집</strong></p>
+<ul>
+<li>SSQ(Simulator Sickness Questionnaire) 설문</li>
+<li>Presence 설문</li>
+<li>실험 중 행동 데이터 (CSV 자동 수집)</li>
+</ul>
+<p><strong>e. 실험 결과 분석 및 논의</strong></p>
+<ul>
+<li>정량적 분석: 통계 도구를 통한 Independent t-test, 상관 분석</li>
+<li>Discussion: 결과에 대한 인지과학적(뇌 가소성 등) 관점 해석, 연구의 한계점 및 향후 과제 제시</li>
+<li>장르별로도 여러 가지 상황을 놓고 실험을 해서 장르별 멀미 최적화에 큰 상관관계를 갖는 변수 찾기로 연구 확장</li>
+</ul>
+<p><strong>f. 논문 작성</strong><br>
+서론 → 연구방법 → 결과 → 고찰 → 결론 → 인용(출처)</p>
+<h3 id="95-통계-분석-계획">9.5 통계 분석 계획 </h3>
+<ul>
+<li><strong>집단 간 비교:</strong> Independent Samples t-test (1군 vs. 2군 VRSQ 차이)</li>
+<li><strong>수행 능력 비교:</strong> 명중률, 평균 반응시간 t-test</li>
+<li><strong>상관 분석:</strong> 멀미 감소 정도 ↔ 수행 능력 향상 상관관계</li>
+</ul>
+<hr>
+<h2 id="x-역할-분담-role-distribution">Ⅹ. 역할 분담 (Role Distribution) </h2>
+<p>본 연구는 총 3명의 개발자가 협력하여 수행하며, 개발과 연구를 병행하는 형태로 진행한다. 세 명의 구성원이 개발과 연구를 완전히 분리하기보다는 핵심 역할을 중심으로 협력하여 프로젝트를 진행한다.</p>
+<p><strong>공통으로 수행하는 항목:</strong></p>
+<ul>
+<li>연구 설계 및 논문 구조 설계</li>
+<li>멀미 관련 이론 및 선행 연구 조사</li>
+<li>실험 환경 최적화</li>
+<li>실험 설계 및 진행</li>
+<li>데이터 수집 및 데이터 분석</li>
+<li>논문 작성</li>
+<li>발표 자료 제작</li>
+</ul>
+<p><strong>개인별 주요 역할:</strong></p>
 <table>
 <thead>
 <tr>
 <th style="text-align:left">팀원명</th>
-<th style="text-align:left">주요 역할 및 담당 업무</th>
+<th style="text-align:left">주요 역할</th>
 <th style="text-align:left">기여도</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left"><strong>정근녕</strong></td>
-<td style="text-align:left"><strong>[PM]</strong> 연구 설계 총괄, Unity 아키텍처 및 글로벌 셰이더 최적화, 실험 설계 관리</td>
+<td style="text-align:left"><strong>[PM/Dev]</strong> 연구 설계 총괄, Unity 아키텍처, 적응 셰이더 및 Phase 관리 시스템, 실험 분기 로직, InstructionUI, LobbyScene 구현, 시각 단계 전환 시스템 및 LOD 시각 정보 제어 시스템 개발</td>
 <td style="text-align:left">33.3%</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>이수민</strong></td>
-<td style="text-align:left"><strong>[Lead Dev]</strong> Aim Shooter 게임 로직 개발, 공간 음향/햅틱 동기화, CSV 데이터 시스템 구축</td>
+<td style="text-align:left"><strong>[Lead Dev]</strong> AimTrainer 콘텐츠 개발(타겟 시스템, HUD, 사격 로직), 데이터 로깅 파이프라인, VR 사용자 조작 및 씬 구성, 향후 공간 음향 시나리오 구현 담당</td>
 <td style="text-align:left">33.3%</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>곽경민</strong></td>
-<td style="text-align:left"><strong>[Visual/UI]</strong> 맵 디자인 및 최적화, 실험 안내 VR UI 및 설문 시스템 구현, 피실험자 관리</td>
+<td style="text-align:left"><strong>[UI/Environment]</strong> CQB 맵 환경 디자인 및 최적화, 인터랙션 시스템 구현, 향후 적 캐릭터 메시 구현 및 피실험자 모집·일정 조율 담당, 렌더링 연구</td>
 <td style="text-align:left">33.3%</td>
 </tr>
 </tbody>
 </table>
 <hr>
-<h2 id="ix-참고-문헌-references">Ⅸ. 참고 문헌 (References) </h2>
+<h2 id="xi-결론-conclusion">Ⅺ. 결론 (Conclusion) </h2>
+<p>본 연구는 **'뇌 가소성'**을 활용한 점진적 동기화라는 새로운 패러다임을 통해 사이버 멀미 문제를 근본적으로 해결하고자 합니다.</p>
+<p>현재까지 <strong>기술적 핵심 기능 전체를 구현 완료</strong>하였습니다. 셰이더를 통한 엣지 뷰(Phase 2)와 풀 렌더링(Phase 3) 전환, 암흑 처리, 실험 분기, 행동 통제 UI, 데이터 로깅 파이프라인이 모두 동작하는 상태입니다.</p>
+<p>다만 실제 피실험자 실험 환경 구축에 앞서, 각 Phase의 몰입 시나리오를 더욱 정교하게 설계할 필요가 있습니다. Phase 1에서는 소리·진동만으로 피실험자가 공간을 능동적으로 인지하도록 유도하는 절차를, Phase 2에서는 윤곽선 뷰만으로도 충분한 몰입이 이루어지도록 행동 시나리오를 구조화할 계획입니다. AimTrainer 콘텐츠 역시 현재의 단순 구체 타겟에서 인체형 CQB 캐릭터 메시로 고도화하여, Phase별 적응 셰이더가 캐릭터에도 자연스럽게 적용되도록 확장할 예정입니다.</p>
+<p>본 기술은 단순한 1회성 프로젝트를 넘어, 향후 <strong>레이싱, 비행 시뮬레이션, FPS 등 다양한 장르별 맞춤형 적응 시퀀스 수치화 연구</strong>로 확장될 수 있는 강력한 잠재력을 지닙니다.</p>
+<hr>
+<h2 id="xii-참고-문헌-references">Ⅻ. 참고 문헌 (References) </h2>
 <ol>
-<li>김형석 교수 가상현실 강의자료: W01, W11, W13.</li>
-<li>Kim, H. K., et al. (2018). Virtual Reality Sickness Questionnaire (VRSQ). <em>Applied Ergonomics</em>.</li>
+<li>가상현실[3221] 강의자료 (W01, W11, W13). 김형석 교수.</li>
+<li>LaViola, J. (2000). A discussion of cybersickness in virtual environments. <em>ACM SIGCHI Bulletin</em>, 32(1), 47–56.</li>
+<li>Fernandes, A., &amp; Feiner, S. (2016). Combating VR sickness through subtle dynamic field-of-view modification. <em>IEEE Symposium on 3D User Interfaces (3DUI)</em>, 201–210.</li>
 <li>Reason, J. T., &amp; Brand, J. J. (1975). <em>Motion Sickness</em>. Academic Press.</li>
-<li>Prothero, J. D., &amp; Parker, D. E. (2003). A unified model of motion sickness. <em>HIT Lab</em>.</li>
-<li>Slater, M., et al. (1995). Taking steps: Presence in virtual reality. <em>ACM CHI</em>.</li>
-<li>Riccio, G., &amp; Stoffregen, T. (1991). Postural instability theory of motion sickness. <em>Ecological Psychology</em>.</li>
+<li>Keshavarz, B., Riecke, B. E., Hettinger, L. J., &amp; Campos, J. L. (2015). Vection and visually induced motion sickness: How are they related? <em>Frontiers in Psychology</em>, 6, 472.</li>
+<li>Weech, S., Kenny, S., &amp; Barnett-Cowan, M. (2019). Presence and cybersickness in virtual reality are negatively related: A review. <em>Frontiers in Psychology</em>, 10, 158.</li>
+<li>Kim, H. K., Park, J., Choi, Y., &amp; Choe, M. (2018). Virtual reality sickness questionnaire (VRSQ): Motion sickness measurement index in a virtual reality environment. <em>Applied Ergonomics</em>, 69, 66–73.</li>
+<li>Kennedy, R. S., Lane, N. E., Berbaum, K. S., &amp; Lilienthal, M. G. (1993). Simulator sickness questionnaire: An enhanced method for quantifying simulator sickness. <em>The International Journal of Aviation Psychology</em>, 3(3), 203–220.</li>
+<li>Prothero, J. D., &amp; Hoffman, H. G. (1995). Widening the field-of-view increases the sense of presence within immersive virtual environments. <em>Human Interface Technology Laboratory Technical Report</em>.</li>
+<li>Lenggenhager, B., Tadi, T., Metzinger, T., &amp; Blanke, O. (2007). Video ergo sum: Manipulating bodily self-consciousness. <em>Science</em>, 317(5841), 1096–1099.</li>
+<li>Kolasinski, E. M. (1995). <em>Simulator Sickness in Virtual Environments</em>. U.S. Army Research Institute.</li>
 </ol>
 
       </div>
