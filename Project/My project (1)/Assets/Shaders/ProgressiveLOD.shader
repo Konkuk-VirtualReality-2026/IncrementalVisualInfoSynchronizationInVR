@@ -97,6 +97,9 @@ Shader "VR/AdaptationProgressive"
             half4 frag_ol(Vary_OL IN) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+                // 인플레이션 아웃라인은 비활성(scale=0), PhaseOutlineFeature가 담당.
+                // back-face 실루엣 픽셀이 fidelity 무관하게 새어나오는 것을 차단.
+                clip(-1);
                 return half4(_OutlineColor.rgb, 1.0);
             }
             ENDHLSL

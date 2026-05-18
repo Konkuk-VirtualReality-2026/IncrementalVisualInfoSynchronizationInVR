@@ -7105,12 +7105,12 @@ MonoBehaviour:
   m_GlobalEffect: {fileID: 1996242402}
   m_AimTrainer: {fileID: 1723789464}
   m_AimTrainerHUD: {fileID: 494612882}
-  m_Phase1Duration: 2
+  m_Phase1Duration: 10
   m_Phase2Duration: 25
   m_Phase3Duration: 30
   m_AimTrainerDuration: 120
   m_ForceControlGroup: 0
-  m_DebugFastMode: 1
+  m_DebugFastMode: 0
   m_BlackoutPanel: {fileID: 764585895}
   m_BlackoutFadeDuration: 1
   m_AmbientAudioSource: {fileID: 1996242401}
