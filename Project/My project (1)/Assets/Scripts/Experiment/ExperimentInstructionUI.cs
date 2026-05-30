@@ -11,11 +11,11 @@ namespace VRAdaptation
         [SerializeField] Text m_InstructionText;
         [SerializeField] CanvasGroup m_CanvasGroup;
 
-        [Header("Follow Settings")]
+        [Header("Camera Anchor Settings")]
+        [Tooltip("미지정 시 Camera.main 자동 탐색")]
         [SerializeField] Transform m_FollowTarget;
-        [SerializeField] float m_FollowDistance = 1.8f;
-        [SerializeField] float m_HeightOffset = -0.15f;
-        [SerializeField] float m_Smoothness = 3f;
+        [SerializeField] float m_FollowDistance = 0.25f;
+        [SerializeField] float m_HeightOffset = -0.1f;
 
         [Header("Timing")]
         [SerializeField] float m_FadeDuration = 0.5f;
@@ -48,6 +48,22 @@ namespace VRAdaptation
             if (m_CanvasGroup != null)
                 m_CanvasGroup.alpha = 0f;
             m_IsVisible = false;
+
+            // 카메라를 못 찾으면 Camera.main 사용
+            if (m_FollowTarget == null && Camera.main != null)
+                m_FollowTarget = Camera.main.transform;
+
+            // 카메라 자식으로 붙여서 벽에 묻히지 않게 고정
+            if (m_FollowTarget != null)
+            {
+                transform.SetParent(m_FollowTarget, false);
+                transform.localPosition = new Vector3(0f, m_HeightOffset, m_FollowDistance);
+                transform.localRotation = Quaternion.identity;
+            }
+
+            // BlackoutCanvas(z=0.31)보다 앞에 그려지도록 sortingOrder 높임
+            var canvas = GetComponent<Canvas>();
+            if (canvas != null) canvas.sortingOrder = 10;
         }
 
         void OnEnable()
@@ -138,30 +154,6 @@ namespace VRAdaptation
             m_CanvasGroup.alpha = to;
         }
 
-        void Update()
-        {
-            if (m_FollowTarget == null || !m_IsVisible) return;
-
-            Vector3 forward = m_FollowTarget.forward;
-            forward.y = 0f;
-            if (forward.sqrMagnitude < 0.001f) return;
-            forward.Normalize();
-
-            Vector3 targetPosition = m_FollowTarget.position
-                + forward * m_FollowDistance
-                + Vector3.up * m_HeightOffset;
-
-            transform.position = Vector3.Lerp(
-                transform.position,
-                targetPosition,
-                Time.deltaTime * m_Smoothness);
-
-            Quaternion targetRotation = Quaternion.LookRotation(
-                transform.position - m_FollowTarget.position);
-            transform.rotation = Quaternion.Lerp(
-                transform.rotation,
-                targetRotation,
-                Time.deltaTime * m_Smoothness);
-        }
+        // 카메라 자식으로 고정되므로 Update에서 위치 추적 불필요
     }
 }

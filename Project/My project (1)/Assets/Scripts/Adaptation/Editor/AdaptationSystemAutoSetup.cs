@@ -348,7 +348,10 @@ namespace VRAdaptation.Editor
                     }
                 }
 
-                Debug.Log($"[VRAdaptation] Locomotion: Move + SnapTurn → {xrOriginObj.name}");
+                // CharacterController + VRCharacterCollision (벽 통과 차단)
+                SetupWallCollisionOnObject(xrOriginObj);
+
+                Debug.Log($"[VRAdaptation] Locomotion: Move + SnapTurn + WallCollision → {xrOriginObj.name}");
             }
             else
             {
@@ -357,6 +360,52 @@ namespace VRAdaptation.Editor
 
             Selection.activeGameObject = managerObj;
             Debug.Log("[VRAdaptation] Auto setup complete: Manager + AimTrainer + HUD + BlackoutCanvas + Gun + Locomotion 완료.");
+        }
+
+        // ── 벽 충돌 단독 설정 ────────────────────────────────────────────────
+        /// <summary>
+        /// XR Origin에 CharacterController + VRCharacterCollision을 추가한다.
+        /// Auto Setup을 이미 실행한 씬에서 단독으로 실행해도 안전(중복 추가 없음).
+        /// </summary>
+        [MenuItem("VR Adaptation/Setup Wall Collision (CharacterController)")]
+        public static void SetupWallCollision()
+        {
+            var xrOrigin = Object.FindAnyObjectByType<Unity.XR.CoreUtils.XROrigin>();
+            if (xrOrigin == null)
+            {
+                Debug.LogError("[VRAdaptation] XROrigin을 씬에서 찾지 못했습니다.");
+                return;
+            }
+            SetupWallCollisionOnObject(xrOrigin.gameObject);
+            Debug.Log($"[VRAdaptation] Wall Collision 설정 완료 → {xrOrigin.gameObject.name}");
+        }
+
+        static void SetupWallCollisionOnObject(GameObject target)
+        {
+            // CharacterController — height 1.8m, radius 0.3m, center 바닥 기준 0.9m 높이
+            CharacterController cc = target.GetComponent<CharacterController>();
+            if (cc == null)
+            {
+                cc = target.AddComponent<CharacterController>();
+                Undo.RegisterCreatedObjectUndo(cc, "Add CharacterController");
+            }
+            cc.height      = 1.8f;
+            cc.radius      = 0.3f;
+            cc.center      = new Vector3(0f, 0.9f, 0f);
+            cc.slopeLimit  = 45f;
+            cc.stepOffset  = 0.3f;
+            cc.skinWidth   = 0.08f;
+            EditorUtility.SetDirty(target);
+
+            // VRCharacterCollision — 중력 및 향후 벽 피드백 확장 포인트
+            VRCharacterCollision collision = target.GetComponent<VRCharacterCollision>();
+            if (collision == null)
+            {
+                collision = target.AddComponent<VRCharacterCollision>();
+                Undo.RegisterCreatedObjectUndo(collision, "Add VRCharacterCollision");
+            }
+
+            Debug.Log($"[VRAdaptation] CharacterController + VRCharacterCollision → {target.name}");
         }
 
         // ── Phase Outline Renderer Feature 추가 ─────────────────────────────

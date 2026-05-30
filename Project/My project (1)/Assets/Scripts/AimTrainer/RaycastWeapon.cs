@@ -10,6 +10,7 @@ namespace VRAdaptation.AimTrainer
         [Header("Settings")]
         [SerializeField] float     m_MaxDistance = 50f;
         [SerializeField] LayerMask m_TargetLayer;
+        [SerializeField] LayerMask m_WallLayer = ~0; // 총구멍 생성 대상 레이어 (전체 기본)
         [SerializeField] Transform m_MuzzlePoint;
 
         [Header("레이저 조준선 (항상 표시)")]
@@ -90,6 +91,14 @@ namespace VRAdaptation.AimTrainer
                     hapticAmp = Mathf.Clamp01(hapticAmp + m_HitBonusAmplitude);
                     if (m_AudioSource != null && m_HitClip != null)
                         m_AudioSource.PlayOneShot(m_HitClip);
+                }
+            }
+            else
+            {
+                // 타겟 미스 시 벽 레이어를 별도 레이캐스트로 감지해 총구멍 생성
+                if (Physics.Raycast(ray, out RaycastHit wallHit, m_MaxDistance, m_WallLayer))
+                {
+                    BulletHolePool.Instance?.Spawn(wallHit.point, wallHit.normal);
                 }
             }
 

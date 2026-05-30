@@ -63,8 +63,15 @@ namespace VRAdaptation
             if (!m_UseGenerator)
             {
                 m_Audio.clip = m_ProximityClip;
-                m_Audio.Play();
             }
+            else
+            {
+                // OnAudioFilterRead는 AudioSource가 playing 상태일 때만 호출됨.
+                // 클립 없이 Play()하면 경고가 뜨므로 무음 더미 클립을 할당한다.
+                var silence = AudioClip.Create("silence", AudioSettings.outputSampleRate, 1, AudioSettings.outputSampleRate, false);
+                m_Audio.clip = silence;
+            }
+            m_Audio.Play();
 
             if (m_PlayerRoot == null) m_PlayerRoot = transform;
         }

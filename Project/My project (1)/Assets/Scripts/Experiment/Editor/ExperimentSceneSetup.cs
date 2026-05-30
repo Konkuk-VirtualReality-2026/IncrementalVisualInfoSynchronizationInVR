@@ -1,12 +1,111 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.UI;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using Unity.XR.CoreUtils;
 using VRAdaptation.Experiment;
 
 namespace VRAdaptation.Editor
 {
     public static class ExperimentSceneSetup
     {
+        // ────────────────────────────────────────────────────────────────────
+        // 0. LobbyScene VR 완전 수정 (원클릭)
+        // ────────────────────────────────────────────────────────────────────
+        [MenuItem("VR Adaptation/Fix Lobby Scene for VR")]
+        public static void FixLobbySceneForVR()
+        {
+            int fixCount = 0;
+
+            // ── LobbyCanvas: GraphicRaycaster → TrackedDeviceGraphicRaycaster
+            GameObject canvasObj = GameObject.Find("LobbyCanvas");
+            if (canvasObj != null)
+            {
+                var oldRC = canvasObj.GetComponent<GraphicRaycaster>();
+                if (oldRC != null) { Undo.DestroyObjectImmediate(oldRC); fixCount++; }
+
+                if (canvasObj.GetComponent<TrackedDeviceGraphicRaycaster>() == null)
+                {
+                    Undo.AddComponent<TrackedDeviceGraphicRaycaster>(canvasObj);
+                    fixCount++;
+                    Debug.Log("[LobbyFix] TrackedDeviceGraphicRaycaster 추가.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[LobbyFix] LobbyCanvas 없음 — 먼저 'Setup Lobby UI' 실행.");
+            }
+
+            // ── EventSystem: XRUIInputModule 추가 (기존 InputModule 제거)
+            GameObject esObj = GameObject.Find("EventSystem");
+            if (esObj != null)
+            {
+                // 기존 StandaloneInputModule 제거
+                var standalone = esObj.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                if (standalone != null) { Undo.DestroyObjectImmediate(standalone); fixCount++; }
+
+                if (esObj.GetComponent<XRUIInputModule>() == null)
+                {
+                    Undo.AddComponent<XRUIInputModule>(esObj);
+                    fixCount++;
+                    Debug.Log("[LobbyFix] XRUIInputModule 추가.");
+                }
+            }
+
+            // ── XR Origin 관련 처리
+            var xrOrigin = Object.FindAnyObjectByType<XROrigin>();
+
+            // Main Camera AudioListener 제거 (XR Origin 카메라와 중복)
+            foreach (var cam in Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
+            {
+                bool isXRCam = xrOrigin != null && cam.transform.IsChildOf(xrOrigin.transform);
+                if (!isXRCam)
+                {
+                    var listener = cam.GetComponent<AudioListener>();
+                    if (listener != null)
+                    {
+                        Undo.DestroyObjectImmediate(listener);
+                        fixCount++;
+                        Debug.Log($"[LobbyFix] AudioListener 제거: {cam.gameObject.name}");
+                    }
+                }
+            }
+
+            if (xrOrigin != null)
+            {
+                // CharacterController 비활성화 (로비에서 중력 낙하 방지)
+                var cc = xrOrigin.GetComponent<CharacterController>();
+                if (cc != null && cc.enabled)
+                {
+                    cc.enabled = false;
+                    EditorUtility.SetDirty(xrOrigin.gameObject);
+                    fixCount++;
+                    Debug.Log("[LobbyFix] CharacterController 비활성화.");
+                }
+
+                // XR Ray Interactor: UI Interaction ON
+                foreach (var ray in xrOrigin.GetComponentsInChildren<XRRayInteractor>())
+                {
+                    if (!ray.enableUIInteraction)
+                    {
+                        ray.enableUIInteraction = true;
+                        EditorUtility.SetDirty(ray);
+                        fixCount++;
+                        Debug.Log($"[LobbyFix] UI Interaction ON: {ray.gameObject.name}");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[LobbyFix] XR Origin 없음 — GameObject → XR → XR Origin (VR) 로 추가 후 다시 실행.");
+            }
+
+            EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+            Debug.Log($"[LobbyFix] 완료. 총 {fixCount}개 항목 수정. 씬 저장 후 빌드하세요.");
+        }
+
         // ────────────────────────────────────────────────────────────────────
         // 1. LobbyScene UI
         // ────────────────────────────────────────────────────────────────────
