@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using VRAdaptation.Experiment;
 
 namespace VRAdaptation
@@ -49,12 +50,24 @@ namespace VRAdaptation
         [Tooltip("true 시 모든 Phase 시간을 1/10로 단축 (테스트용)")]
         [SerializeField] bool m_DebugFastMode = false;
 
-        // Phase 1 uses a full-screen black UI panel (CanvasGroup) to produce true
-        // darkness — the material-based shader cannot black out the skybox or the
-        // space between objects, so a screen-covering overlay is required.
-        [Header("Screen Blackout (Phase 1)")]
+        // Phase 1/2 darkness is produced by three combined layers, NOT a full-screen
+        // opaque panel:
+        //   1) the AdaptationProgressive shader outputs pure black for surfaces,
+        //   2) the camera background is switched to solid black (blocks the skybox),
+        //   3) all scene lights + ambient are disabled (so any non-converted Lit
+        //      surface also renders black).
+        // A screen-covering panel is intentionally avoided because it would also hide
+        // the surface-contact glow and the instruction UI. m_BlackoutPanel is kept
+        // only for backward compatibility and is always forced transparent.
+        [Header("Screen Blackout (legacy — kept transparent)")]
         [SerializeField] CanvasGroup m_BlackoutPanel;
         [SerializeField, Min(0.1f)] float m_BlackoutFadeDuration = 1.0f;
+
+        [Header("World Lighting (Phase 1/2 darkness)")]
+        [Tooltip("Phase 1/2 동안 끌 조명. 비워두면 Start에서 씬의 모든 Light를 자동 수집한다.")]
+        [SerializeField] List<Light> m_WorldLights = new();
+        [Tooltip("암흑 구간에서 환경광(Ambient)도 검정으로 강제")]
+        [SerializeField] bool m_DisableAmbientDuringDark = true;
 
         [Header("Non-Visual Feedback (Phase 1/2)")]
         [SerializeField] AudioSource m_AmbientAudioSource;
@@ -72,6 +85,11 @@ namespace VRAdaptation
         private Camera        m_XRCamera;
         private CameraClearFlags m_OriginalClearFlags;
         private Color         m_OriginalBackgroundColor;
+
+        // 조명/환경광 원본 복원을 위한 저장 변수
+        private Color m_OrigAmbientLight;
+        private float m_OrigAmbientIntensity;
+        private bool  m_LightingCaptured;
 
         void OnValidate()
         {
@@ -115,6 +133,16 @@ namespace VRAdaptation
             if (ExperimentCondition.SelectedGroup == ExperimentGroup.NotSelected && !m_ForceControlGroup)
                 Debug.LogWarning("[VRAdaptation] 실험 그룹이 선택되지 않았습니다. LobbyScene을 먼저 실행하세요. 기본값(실험군)으로 진행합니다.");
 
+            CaptureLighting();
+
+            // 블랙아웃 패널은 더 이상 암흑 용도로 사용하지 않는다(항상 투명).
+            if (m_BlackoutPanel != null)
+            {
+                m_BlackoutPanel.alpha          = 0f;
+                m_BlackoutPanel.blocksRaycasts = false;
+                m_BlackoutPanel.interactable   = false;
+            }
+
             bool isControl = m_ForceControlGroup
                 || ExperimentCondition.SelectedGroup == ExperimentGroup.Control;
 
@@ -141,6 +169,7 @@ namespace VRAdaptation
             m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
             OnPhaseChanged.Invoke(m_CurrentPhase);
             SetCameraBackground(blackout: false);
+            SetWorldLighting(true);               // 대조군은 항상 조명 on
             if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
             m_CurrentFidelity = 1.0f;
             UpdateGlobalFidelity();
@@ -192,6 +221,48 @@ namespace VRAdaptation
             }
         }
 
+        // ── 조명 제어 (Phase 1/2 암흑) ───────────────────────────────────────
+        // 셰이더가 표면을 검정으로 출력하더라도, 어댑테이션 셰이더로 교체되지 않은
+        // Lit 오브젝트는 조명/환경광이 있으면 보인다. 따라서 암흑 구간에서는
+        // 씬의 모든 Light와 Ambient를 끄고 Phase 3에서 복원한다.
+        void CaptureLighting()
+        {
+            if (m_LightingCaptured) return;
+
+            if (m_WorldLights == null || m_WorldLights.Count == 0)
+            {
+                m_WorldLights = new List<Light>(
+                    FindObjectsByType<Light>(FindObjectsSortMode.None));
+            }
+
+            m_OrigAmbientLight     = RenderSettings.ambientLight;
+            m_OrigAmbientIntensity = RenderSettings.ambientIntensity;
+            m_LightingCaptured     = true;
+        }
+
+        void SetWorldLighting(bool on)
+        {
+            if (m_WorldLights != null)
+            {
+                foreach (var l in m_WorldLights)
+                    if (l != null) l.enabled = on;
+            }
+
+            if (m_DisableAmbientDuringDark && m_LightingCaptured)
+            {
+                if (on)
+                {
+                    RenderSettings.ambientLight     = m_OrigAmbientLight;
+                    RenderSettings.ambientIntensity = m_OrigAmbientIntensity;
+                }
+                else
+                {
+                    RenderSettings.ambientLight     = Color.black;
+                    RenderSettings.ambientIntensity = 0f;
+                }
+            }
+        }
+
         float D(float seconds) => m_DebugFastMode ? seconds * 0.1f : seconds;
 
         IEnumerator AdaptationSequence()
@@ -206,8 +277,9 @@ namespace VRAdaptation
             UpdateGlobalFidelity();
 
             SetCameraBackground(blackout: true);   // 스카이박스 → 검정 배경
+            SetWorldLighting(false);               // 조명/환경광 off → 완전 암흑
             if (m_BlackoutPanel != null)
-                m_BlackoutPanel.alpha = 1f;
+                m_BlackoutPanel.alpha = 0f;        // 패널은 사용하지 않음(UI·glow 가림 방지)
 
             if (m_AmbientAudioSource != null && m_Phase1AmbientClip != null)
             {
@@ -228,9 +300,8 @@ namespace VRAdaptation
             UpdateGlobalFidelity();
             Debug.Log("[VRAdaptation] Starting Phase 2: Silhouette/Outline view");
 
-            // Fade out the blackout while the silhouette shader is already active
-            if (m_BlackoutPanel != null)
-                yield return StartCoroutine(FadeBlackout(1f, 0f, m_BlackoutFadeDuration));
+            // Phase 2도 조명은 꺼진 상태를 유지한다(실루엣/엣지 + 접촉 glow만 보임).
+            // 카메라 배경도 검정 유지 → 윤곽선만 떠오르는 화면.
 
             yield return new WaitForSeconds(D(m_Phase2Duration));
 
@@ -238,6 +309,7 @@ namespace VRAdaptation
             // 이 시점에서 카메라 배경을 원본(스카이박스)으로 복원한다.
             // Phase 3는 텍스처·조명이 점점 살아나는 구간이므로 배경도 자연스럽게 등장해야 한다.
             SetCameraBackground(blackout: false);
+            SetWorldLighting(true);                // 조명/환경광 복원 → 시각 재등장
             m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
             OnPhaseChanged.Invoke(m_CurrentPhase);
             Debug.Log("[VRAdaptation] Starting Phase 3: Progressive quality increase");

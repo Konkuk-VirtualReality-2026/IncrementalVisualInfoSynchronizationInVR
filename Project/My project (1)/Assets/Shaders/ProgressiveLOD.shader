@@ -125,8 +125,12 @@ Shader "VR/AdaptationProgressive"
             #pragma multi_compile _ DOTS_INSTANCING_ON
             #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON STEREO_CUBEMAP_RENDER_ON
 
+            // Lighting.hlsl(그림자/반사/쿠키 샘플러 다수 포함)을 의존하면 d3d11의
+            // 16개 샘플러 한도를 넘겨 PC(Link) 빌드에서 컴파일이 실패한다.
+            // 이 효과 셰이더는 메인 디렉셔널 라이트 + 단순 앰비언트만 필요하므로
+            // Core.hlsl만 포함하고 _MainLight* 유니폼으로 직접 라이팅을 계산한다.
+            // (샘플러는 _BaseMap/_BumpMap 2개만 사용 → d3d11/Quest 모두 안전)
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             struct Attributes
             {
@@ -162,6 +166,51 @@ Shader "VR/AdaptationProgressive"
 
             TEXTURE2D(_BaseMap);  SAMPLER(sampler_BaseMap);
             TEXTURE2D(_BumpMap);  SAMPLER(sampler_BumpMap);
+
+            // ── 표면 접촉 Glow (Phase 1/2) ──────────────────────────────────
+            // 컨트롤러가 벽에 닿은 접촉점(_GlowContacts[i].xyz)을 중심으로,
+            // 시간에 따라 반경이 커지는 원형 링을 표면에 가산(emissive)한다.
+            // 조명과 무관하게 더해지므로 Phase 1 완전 암흑에서도 보인다.
+            // 값은 SurfaceGlowManager가 전역(Shader.SetGlobal*)으로 주입한다.
+            #define MAX_GLOW_CONTACTS 16
+            float4 _GlowContacts[MAX_GLOW_CONTACTS]; // xyz=월드 접촉점, w=발생 시각
+            float  _GlowContactCount;
+            float  _GlowTime;        // 매 프레임 주입되는 Time.time
+            float4 _GlowColor;
+            float  _GlowSpeed;       // 링 확산 속도 (m/s)
+            float  _GlowRingWidth;   // 링 두께 (m)
+            float  _GlowDuration;    // 한 링의 수명 (s)
+            float  _GlowIntensity;   // 마스터 강도
+
+            float3 ComputeSurfaceGlow(float3 posWS, float fidelity)
+            {
+                if (_GlowIntensity <= 0.0 || _GlowDuration <= 0.0) return float3(0, 0, 0);
+
+                // Phase 3(시각 복귀) 구간에서 glow 페이드아웃 (fidelity 0.7~1.0)
+                float phaseFade = 1.0 - smoothstep(0.7, 1.0, fidelity);
+                if (phaseFade <= 0.0) return float3(0, 0, 0);
+
+                float total = 0.0;
+                int count = (int)_GlowContactCount;
+                [loop]
+                for (int i = 0; i < MAX_GLOW_CONTACTS; i++)
+                {
+                    if (i >= count) break;
+                    float4 c = _GlowContacts[i];
+                    float age = _GlowTime - c.w;
+                    if (age < 0.0 || age > _GlowDuration) continue;
+
+                    float radius = age * _GlowSpeed;
+                    float d      = distance(posWS, c.xyz);
+
+                    // 현재 반경 부근에서 밝고 그 외엔 0 → 퍼져나가는 링
+                    float ring = 1.0 - saturate(abs(d - radius) / max(_GlowRingWidth, 1e-4));
+                    ring *= ring;                                   // 가장자리 부드럽게
+                    float lifeFade = 1.0 - saturate(age / _GlowDuration); // 수명 감쇠
+                    total += ring * lifeFade;
+                }
+                return _GlowColor.rgb * (saturate(total) * _GlowIntensity * phaseFade);
+            }
 
             Varyings vert(Attributes IN)
             {
@@ -201,13 +250,17 @@ Shader "VR/AdaptationProgressive"
                 float3 finalNorm  = lerp(normalWS, normalize(mul(normalTS, tbn)), saturate((fidelity - 0.7) / 0.3));
 
                 float3 viewDir  = normalize(GetCameraPositionWS() - IN.positionWS);
-                Light  light    = GetMainLight();
 
-                float3 diffuse  = albedo * saturate(dot(finalNorm, light.direction)) * light.color;
-                float3 halfDir  = normalize(light.direction + viewDir);
+                // 메인 디렉셔널 라이트 (유니폼 직접 사용 — 샘플러 없음)
+                float3 lightDir   = normalize(_MainLightPosition.xyz);
+                float3 lightColor = _MainLightColor.rgb;
+
+                float3 diffuse  = albedo * saturate(dot(finalNorm, lightDir)) * lightColor;
+                float3 halfDir  = normalize(lightDir + viewDir);
                 float  spec     = pow(saturate(dot(finalNorm, halfDir)), _Smoothness * 128.0);
-                float3 specular = light.color * spec * _Metallic;
-                float3 ambient  = SampleSH(finalNorm) * albedo;
+                float3 specular = lightColor * spec * _Metallic;
+                // 단순 앰비언트 (SH 샘플 대신 상수항 — d3d11 샘플러 한도 회피)
+                float3 ambient  = albedo * 0.2;
                 float3 fullPBR  = diffuse + specular + ambient;
 
                 // ── 페이즈 분기 ───────────────────────────────────────────────
@@ -229,6 +282,9 @@ Shader "VR/AdaptationProgressive"
                     float t = (fidelity - 0.7) / 0.3;
                     finalColor = lerp(albedo, fullPBR, t);
                 }
+
+                // 접촉점 확산 glow를 가산 (Phase 1/2에서 표면 위로 퍼지는 링)
+                finalColor += ComputeSurfaceGlow(IN.positionWS, fidelity);
 
                 return half4(finalColor, 1.0);
             }

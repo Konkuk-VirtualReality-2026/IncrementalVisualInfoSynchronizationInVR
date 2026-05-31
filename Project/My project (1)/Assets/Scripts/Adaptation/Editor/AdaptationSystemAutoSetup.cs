@@ -245,6 +245,14 @@ namespace VRAdaptation.Editor
             managerSO.FindProperty("m_AimTrainerHUD").objectReferenceValue      = hudComp;
             managerSO.ApplyModifiedProperties();
 
+            // ── 10-b. Surface Contact Glow ───────────────────────────────────
+            // 컨트롤러가 벽에 닿으면 접촉점에서 퍼지는 glow 링을 셰이더로 그린다.
+            // 접촉 프로브는 SurfaceGlowManager가 런타임에 컨트롤러(TrackedPoseDriver)를
+            // 찾아 자동 부착하므로 여기서는 매니저 컴포넌트만 보장한다.
+            var glowMgr = managerObj.GetComponent<SurfaceGlowManager>();
+            if (glowMgr == null) glowMgr = managerObj.AddComponent<SurfaceGlowManager>();
+            Debug.Log("[VRAdaptation] SurfaceGlowManager 부착 완료 (접촉 glow).");
+
             // ── 9. VR 총 (RaycastWeapon + VRGunController) ──────────────────
             // Right Hand Controller를 찾아 총 컴포넌트를 부착한다.
             GameObject rightController = FindRightController();

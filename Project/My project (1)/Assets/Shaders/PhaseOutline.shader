@@ -23,15 +23,20 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             #pragma vertex   vert_fs
             #pragma fragment frag_edge
 
-            // Quest 3 Single-Pass Instanced / Multiview 지원에 필수
+            // Quest 3 Single-Pass Instanced / Multiview 지원에 필수.
+            // STEREO_MULTIVIEW_ON 이 없으면 Quest(Vulkan multiview)에서 깊이 텍스처가
+            // Texture2DArray로 잡히는데도 eye index가 0으로 고정돼 엣지 검출이 실패한다.
+            // (PC standalone은 multi-pass라 이 키워드 없이도 동작했음)
             #pragma multi_compile_instancing
-            #pragma multi_compile _ STEREO_INSTANCING_ON
+            #pragma multi_compile _ STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex);
+            // Blitter.BlitTexture 가 소스 화면을 _BlitTexture 에 바인딩한다.
+            // 원본 색(표면 검정 + 접촉 glow 링)을 읽어 보존하려고 직접 선언한다.
+            // (sampler_PointClamp 는 Core.hlsl 이 이미 제공하므로 재선언하지 않는다.)
+            TEXTURE2D_X(_BlitTexture);
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
@@ -83,11 +88,17 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
 
             half4 frag_edge(Vary IN) : SV_Target
             {
-                // Stereo eye index 설정 — SampleSceneDepth 가 올바른 eye를 샘플링하도록
+                // Stereo eye index 설정 — SampleSceneDepth / _BlitTexture 가 올바른 eye를 샘플링하도록
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
+                // 원본 화면 색을 보존한다(표면 검정 + 접촉 glow 링이 여기 들어있음).
+                // 과거에는 검정에서 시작해 비-엣지 픽셀을 모두 덮어써서 glow가 사라졌다.
+                half3 src  = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, IN.uv).rgb;
+
                 float edge = CalcEdge(IN.uv);
-                return half4(lerp(float3(0, 0, 0), _OutlineColor.rgb, edge), 1.0);
+                // 엣지 픽셀은 윤곽선 색, 그 외는 원본(glow 포함) 유지.
+                half3 col  = lerp(src, _OutlineColor.rgb, edge);
+                return half4(col, 1.0);
             }
             ENDHLSL
         }
