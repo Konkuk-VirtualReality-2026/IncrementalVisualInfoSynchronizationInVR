@@ -68,6 +68,7 @@ namespace VRAdaptation
         static readonly int s_RingWidth    = Shader.PropertyToID("_GlowRingWidth");
         static readonly int s_Duration     = Shader.PropertyToID("_GlowDuration");
         static readonly int s_Intensity    = Shader.PropertyToID("_GlowIntensity");
+        static readonly int s_Fidelity     = Shader.PropertyToID("_GlobalVisualFidelity");
 
         // ── 등록된 접촉 프로브 ───────────────────────────────────────────────
         static readonly List<GlowContactProbe> s_Probes = new();
@@ -114,10 +115,21 @@ namespace VRAdaptation
 
         void Update()
         {
+            // Phase 3 이상(fidelity >= 0.7)에서는 링을 비우고 감지를 건너뜀
+            if (Shader.GetGlobalFloat(s_Fidelity) >= 0.7f)
+            {
+                if (m_Rings.Count > 0)
+                {
+                    m_Rings.Clear();
+                    PushDynamicParams();
+                }
+                return;
+            }
+
             if (m_AutoAttachToControllers && s_Probes.Count == 0 && Time.time >= m_NextAutoAttachTime)
             {
                 TryAutoAttachProbes();
-                m_NextAutoAttachTime = Time.time + 0.5f; // 컨트롤러가 늦게 생성될 수 있으므로 주기적 재시도
+                m_NextAutoAttachTime = Time.time + 0.5f;
             }
 
             DetectContacts();

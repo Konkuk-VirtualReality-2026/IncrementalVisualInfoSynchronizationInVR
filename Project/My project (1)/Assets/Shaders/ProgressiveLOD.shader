@@ -71,9 +71,11 @@ Shader "VR/AdaptationProgressive"
                 #endif
                 OUT.fidelity = fid;
 
-                // 인플레이션 아웃라인은 PhaseOutlineFeature(화면 공간 법선+깊이)로 대체.
-                // back-face 팽창 방식은 특정 각도에만 보이는 문제가 있으므로 비활성화.
-                float scale = 0.0;
+                // Phase 2(fidelity=0.3 고정값)부터 즉시 활성화.
+                // smoothstep 시작점이 0.3이면 Phase 2에서 항상 0이 나오므로 step으로 대체.
+                // fidelity 0.62~0.72 구간에서 서서히 꺼짐 (Phase 3 중반).
+                float phase2 = step(0.29, fid) * (1.0 - smoothstep(0.62, 0.72, fid));
+                float scale = phase2;
 
                 float3 normWS = normalize(TransformObjectToWorldNormal(IN.normOS));
                 float3 posWS  = TransformObjectToWorld(IN.posOS.xyz);
@@ -97,9 +99,11 @@ Shader "VR/AdaptationProgressive"
             half4 frag_ol(Vary_OL IN) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
-                // 인플레이션 아웃라인은 비활성(scale=0), PhaseOutlineFeature가 담당.
-                // back-face 실루엣 픽셀이 fidelity 무관하게 새어나오는 것을 차단.
-                clip(-1);
+                // Phase 2 범위 밖(scale=0) 이면 정점이 팽창되지 않지만,
+                // 혹시 새어나오는 픽셀을 차단하기 위해 fidelity 재확인.
+                float fid = IN.fidelity;
+                float phase2 = step(0.29, fid) * (1.0 - smoothstep(0.62, 0.72, fid));
+                if (phase2 <= 0.0) clip(-1);
                 return half4(_OutlineColor.rgb, 1.0);
             }
             ENDHLSL
@@ -186,9 +190,8 @@ Shader "VR/AdaptationProgressive"
             {
                 if (_GlowIntensity <= 0.0 || _GlowDuration <= 0.0) return float3(0, 0, 0);
 
-                // Phase 3(시각 복귀) 구간에서 glow 페이드아웃 (fidelity 0.7~1.0)
-                float phaseFade = 1.0 - smoothstep(0.7, 1.0, fidelity);
-                if (phaseFade <= 0.0) return float3(0, 0, 0);
+                // Phase 1/2(fidelity < 0.7)에서만 표시. Phase 3 시작과 동시에 즉시 끔.
+                if (fidelity >= 0.7) return float3(0, 0, 0);
 
                 float total = 0.0;
                 int count = (int)_GlowContactCount;
@@ -203,13 +206,12 @@ Shader "VR/AdaptationProgressive"
                     float radius = age * _GlowSpeed;
                     float d      = distance(posWS, c.xyz);
 
-                    // 현재 반경 부근에서 밝고 그 외엔 0 → 퍼져나가는 링
                     float ring = 1.0 - saturate(abs(d - radius) / max(_GlowRingWidth, 1e-4));
-                    ring *= ring;                                   // 가장자리 부드럽게
-                    float lifeFade = 1.0 - saturate(age / _GlowDuration); // 수명 감쇠
+                    ring *= ring;
+                    float lifeFade = 1.0 - saturate(age / _GlowDuration);
                     total += ring * lifeFade;
                 }
-                return _GlowColor.rgb * (saturate(total) * _GlowIntensity * phaseFade);
+                return _GlowColor.rgb * (saturate(total) * _GlowIntensity);
             }
 
             Varyings vert(Attributes IN)
@@ -273,7 +275,7 @@ Shader "VR/AdaptationProgressive"
                 }
                 else if (fidelity < 0.7)
                 {
-                    // Phase 2 : 완전 검정 — 엣지는 PhaseOutlineFeature(화면 공간)가 담당
+                    // Phase 2 : 앞면은 검정 유지. 테두리는 Outline Pass(back-face 팽창)가 담당.
                     finalColor = float3(0.0, 0.0, 0.0);
                 }
                 else
