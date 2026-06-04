@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using VRAdaptation.Experiment;
 
 namespace VRAdaptation
@@ -10,10 +11,10 @@ namespace VRAdaptation
     public enum AdaptationPhase
     {
         None,
-        Phase1_Static,       // Non-visual cues only (Audio/Haptic) — full blackout
-        Phase2_Dynamic,      // Silhouette / outline view
-        Phase3_HighFidelity, // Progressive visual quality increase
-        AimTrainer_Test,     // Performance measurement
+        Phase1_Blackout,      // 암흑 + 네비게이션 미션 (2군, 최대 2분)
+        Phase2_Edge,          // 엣지/실루엣 + 네비게이션 미션 (2군, 최대 2분)
+        AimTrainer_Moving,    // 이동식 타겟 순찰 (양군, 2분)
+        AimTrainer_Static,    // 사방 타겟 전체 처치 (양군, 무제한)
         Complete
     }
 
@@ -36,67 +37,58 @@ namespace VRAdaptation
         [SerializeField] AimTrainer.AimTargetManager m_AimTrainer;
         [SerializeField] AimTrainer.AimTrainerHUD    m_AimTrainerHUD;
 
-        [Header("Phase Durations (Seconds)")]
-        [SerializeField] float m_Phase1Duration = 30f;
-        [SerializeField] float m_Phase2Duration = 30f;
-        [SerializeField] float m_Phase3Duration = 30f;
-        [SerializeField] float m_AimTrainerDuration = 120f;
+        [Header("Navigation Missions (2군 전용)")]
+        [SerializeField] NavigationMission m_Phase1NavMission;
+        [SerializeField] NavigationMission m_Phase2NavMission;
+
+        [Header("플레이어 스폰 위치")]
+        [Tooltip("각 Phase 시작 시 플레이어를 이 위치로 리셋한다")]
+        [SerializeField] Transform m_PlayerSpawnPoint;
+
+        [Header("Phase Durations (초) — NavMission은 도달 즉시 종료, 여기서는 Moving만 사용")]
+        [Tooltip("Moving Phase 시간 제한")]
+        [SerializeField] float m_MovingDuration   = 120f; // 2분
+        // Static Phase 는 전체 처치 시 자동 종료 — 시간 제한 없음
 
         [Header("Experiment Condition")]
         [Tooltip("대조군(1군)으로 강제 설정 (Inspector 디버그용)")]
         [SerializeField] bool m_ForceControlGroup = false;
 
         [Header("Debug")]
-        [Tooltip("true 시 모든 Phase 시간을 1/10로 단축 (테스트용)")]
+        [Tooltip("true 시 모든 Phase 시간을 1/10 로 단축")]
         [SerializeField] bool m_DebugFastMode = false;
 
-        // Phase 1/2 darkness is produced by three combined layers, NOT a full-screen
-        // opaque panel:
-        //   1) the AdaptationProgressive shader outputs pure black for surfaces,
-        //   2) the camera background is switched to solid black (blocks the skybox),
-        //   3) all scene lights + ambient are disabled (so any non-converted Lit
-        //      surface also renders black).
-        // A screen-covering panel is intentionally avoided because it would also hide
-        // the surface-contact glow and the instruction UI. m_BlackoutPanel is kept
-        // only for backward compatibility and is always forced transparent.
         [Header("Screen Blackout (legacy — kept transparent)")]
         [SerializeField] CanvasGroup m_BlackoutPanel;
-        [SerializeField, Min(0.1f)] float m_BlackoutFadeDuration = 1.0f;
 
-        [Header("World Lighting (Phase 1/2 darkness)")]
-        [Tooltip("Phase 1/2 동안 끌 조명. 비워두면 Start에서 씬의 모든 Light를 자동 수집한다.")]
+        [Header("World Lighting (Phase 1/2 암흑)")]
         [SerializeField] List<Light> m_WorldLights = new();
-        [Tooltip("암흑 구간에서 환경광(Ambient)도 검정으로 강제")]
-        [SerializeField] bool m_DisableAmbientDuringDark = true;
+        [SerializeField] bool        m_DisableAmbientDuringDark = true;
 
         [Header("Non-Visual Feedback (Phase 1/2)")]
         [SerializeField] AudioSource m_AmbientAudioSource;
-        [SerializeField] AudioClip m_Phase1AmbientClip;
-        [SerializeField] bool m_EnableHeartbeatHaptics = true;
+        [SerializeField] AudioClip   m_Phase1AmbientClip;
         [SerializeField, Range(0f, 1f)] float m_HapticIntensity = 0.1f;
 
-        [Header("Current State")]
-        [SerializeField] AdaptationPhase m_CurrentPhase = AdaptationPhase.None;
+        [Header("Current State (읽기 전용)")]
+        [SerializeField] AdaptationPhase m_CurrentPhase    = AdaptationPhase.None;
         [SerializeField, Range(0f, 1f)] float m_CurrentFidelity = 0f;
 
-        private static readonly int GlobalVisualFidelityID = Shader.PropertyToID("_GlobalVisualFidelity");
+        // ── 내부 저장 변수 ────────────────────────────────────────────────
+        static readonly int GlobalVisualFidelityID = Shader.PropertyToID("_GlobalVisualFidelity");
 
-        // 카메라 배경 원본 복원을 위한 저장 변수
-        private Camera        m_XRCamera;
-        private CameraClearFlags m_OriginalClearFlags;
-        private Color         m_OriginalBackgroundColor;
+        Camera           m_XRCamera;
+        CameraClearFlags m_OriginalClearFlags;
+        Color            m_OriginalBackgroundColor;
 
-        // 조명/환경광 원본 복원을 위한 저장 변수
-        private Color m_OrigAmbientLight;
-        private float m_OrigAmbientIntensity;
-        private bool  m_LightingCaptured;
+        Color m_OrigAmbientLight;
+        float m_OrigAmbientIntensity;
+        bool  m_LightingCaptured;
 
+        // ── 생명주기 ─────────────────────────────────────────────────────
         void OnValidate()
         {
-            if (!Application.isPlaying)
-            {
-                UpdateGlobalFidelity();
-            }
+            if (!Application.isPlaying) UpdateGlobalFidelity();
         }
 
         void Awake()
@@ -107,17 +99,14 @@ namespace VRAdaptation
             if (m_AmbientAudioSource == null)
                 m_AmbientAudioSource = GetComponent<AudioSource>();
 
-            // XR 카메라 원본 설정 저장
             m_XRCamera = Camera.main;
             if (m_XRCamera != null)
             {
-                m_OriginalClearFlags       = m_XRCamera.clearFlags;
-                m_OriginalBackgroundColor  = m_XRCamera.backgroundColor;
+                m_OriginalClearFlags      = m_XRCamera.clearFlags;
+                m_OriginalBackgroundColor = m_XRCamera.backgroundColor;
             }
 
-            // 대조군은 Awake 단계에서 미리 fidelity=1.0 설정.
-            // GlobalAdaptationEffect.Awake()가 뒤이어 실행될 때
-            // _GlobalVisualFidelity=1.0 상태로 셰이더가 적용되므로 검정 화면이 없다.
+            // 대조군은 Awake 단계에서 fidelity=1.0 으로 초기화
             bool isControlEarly = m_ForceControlGroup
                 || ExperimentCondition.SelectedGroup == ExperimentGroup.Control;
             if (isControlEarly)
@@ -131,11 +120,10 @@ namespace VRAdaptation
         void Start()
         {
             if (ExperimentCondition.SelectedGroup == ExperimentGroup.NotSelected && !m_ForceControlGroup)
-                Debug.LogWarning("[VRAdaptation] 실험 그룹이 선택되지 않았습니다. LobbyScene을 먼저 실행하세요. 기본값(실험군)으로 진행합니다.");
+                Debug.LogWarning("[VRAdaptation] 실험 그룹 미선택 — 기본값(실험군) 진행");
 
             CaptureLighting();
 
-            // 블랙아웃 패널은 더 이상 암흑 용도로 사용하지 않는다(항상 투명).
             if (m_BlackoutPanel != null)
             {
                 m_BlackoutPanel.alpha          = 0f;
@@ -151,89 +139,250 @@ namespace VRAdaptation
                 m_CurrentFidelity = 1.0f;
                 UpdateGlobalFidelity();
                 SetCameraBackground(blackout: false);
-                if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
                 if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
                 StartCoroutine(ControlSequence());
             }
             else
             {
                 StartCoroutine(AdaptationSequence());
-                if (m_EnableHeartbeatHaptics)
-                    StartCoroutine(HeartbeatHapticsRoutine());
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 1군 (Control) 시퀀스
+        // ═══════════════════════════════════════════════════════════════
         IEnumerator ControlSequence()
         {
-            // Phase 3 시각 상태로 초기화 (blackout 없음, fidelity=1.0, 원본 머티리얼)
-            m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
+            // 처음부터 완전 시각
             SetCameraBackground(blackout: false);
-            SetWorldLighting(true);               // 대조군은 항상 조명 on
-            if (m_BlackoutPanel != null) m_BlackoutPanel.alpha = 0f;
+            SetWorldLighting(true);
             m_CurrentFidelity = 1.0f;
             UpdateGlobalFidelity();
             if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
 
-            // 한 프레임 대기 후 AimTrainer 시작 (렌더링 반영 보장)
-            yield return null;
+            yield return null; // 렌더링 반영 대기
 
-            m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
+            // ── Moving Phase (2분) ──────────────────────────────────────
+            m_CurrentPhase = AdaptationPhase.AimTrainer_Moving;
             OnPhaseChanged.Invoke(m_CurrentPhase);
+            Debug.Log("[VRAdaptation] 1군 Moving Phase 시작");
 
             if (m_AimTrainer != null)
-                m_AimTrainer.StartAimTrainer(ExperimentCondition.GetConditionName());
+                m_AimTrainer.StartMovingPhase(ExperimentCondition.GetConditionName());
             if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StartHUD(D(m_AimTrainerDuration), m_XRCamera?.transform);
+                m_AimTrainerHUD.StartHUD(D(m_MovingDuration), m_XRCamera?.transform);
 
-            Debug.Log("[VRAdaptation] Control Group: Starting Aim Trainer directly.");
-            yield return new WaitForSeconds(D(m_AimTrainerDuration));
+            yield return new WaitForSeconds(D(m_MovingDuration));
 
-            if (m_AimTrainer != null) m_AimTrainer.StopAimTrainer();
+            if (m_AimTrainer != null) m_AimTrainer.StopMovingPhase();
             if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
 
-            m_CurrentPhase = AdaptationPhase.Complete;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            m_CurrentFidelity = 1.0f;
-            UpdateGlobalFidelity();
+            // Moving → Static 전환 시 스폰 위치로 리셋
+            ResetPlayerToSpawn();
+            yield return null;
 
-            if (m_GlobalEffect != null)
-                m_GlobalEffect.RestoreEffect();
+            // ── Static Phase (전체 처치) ────────────────────────────────
+            yield return StartCoroutine(RunStaticPhase());
 
-            Debug.Log("[VRAdaptation] Control Group: Complete.");
+            // ── 완료 ───────────────────────────────────────────────────
+            FinishExperiment();
         }
 
-        // Phase 1·2 동안 스카이박스 대신 순수 검정을 배경으로 설정한다.
-        // 셰이더는 오브젝트 표면만 제어하므로 배경(스카이박스)을 별도로 차단하지 않으면
-        // 오브젝트 사이 빈 공간으로 하늘이 그대로 보여 실루엣 효과가 깨진다.
+        // ═══════════════════════════════════════════════════════════════
+        // 2군 (Adaptation) 시퀀스
+        // ═══════════════════════════════════════════════════════════════
+        IEnumerator AdaptationSequence()
+        {
+            // ── Phase 1: 암흑 + 네비게이션 미션 ────────────────────────
+            m_CurrentPhase    = AdaptationPhase.Phase1_Blackout;
+            m_CurrentFidelity = 0f;
+            UpdateGlobalFidelity();
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+
+            SetCameraBackground(blackout: true);
+            SetWorldLighting(false);
+
+            if (m_AmbientAudioSource != null && m_Phase1AmbientClip != null)
+            {
+                m_AmbientAudioSource.clip = m_Phase1AmbientClip;
+                m_AmbientAudioSource.loop = true;
+                m_AmbientAudioSource.Play();
+            }
+
+            Debug.Log("[VRAdaptation] Phase1 Blackout 시작");
+            yield return RunNavMission(m_Phase1NavMission);
+
+            // Phase1 완료 → 스폰 위치로 리셋
+            ResetPlayerToSpawn();
+            yield return null;
+
+            // ── Phase 2: Edge + 네비게이션 미션 ────────────────────────
+            m_CurrentPhase    = AdaptationPhase.Phase2_Edge;
+            m_CurrentFidelity = 0.3f;
+            UpdateGlobalFidelity();
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+
+            Debug.Log("[VRAdaptation] Phase2 Edge 시작");
+            yield return RunNavMission(m_Phase2NavMission);
+
+            // Phase2 완료 → 스폰 위치로 리셋
+            ResetPlayerToSpawn();
+            yield return null;
+
+            // 조명/배경 복원 (AimTrainer 단계는 완전 시각)
+            SetCameraBackground(blackout: false);
+            SetWorldLighting(true);
+            m_CurrentFidelity = 1.0f;
+            UpdateGlobalFidelity();
+            if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
+
+            if (m_AmbientAudioSource != null) m_AmbientAudioSource.Stop();
+
+            yield return null;
+
+            // ── Moving Phase (2분) ──────────────────────────────────────
+            m_CurrentPhase = AdaptationPhase.AimTrainer_Moving;
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+            Debug.Log("[VRAdaptation] 2군 Moving Phase 시작");
+
+            if (m_AimTrainer != null)
+                m_AimTrainer.StartMovingPhase(ExperimentCondition.GetConditionName());
+            if (m_AimTrainerHUD != null)
+                m_AimTrainerHUD.StartHUD(D(m_MovingDuration), m_XRCamera?.transform);
+
+            yield return new WaitForSeconds(D(m_MovingDuration));
+
+            if (m_AimTrainer != null) m_AimTrainer.StopMovingPhase();
+            if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
+
+            // Moving → Static 전환 시 스폰 위치로 리셋
+            ResetPlayerToSpawn();
+            yield return null;
+
+            // ── Static Phase (전체 처치) ────────────────────────────────
+            yield return StartCoroutine(RunStaticPhase());
+
+            // ── 완료 ───────────────────────────────────────────────────
+            FinishExperiment();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 공통 Static Phase 코루틴
+        // ═══════════════════════════════════════════════════════════════
+        IEnumerator RunStaticPhase()
+        {
+            m_CurrentPhase = AdaptationPhase.AimTrainer_Static;
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+            Debug.Log("[VRAdaptation] Static Phase 시작 — 전체 처치까지 대기");
+
+            bool allKilled = false;
+
+            if (m_AimTrainer != null)
+            {
+                m_AimTrainer.OnAllEnemiesKilled = () => allKilled = true;
+                m_AimTrainer.StartStaticPhase(ExperimentCondition.GetConditionName() + "_Static");
+            }
+
+            if (m_AimTrainerHUD != null)
+                m_AimTrainerHUD.StartStaticHUD(
+                    m_AimTrainer != null ? GetTotalEnemies() : 0,
+                    m_XRCamera?.transform);
+
+            // 전체 처치까지 대기 (시간 제한 없음)
+            while (!allKilled) yield return null;
+
+            if (m_AimTrainer != null) m_AimTrainer.StopStaticPhase();
+            if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
+
+            Debug.Log("[VRAdaptation] Static Phase 완료");
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 네비게이션 미션 코루틴 (체크포인트 도달 시 즉시 종료)
+        // ═══════════════════════════════════════════════════════════════
+        IEnumerator RunNavMission(NavigationMission mission)
+        {
+            bool completed = false;
+
+            if (mission != null)
+            {
+                mission.OnCompleted = () => completed = true;
+                mission.Activate();
+            }
+            else
+            {
+                // 미션 미설정 시 즉시 통과
+                Debug.LogWarning("[VRAdaptation] NavMission 미설정 — 즉시 다음 Phase로 진행");
+                yield break;
+            }
+
+            // 최종 Zone 진입까지 무한 대기
+            while (!completed) yield return null;
+
+            mission.Deactivate();
+            Debug.Log("[VRAdaptation] 네비게이션 미션 완료 (체크포인트 도달)");
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 플레이어 리셋 (XR Origin 을 스폰 위치로 순간이동)
+        // ═══════════════════════════════════════════════════════════════
+        void ResetPlayerToSpawn()
+        {
+            if (m_PlayerSpawnPoint == null) return;
+
+            var xrOrigin = FindObjectOfType<XROrigin>();
+            if (xrOrigin != null)
+            {
+                // CharacterController 가 있으면 잠깐 끄고 이동 (이동 중 충돌 방지)
+                var cc = xrOrigin.GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false;
+
+                xrOrigin.transform.SetPositionAndRotation(
+                    m_PlayerSpawnPoint.position,
+                    m_PlayerSpawnPoint.rotation);
+
+                if (cc != null) cc.enabled = true;
+
+                Debug.Log("[VRAdaptation] 플레이어 스폰 위치로 리셋");
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 종료
+        // ═══════════════════════════════════════════════════════════════
+        void FinishExperiment()
+        {
+            m_CurrentPhase    = AdaptationPhase.Complete;
+            m_CurrentFidelity = 1.0f;
+            UpdateGlobalFidelity();
+            OnPhaseChanged.Invoke(m_CurrentPhase);
+            if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
+            Debug.Log("[VRAdaptation] 실험 완료.");
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 조명 / 배경 유틸리티
+        // ═══════════════════════════════════════════════════════════════
         void SetCameraBackground(bool blackout)
         {
             if (m_XRCamera == null) return;
             if (blackout)
             {
-                m_XRCamera.clearFlags       = CameraClearFlags.SolidColor;
-                m_XRCamera.backgroundColor  = Color.black;
+                m_XRCamera.clearFlags      = CameraClearFlags.SolidColor;
+                m_XRCamera.backgroundColor = Color.black;
             }
             else
             {
-                m_XRCamera.clearFlags       = m_OriginalClearFlags;
-                m_XRCamera.backgroundColor  = m_OriginalBackgroundColor;
+                m_XRCamera.clearFlags      = m_OriginalClearFlags;
+                m_XRCamera.backgroundColor = m_OriginalBackgroundColor;
             }
         }
 
-        // ── 조명 제어 (Phase 1/2 암흑) ───────────────────────────────────────
-        // 셰이더가 표면을 검정으로 출력하더라도, 어댑테이션 셰이더로 교체되지 않은
-        // Lit 오브젝트는 조명/환경광이 있으면 보인다. 따라서 암흑 구간에서는
-        // 씬의 모든 Light와 Ambient를 끄고 Phase 3에서 복원한다.
         void CaptureLighting()
         {
             if (m_LightingCaptured) return;
-
             if (m_WorldLights == null || m_WorldLights.Count == 0)
-            {
-                m_WorldLights = new List<Light>(
-                    FindObjectsByType<Light>(FindObjectsSortMode.None));
-            }
+                m_WorldLights = new List<Light>(FindObjectsByType<Light>(FindObjectsSortMode.None));
 
             m_OrigAmbientLight     = RenderSettings.ambientLight;
             m_OrigAmbientIntensity = RenderSettings.ambientIntensity;
@@ -243,10 +392,8 @@ namespace VRAdaptation
         void SetWorldLighting(bool on)
         {
             if (m_WorldLights != null)
-            {
                 foreach (var l in m_WorldLights)
                     if (l != null) l.enabled = on;
-            }
 
             if (m_DisableAmbientDuringDark && m_LightingCaptured)
             {
@@ -265,139 +412,17 @@ namespace VRAdaptation
 
         float D(float seconds) => m_DebugFastMode ? seconds * 0.1f : seconds;
 
-        IEnumerator AdaptationSequence()
-        {
-            // --- Phase 1: Full Blackout + Audio/Haptic cues only ---
-            // The blackout panel covers the entire screen so the user truly cannot
-            // see anything — the object-level shader alone cannot achieve this because
-            // the skybox and inter-object space would remain visible.
-            m_CurrentPhase = AdaptationPhase.Phase1_Static;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            m_CurrentFidelity = 0f;
-            UpdateGlobalFidelity();
-
-            SetCameraBackground(blackout: true);   // 스카이박스 → 검정 배경
-            SetWorldLighting(false);               // 조명/환경광 off → 완전 암흑
-            if (m_BlackoutPanel != null)
-                m_BlackoutPanel.alpha = 0f;        // 패널은 사용하지 않음(UI·glow 가림 방지)
-
-            if (m_AmbientAudioSource != null && m_Phase1AmbientClip != null)
-            {
-                m_AmbientAudioSource.clip = m_Phase1AmbientClip;
-                m_AmbientAudioSource.loop = true;
-                m_AmbientAudioSource.Play();
-            }
-
-            Debug.Log("[VRAdaptation] Starting Phase 1: Full blackout (audio/haptic only)");
-            yield return new WaitForSeconds(D(m_Phase1Duration));
-
-            // --- Phase 2: Silhouette / Outline view ---
-            // Snap fidelity to 0.3 (peak rim/silhouette) immediately, then fade the
-            // blackout panel out so the silhouette becomes visible right away.
-            m_CurrentPhase = AdaptationPhase.Phase2_Dynamic;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            m_CurrentFidelity = 0.3f;
-            UpdateGlobalFidelity();
-            Debug.Log("[VRAdaptation] Starting Phase 2: Silhouette/Outline view");
-
-            // Phase 2도 조명은 꺼진 상태를 유지한다(실루엣/엣지 + 접촉 glow만 보임).
-            // 카메라 배경도 검정 유지 → 윤곽선만 떠오르는 화면.
-
-            yield return new WaitForSeconds(D(m_Phase2Duration));
-
-            // --- Phase 3: Progressive quality (Outline → Full PBR) ---
-            // 이 시점에서 카메라 배경을 원본(스카이박스)으로 복원한다.
-            // Phase 3는 텍스처·조명이 점점 살아나는 구간이므로 배경도 자연스럽게 등장해야 한다.
-            SetCameraBackground(blackout: false);
-            SetWorldLighting(true);                // 조명/환경광 복원 → 시각 재등장
-            m_CurrentPhase = AdaptationPhase.Phase3_HighFidelity;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            Debug.Log("[VRAdaptation] Starting Phase 3: Progressive quality increase");
-            yield return StartCoroutine(SmoothFidelityTransition(0.3f, 1.0f, D(m_Phase3Duration)));
-
-            // --- Aim Trainer Test Phase ---
-            m_CurrentPhase = AdaptationPhase.AimTrainer_Test;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            if (m_AimTrainer != null)
-                m_AimTrainer.StartAimTrainer(ExperimentCondition.GetConditionName());
-            if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StartHUD(D(m_AimTrainerDuration), m_XRCamera?.transform);
-
-            Debug.Log("[VRAdaptation] Starting Aim Trainer Test Phase");
-            yield return new WaitForSeconds(D(m_AimTrainerDuration));
-
-            if (m_AimTrainer != null)
-                m_AimTrainer.StopAimTrainer();
-            if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StopHUD();
-
-            m_CurrentPhase = AdaptationPhase.Complete;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            m_CurrentFidelity = 1.0f;
-            UpdateGlobalFidelity();
-
-            if (m_GlobalEffect != null)
-                m_GlobalEffect.RestoreEffect();
-
-            Debug.Log("[VRAdaptation] Adaptation Complete. Restored original materials.");
-        }
-
-        IEnumerator HeartbeatHapticsRoutine()
-        {
-            while (m_CurrentPhase != AdaptationPhase.Complete && m_CurrentPhase != AdaptationPhase.None)
-            {
-                // Simple rhythmic pulse to provide a 'Rest Frame' or sense of presence
-                // Only active during Phase 1 and 2
-                if (m_CurrentPhase == AdaptationPhase.Phase1_Static || m_CurrentPhase == AdaptationPhase.Phase2_Dynamic)
-                {
-                    TriggerHapticPulse(m_HapticIntensity, 0.1f);
-                    yield return new WaitForSeconds(1.5f); // Pulse every 1.5 seconds
-                }
-                else
-                {
-                    yield return new WaitForSeconds(1f);
-                }
-            }
-        }
-
-        void TriggerHapticPulse(float intensity, float duration)
-        {
-            // Implementation depends on XRI version, typically via XRController or ActionBasedController
-            // For now, we log it. In a real VR build, this would use OpenXR/XRI Haptic APIs.
-            // Debug.Log($"[VRAdaptation] Haptic Pulse: {intensity}");
-        }
-
-        IEnumerator FadeBlackout(float fromAlpha, float toAlpha, float duration)
-        {
-            if (m_BlackoutPanel == null) yield break;
-
-            float elapsed = 0f;
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
-                m_BlackoutPanel.alpha = Mathf.Lerp(fromAlpha, toAlpha, elapsed / duration);
-                yield return null;
-            }
-            m_BlackoutPanel.alpha = toAlpha;
-        }
+        int GetTotalEnemies() =>
+            m_AimTrainer != null ? m_AimTrainer.GetStaticTargetCount() : 0;
 
         IEnumerator SmoothFidelityTransition(float start, float end, float duration)
         {
             float elapsed = 0f;
-            float lastLogTime = 0f;
-
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
                 m_CurrentFidelity = Mathf.Lerp(start, end, elapsed / duration);
                 UpdateGlobalFidelity();
-
-                // Log every 1 second
-                if (Time.time - lastLogTime > 1f)
-                {
-                    Debug.Log($"[VRAdaptation] {m_CurrentPhase} - Fidelity: {m_CurrentFidelity:F2}");
-                    lastLogTime = Time.time;
-                }
                 yield return null;
             }
             m_CurrentFidelity = end;
@@ -409,8 +434,8 @@ namespace VRAdaptation
             Shader.SetGlobalFloat(GlobalVisualFidelityID, m_CurrentFidelity);
         }
 
-        // Methods to be called by other systems (Audio/Haptics)
-        public AdaptationPhase GetCurrentPhase() => m_CurrentPhase;
-        public float GetCurrentFidelity() => m_CurrentFidelity;
+        // ── 공개 API ────────────────────────────────────────────────────
+        public AdaptationPhase GetCurrentPhase()    => m_CurrentPhase;
+        public float           GetCurrentFidelity() => m_CurrentFidelity;
     }
 }

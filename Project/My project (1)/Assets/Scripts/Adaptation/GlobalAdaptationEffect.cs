@@ -68,6 +68,8 @@ namespace VRAdaptation
                 }
 
                 if (ren.gameObject.layer == 5) shouldSkip = true;
+                // GlowGuidePoint 는 항상 Unlit 발광 유지 — 셰이더 교체 제외
+                if (ren.GetComponentInParent<GlowGuidePoint>() != null) shouldSkip = true;
 
                 bool inLayer = ((1 << ren.gameObject.layer) & m_TargetLayers) != 0;
                 

@@ -13,8 +13,8 @@ namespace VRAdaptation.AimTrainer
         [SerializeField] LayerMask m_WallLayer = ~0; // 총구멍 생성 대상 레이어 (전체 기본)
         [SerializeField] Transform m_MuzzlePoint;
 
-        [Header("레이저 조준선 (항상 표시)")]
-        [SerializeField] bool  m_ShowLaserSight  = true;
+        [Header("레이저 조준선 (기본 OFF — 가늠좌 조준)")]
+        [SerializeField] bool  m_ShowLaserSight  = false;
         [SerializeField] Color m_LaserSightColor = new Color(1f, 0.08f, 0.08f, 0.9f);
         [SerializeField] float m_LaserSightWidth = 0.0018f;
 
@@ -87,10 +87,15 @@ namespace VRAdaptation.AimTrainer
 
                 if (hit.collider.TryGetComponent(out AimTarget target))
                 {
-                    target.Hit();
-                    hapticAmp = Mathf.Clamp01(hapticAmp + m_HitBonusAmplitude);
-                    if (m_AudioSource != null && m_HitClip != null)
-                        m_AudioSource.PlayOneShot(m_HitClip);
+                    target.Hit(); // 내부에서 Enemy/Friendly 이벤트 분기
+
+                    if (target.Type == TargetType.Enemy)
+                    {
+                        hapticAmp = Mathf.Clamp01(hapticAmp + m_HitBonusAmplitude);
+                        if (m_AudioSource != null && m_HitClip != null)
+                            m_AudioSource.PlayOneShot(m_HitClip);
+                    }
+                    // Friendly 오발: 추가 햅틱/사운드 없음 (AimTargetManager가 패널티 처리)
                 }
             }
             else
