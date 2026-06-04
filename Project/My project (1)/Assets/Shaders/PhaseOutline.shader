@@ -32,6 +32,7 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
 
             // Blitter.BlitTexture 가 소스 화면을 _BlitTexture 에 바인딩한다.
             // 원본 색(표면 검정 + 접촉 glow 링)을 읽어 보존하려고 직접 선언한다.
@@ -42,6 +43,7 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
                 float4 _MainTex_ST;
                 float4 _OutlineColor;
                 float  _DepthThresh;
+                float  _NormalThresh;
                 float  _Thickness;
             CBUFFER_END
 
@@ -76,6 +78,7 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
             {
                 float2 px = _Thickness * rcp(_ScreenParams.xy);
 
+                // 깊이 차분 (오브젝트 경계, 실루엣)
                 float dc = LinearEyeDepth(SampleSceneDepth(uv),                      _ZBufferParams);
                 float d0 = LinearEyeDepth(SampleSceneDepth(uv + float2( px.x, 0.0)), _ZBufferParams);
                 float d1 = LinearEyeDepth(SampleSceneDepth(uv + float2(-px.x, 0.0)), _ZBufferParams);
@@ -83,7 +86,23 @@ Shader "Hidden/VRAdaptation/PhaseOutline"
                 float d3 = LinearEyeDepth(SampleSceneDepth(uv + float2(0.0, -px.y)), _ZBufferParams);
 
                 float maxDiff = max(max(abs(dc - d0), abs(dc - d1)), max(abs(dc - d2), abs(dc - d3)));
-                return step(_DepthThresh, maxDiff / max(dc, 0.01));
+                float depthEdge = step(_DepthThresh, maxDiff / max(dc, 0.01));
+
+                // 법선 차분 (오목 경계, 내부 꺾임 — 깊이만으로 검출 불가한 엣지)
+                // DepthNormals Pass가 _CameraNormalsTexture에 법선을 기록하므로 바로 샘플링 가능
+                float3 nc = SampleSceneNormals(uv);
+                float3 n0 = SampleSceneNormals(uv + float2( px.x, 0.0));
+                float3 n1 = SampleSceneNormals(uv + float2(-px.x, 0.0));
+                float3 n2 = SampleSceneNormals(uv + float2(0.0,  px.y));
+                float3 n3 = SampleSceneNormals(uv + float2(0.0, -px.y));
+
+                float maxNDiff = max(
+                    max(distance(nc, n0), distance(nc, n1)),
+                    max(distance(nc, n2), distance(nc, n3))
+                );
+                float normalEdge = step(_NormalThresh, maxNDiff);
+
+                return saturate(depthEdge + normalEdge);
             }
 
             half4 frag_edge(Vary IN) : SV_Target
