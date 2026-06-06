@@ -200,6 +200,86 @@ namespace VRAdaptation.AimTrainer
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // Battle Phase (통합: Moving + Static 타겟 전부 동시 활성화)
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// 이동 타겟(PatrolA/B 있음)과 고정 타겟(PatrolA/B 없음)을 동시에 활성화.
+        /// Enemy 전부 처치 시 OnAllEnemiesKilled 이벤트 발생.
+        /// </summary>
+        public void StartBattlePhase(string condition)
+        {
+            if (m_IsRunning) return;
+            m_IsRunning          = true;
+            m_Condition          = condition;
+            m_EnemiesKilled      = 0;
+            m_EnemiesMissed      = 0;
+            m_EnemiesActivated   = 0;
+            m_TotalEnemiesTarget = 0;
+
+            var allTargets = new List<AimTarget>();
+            allTargets.AddRange(m_MovingTargets);
+            allTargets.AddRange(m_StaticTargets);
+
+            foreach (var t in allTargets)
+                if (t != null && t.Type == TargetType.Enemy) m_TotalEnemiesTarget++;
+
+            m_EnemiesActivated = m_TotalEnemiesTarget;
+
+            ExperimentDataLogger.Instance.StartLogging(condition);
+
+            foreach (var t in allTargets)
+            {
+                if (t == null) continue;
+                t.OnHit          = (tgt) => HandleBattleEnemyKill(tgt);
+                t.OnFriendlyFire = (tgt) => HandleFriendlyFire(tgt);
+                t.Activate(persistAfterHit: false);
+                if (t.Type == TargetType.Enemy) LogSpawn(t);
+            }
+
+            AimTrainerHUD.Instance?.UpdateRemainingEnemies(m_TotalEnemiesTarget);
+            Debug.Log($"[AimTrainer] Battle Phase 시작 — 타겟 {allTargets.Count}개 (적 {m_TotalEnemiesTarget}개)");
+        }
+
+        public void StopBattlePhase()
+        {
+            m_IsRunning = false;
+            StopAllCoroutines();
+            var allTargets = new List<AimTarget>();
+            allTargets.AddRange(m_MovingTargets);
+            allTargets.AddRange(m_StaticTargets);
+            foreach (var t in allTargets)
+                if (t != null) t.gameObject.SetActive(false);
+            ExperimentDataLogger.Instance.StopLogging();
+            Debug.Log("[AimTrainer] Battle Phase 강제 종료");
+        }
+
+        void HandleBattleEnemyKill(AimTarget t)
+        {
+            float reaction = (Time.time - t.GetSpawnTime()) * 1000f;
+            ExperimentDataLogger.Instance.LogEvent(m_Condition, "Hit", reaction, t.transform.position, GetHeadRotation());
+            AimTrainerHUD.Instance?.RegisterHit();
+            m_EnemiesKilled++;
+            AimTrainerHUD.Instance?.UpdateRemainingEnemies(m_TotalEnemiesTarget - m_EnemiesKilled);
+
+            if (m_EnemiesKilled >= m_TotalEnemiesTarget)
+            {
+                m_IsRunning = false;
+                ExperimentDataLogger.Instance.StopLogging();
+                Debug.Log("[AimTrainer] Battle Phase 완료 — 전체 처치");
+                OnAllEnemiesKilled?.Invoke();
+            }
+        }
+
+        public int GetBattleEnemyCount()
+        {
+            int count = 0;
+            foreach (var t in m_MovingTargets) if (t != null && t.Type == TargetType.Enemy) count++;
+            foreach (var t in m_StaticTargets) if (t != null && t.Type == TargetType.Enemy) count++;
+            return count;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // 공통 핸들러
         // ═══════════════════════════════════════════════════════════════
 
@@ -227,17 +307,8 @@ namespace VRAdaptation.AimTrainer
         /// <summary>Static Phase 씬 배치 타겟 총 수 (HUD 초기값용)</summary>
         public int GetStaticTargetCount() => m_StaticTargets.Count;
 
-        // ─── 레거시 호환 (VRAdaptationManager 가 직접 호출하는 인터페이스) ──
-        /// <summary>Moving Phase 시작 (VRAdaptationManager 호출용)</summary>
-        public void StartAimTrainer(string condition) => StartMovingPhase(condition);
-        /// <summary>Moving Phase 정지 (VRAdaptationManager 호출용)</summary>
-        public void StopAimTrainer()
-        {
-            if (m_IsRunning)
-            {
-                StopMovingPhase();
-                StopStaticPhase();
-            }
-        }
+        // ─── 레거시 호환 (외부 호출용) ─────────────────────────────────
+        public void StartAimTrainer(string condition) => StartBattlePhase(condition);
+        public void StopAimTrainer() { if (m_IsRunning) StopBattlePhase(); }
     }
 }

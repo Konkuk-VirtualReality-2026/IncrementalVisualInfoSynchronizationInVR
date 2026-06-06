@@ -31,8 +31,9 @@ namespace VRAdaptation.AimTrainer
 
         // ── 비주얼 ────────────────────────────────────────────────────────
         [Header("Visual")]
-        [SerializeField] Color m_EnemyColor    = new Color(1f, 0.15f, 0.15f);
-        [SerializeField] Color m_FriendlyColor = new Color(0.2f, 0.9f, 0.25f);
+        [Tooltip("원본 텍스처에 곱해지는 틴트. RGB=색조 강도 (1=원본, 0.5=절반)")]
+        [SerializeField] Color m_EnemyColor    = new Color(1f, 0.45f, 0.45f, 1f);
+        [SerializeField] Color m_FriendlyColor = new Color(0.45f, 1f, 0.45f, 1f);
 
         // ── 이벤트 ────────────────────────────────────────────────────────
         public UnityAction<AimTarget> OnHit;           // Enemy 명중
@@ -53,15 +54,14 @@ namespace VRAdaptation.AimTrainer
         Vector3  m_WaypointB;
         float    m_ActiveSpeed;
 
-        Renderer m_Renderer;
-        Material m_Mat;
+        Renderer[] m_Renderers;
 
         // ─────────────────────────────────────────────────────────────────
         public float GetSpawnTime() => m_SpawnTime;
 
         void Awake()
         {
-            m_Renderer = GetComponentInChildren<Renderer>();
+            m_Renderers = GetComponentsInChildren<Renderer>(true);
         }
 
         // ── MovingPhase: Inspector에 PatrolA/B가 연결된 상태로 사용 ────────
@@ -163,19 +163,17 @@ namespace VRAdaptation.AimTrainer
 
         void ApplyVisual()
         {
-            if (m_Renderer == null) m_Renderer = GetComponentInChildren<Renderer>();
-            if (m_Renderer == null) return;
+            if (m_Renderers == null || m_Renderers.Length == 0)
+                m_Renderers = GetComponentsInChildren<Renderer>(true);
+            if (m_Renderers.Length == 0) return;
 
-            if (m_Mat == null)
-                m_Mat = new Material(Shader.Find("Unlit/Color"));
+            Color tint = (Type == TargetType.Enemy) ? m_EnemyColor : m_FriendlyColor;
+            var mpb = new MaterialPropertyBlock();
+            mpb.SetColor("_BaseColor", tint); // URP/Lit
+            mpb.SetColor("_Color",     tint); // Unlit/Color 등 Built-in
 
-            m_Mat.color             = (Type == TargetType.Enemy) ? m_EnemyColor : m_FriendlyColor;
-            m_Renderer.sharedMaterial = m_Mat;
-        }
-
-        void OnDestroy()
-        {
-            if (m_Mat != null) Destroy(m_Mat);
+            foreach (var r in m_Renderers)
+                if (r != null) r.SetPropertyBlock(mpb);
         }
     }
 }

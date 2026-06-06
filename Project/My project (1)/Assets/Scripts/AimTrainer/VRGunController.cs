@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VRAdaptation;
 
 namespace VRAdaptation.AimTrainer
 {
@@ -37,6 +38,10 @@ namespace VRAdaptation.AimTrainer
 
         void OnFirePerformed(InputAction.CallbackContext ctx)
         {
+            var phase = VRAdaptationManager.Instance?.GetCurrentPhase();
+            if (phase != AdaptationPhase.AimTrainer_Moving && phase != AdaptationPhase.AimTrainer_Static)
+                return;
+
             if (Time.time - m_LastFireTime < m_FireCooldown) return;
             m_LastFireTime = Time.time;
 

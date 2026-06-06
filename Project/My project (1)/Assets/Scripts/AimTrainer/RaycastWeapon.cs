@@ -85,7 +85,7 @@ namespace VRAdaptation.AimTrainer
             {
                 StartCoroutine(ShowImpact(hit.point, hit.normal));
 
-                if (hit.collider.TryGetComponent(out AimTarget target))
+                if (hit.collider.GetComponentInParent<AimTarget>() is AimTarget target)
                 {
                     target.Hit(); // 내부에서 Enemy/Friendly 이벤트 분기
 

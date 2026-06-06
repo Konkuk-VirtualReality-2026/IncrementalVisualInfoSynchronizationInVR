@@ -153,38 +153,17 @@ namespace VRAdaptation
         // ═══════════════════════════════════════════════════════════════
         IEnumerator ControlSequence()
         {
-            // 처음부터 완전 시각
             SetCameraBackground(blackout: false);
             SetWorldLighting(true);
             m_CurrentFidelity = 1.0f;
             UpdateGlobalFidelity();
             if (m_GlobalEffect != null) m_GlobalEffect.RestoreEffect();
 
-            yield return null; // 렌더링 반영 대기
-
-            // ── Moving Phase (2분) ──────────────────────────────────────
-            m_CurrentPhase = AdaptationPhase.AimTrainer_Moving;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            Debug.Log("[VRAdaptation] 1군 Moving Phase 시작");
-
-            if (m_AimTrainer != null)
-                m_AimTrainer.StartMovingPhase(ExperimentCondition.GetConditionName());
-            if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StartHUD(D(m_MovingDuration), m_XRCamera?.transform);
-
-            yield return new WaitForSeconds(D(m_MovingDuration));
-
-            if (m_AimTrainer != null) m_AimTrainer.StopMovingPhase();
-            if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
-
-            // Moving → Static 전환 시 스폰 위치로 리셋
-            ResetPlayerToSpawn();
             yield return null;
 
-            // ── Static Phase (전체 처치) ────────────────────────────────
-            yield return StartCoroutine(RunStaticPhase());
+            // ── Battle Phase (전체 처치) ────────────────────────────────
+            yield return StartCoroutine(RunBattlePhase());
 
-            // ── 완료 ───────────────────────────────────────────────────
             FinishExperiment();
         }
 
@@ -240,61 +219,40 @@ namespace VRAdaptation
 
             yield return null;
 
-            // ── Moving Phase (2분) ──────────────────────────────────────
-            m_CurrentPhase = AdaptationPhase.AimTrainer_Moving;
-            OnPhaseChanged.Invoke(m_CurrentPhase);
-            Debug.Log("[VRAdaptation] 2군 Moving Phase 시작");
+            // ── Battle Phase (전체 처치) ────────────────────────────────
+            yield return StartCoroutine(RunBattlePhase());
 
-            if (m_AimTrainer != null)
-                m_AimTrainer.StartMovingPhase(ExperimentCondition.GetConditionName());
-            if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StartHUD(D(m_MovingDuration), m_XRCamera?.transform);
-
-            yield return new WaitForSeconds(D(m_MovingDuration));
-
-            if (m_AimTrainer != null) m_AimTrainer.StopMovingPhase();
-            if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
-
-            // Moving → Static 전환 시 스폰 위치로 리셋
-            ResetPlayerToSpawn();
-            yield return null;
-
-            // ── Static Phase (전체 처치) ────────────────────────────────
-            yield return StartCoroutine(RunStaticPhase());
-
-            // ── 완료 ───────────────────────────────────────────────────
             FinishExperiment();
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // 공통 Static Phase 코루틴
+        // 공통 Battle Phase 코루틴 (이동+고정 타겟 전부 동시 활성화)
         // ═══════════════════════════════════════════════════════════════
-        IEnumerator RunStaticPhase()
+        IEnumerator RunBattlePhase()
         {
             m_CurrentPhase = AdaptationPhase.AimTrainer_Static;
             OnPhaseChanged.Invoke(m_CurrentPhase);
-            Debug.Log("[VRAdaptation] Static Phase 시작 — 전체 처치까지 대기");
+            Debug.Log("[VRAdaptation] Battle Phase 시작 — 전체 처치까지 대기");
 
             bool allKilled = false;
 
             if (m_AimTrainer != null)
             {
                 m_AimTrainer.OnAllEnemiesKilled = () => allKilled = true;
-                m_AimTrainer.StartStaticPhase(ExperimentCondition.GetConditionName() + "_Static");
+                m_AimTrainer.StartBattlePhase(ExperimentCondition.GetConditionName());
             }
 
             if (m_AimTrainerHUD != null)
                 m_AimTrainerHUD.StartStaticHUD(
-                    m_AimTrainer != null ? GetTotalEnemies() : 0,
+                    m_AimTrainer != null ? m_AimTrainer.GetBattleEnemyCount() : 0,
                     m_XRCamera?.transform);
 
-            // 전체 처치까지 대기 (시간 제한 없음)
             while (!allKilled) yield return null;
 
-            if (m_AimTrainer != null) m_AimTrainer.StopStaticPhase();
+            if (m_AimTrainer != null) m_AimTrainer.StopBattlePhase();
             if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
 
-            Debug.Log("[VRAdaptation] Static Phase 완료");
+            Debug.Log("[VRAdaptation] Battle Phase 완료");
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -413,7 +371,7 @@ namespace VRAdaptation
         float D(float seconds) => m_DebugFastMode ? seconds * 0.1f : seconds;
 
         int GetTotalEnemies() =>
-            m_AimTrainer != null ? m_AimTrainer.GetStaticTargetCount() : 0;
+            m_AimTrainer != null ? m_AimTrainer.GetBattleEnemyCount() : 0;
 
         IEnumerator SmoothFidelityTransition(float start, float end, float duration)
         {
