@@ -107,6 +107,22 @@ namespace VRAdaptation.AimTrainer
             RefreshUI();
         }
 
+        public void StartTimerHUD(float duration, Transform followTarget)
+        {
+            m_Hits          = 0;
+            m_Shots         = 0;
+            m_Penalties     = 0;
+            m_TimeRemaining = duration;
+            m_FollowTarget  = followTarget;
+            m_Active        = true;
+            m_IsStaticMode  = false;
+            SetVisible(true);
+
+            if (m_RemainingText != null) m_RemainingText.gameObject.SetActive(false);
+            if (m_TimerText     != null) m_TimerText.gameObject.SetActive(true);
+            RefreshUI();
+        }
+
         public void StopHUD()
         {
             m_Active = false;

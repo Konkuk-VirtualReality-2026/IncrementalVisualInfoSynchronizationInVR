@@ -464,6 +464,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1113,8 +1126,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 0.91332114, b: 0.7688679, a: 1}
+  m_Intensity: 4.25
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1123,10 +1136,10 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
+    m_Strength: 0.55
+    m_Bias: 0
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -1177,7 +1190,7 @@ Transform:
   m_GameObject: {fileID: 299639867}
   serializedVersion: 2
   m_LocalRotation: {x: 0.33079913, y: -0.0329763, z: 0.3034621, w: 0.8929699}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1220,6 +1233,62 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 30331457591782619, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 30331457591782619, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 80665998473629757, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 80665998473629757, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 143249424112862377, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 143249424112862377, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 347286246396315540, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 347286246396315540, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 566054069212596216, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 566054069212596216, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 759611833930424273, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 759611833930424273, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 791463552358438831, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 791463552358438831, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 826796191347199094, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6603
@@ -1227,6 +1296,38 @@ PrefabInstance:
     - target: {fileID: 826796191347199094, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.7582
+      objectReference: {fileID: 0}
+    - target: {fileID: 857342812601361009, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 857342812601361009, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 869598305598320739, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 869598305598320739, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 920518104183067437, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 920518104183067437, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 928701432455615843, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 928701432455615843, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1024574572207016296, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalScale.x
@@ -1236,13 +1337,213 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -7.0336
       objectReference: {fileID: 0}
+    - target: {fileID: 1216219022729527342, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1216219022729527342, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1292944985020796367, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1292944985020796367, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1738327197438150113, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1738327197438150113, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916482592328625234, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916482592328625234, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959754260144633625, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959754260144633625, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1985241448777855044, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1985241448777855044, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2194143595875004935, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2194143595875004935, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311339203014969597, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311339203014969597, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2341508312872296228, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2341508312872296228, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675938501467083348, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675938501467083348, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2952043864696399997, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2952043864696399997, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2972768501336145725, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalPosition.z
       value: -27.16
       objectReference: {fileID: 0}
+    - target: {fileID: 2991537318889117334, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991537318889117334, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3146874485131846754, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3146874485131846754, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336755928884549164, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336755928884549164, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369320274458589990, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369320274458589990, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3395359272046195003, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3395359272046195003, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3616139308905026601, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3616139308905026601, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742580856320093504, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742580856320093504, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3819563661498099307, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3819563661498099307, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4048807453361572516, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4048807453361572516, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4110178901672821842, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4110178901672821842, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4430528439455421141, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4430528439455421141, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4658088845852647405, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalPosition.z
       value: -27.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742489091057193497, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742489091057193497, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809305037434536793, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809305037434536793, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819788367569500132, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819788367569500132, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4978949641374945851, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalScale.x
@@ -1252,9 +1553,257 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -16.1471
       objectReference: {fileID: 0}
+    - target: {fileID: 5060599461223873068, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5060599461223873068, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5119541890787171762, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5119541890787171762, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242689810066740901, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242689810066740901, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5311849536871107357, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5311849536871107357, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5495192092409342480, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5495192092409342480, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5551404340820273594, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5551404340820273594, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5630813962906258044, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_Name
       value: Demo
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700421565112353174, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700421565112353174, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5779690728505698005, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5779690728505698005, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781862396622125156, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781862396622125156, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800090146569353357, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800090146569353357, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5832152706342347906, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5832152706342347906, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5984989720699553334, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5984989720699553334, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989548772904260635, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989548772904260635, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6027033267470266776, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6027033267470266776, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093171570766590506, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093171570766590506, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6148509210879043924, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6148509210879043924, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6402093679194962375, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6402093679194962375, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6641551577325314845, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6641551577325314845, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6720452588669085788, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6720452588669085788, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769535573625601453, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769535573625601453, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7040160752699334723, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7040160752699334723, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7159345502320124449, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7159345502320124449, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166367258008176654, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166367258008176654, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7280132573012654449, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7280132573012654449, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7350638253977436279, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7350638253977436279, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653807413856644310, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653807413856644310, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774424476835489330, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774424476835489330, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7860336066146044635, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7860336066146044635, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7898168572005212688, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7898168572005212688, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974144586558937243, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7974144586558937243, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8264486590882535351, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8264486590882535351, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8449603281765134581, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1296,6 +1845,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8505037989312468204, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8505037989312468204, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8538102215587531183, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8538102215587531183, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8620750956906675440, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8620750956906675440, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898975600110171052, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898975600110171052, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8912448850266840413, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.2371
@@ -1304,6 +1885,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -16.1858
       objectReference: {fileID: 0}
+    - target: {fileID: 8931983256057891191, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8931983256057891191, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9033845769551770036, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.6397
@@ -1311,6 +1900,30 @@ PrefabInstance:
     - target: {fileID: 9033845769551770036, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.6504
+      objectReference: {fileID: 0}
+    - target: {fileID: 9068583714324281853, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9068583714324281853, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131683697697129070, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131683697697129070, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215992053915536863, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215992053915536863, guid: 1ed7c22d98568354baed8fb40e91b259, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1837,6 +2450,10 @@ PrefabInstance:
     - target: {fileID: 5826056641483426609, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232745470614056090, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_Height
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4283,6 +4900,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -4924,6 +5554,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3e2ac57418d42459a97cf8b054438f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VRAdaptation.GlowGuidePoint
+--- !u!1001 &1074444451
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_Name
+      value: AimTarget (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.2616313
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -16.062365
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.11279418
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.9936184
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 192.953
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+--- !u!114 &1074444452 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3277677027574878920, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+  m_PrefabInstance: {fileID: 1074444451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70dfa6b138025e7419822dca8d098a1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRAdaptation.AimTrainer.AimTarget
 --- !u!1001 &1118808447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4935,6 +5658,19 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
       objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
@@ -5430,7 +6166,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1249617917}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 2
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -5455,7 +6191,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5764,6 +6500,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3e2ac57418d42459a97cf8b054438f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VRAdaptation.GlowGuidePoint
+--- !u!1001 &1340743748
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_Name
+      value: AimTarget (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.75403315
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.6568364
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 82.118
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+--- !u!114 &1340743749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3277677027574878920, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+  m_PrefabInstance: {fileID: 1340743748}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70dfa6b138025e7419822dca8d098a1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRAdaptation.AimTrainer.AimTarget
 --- !u!1001 &1354256909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5775,6 +6604,10 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3277677027574878920, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: Type
@@ -5788,6 +6621,15 @@ PrefabInstance:
       propertyPath: m_PatrolB
       value: 
       objectReference: {fileID: 1790435018}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8027819394901761677, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -5972,9 +6814,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3277677027574878920, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: Type
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
       objectReference: {fileID: 0}
     - target: {fileID: 8027819394901761677, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -6515,6 +7370,19 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
       objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
@@ -7151,6 +8019,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -7678,6 +8559,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8027819394901761677, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -8011,17 +8905,19 @@ MonoBehaviour:
   - {fileID: 167289123}
   - {fileID: 410322434}
   - {fileID: 1510559178}
+  - {fileID: 1074444452}
+  - {fileID: 1403309804}
   - {fileID: 1624073221}
+  - {fileID: 1340743749}
   - {fileID: 181936487}
   - {fileID: 2018287541}
   - {fileID: 758562794}
   - {fileID: 1410592893}
   - {fileID: 696414002}
   - {fileID: 1500509644}
-  - {fileID: 1403309804}
   m_StaticCenter: {fileID: 260793047}
   m_ApproachSpeed: 1.5
-  m_SpawnInterval: 1.5
+  m_SpawnInterval: 4
   m_PlayerHead: {fileID: 441087507}
 --- !u!4 &1723789465
 Transform:
@@ -8272,6 +9168,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3277677027574878920, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_PatrolA
       value: 
@@ -8280,6 +9180,15 @@ PrefabInstance:
       propertyPath: m_PatrolB
       value: 
       objectReference: {fileID: 452356169}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -8390,6 +9299,19 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
       objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
@@ -8624,18 +9546,6 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget
-      objectReference: {fileID: 0}
-    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8927,6 +9837,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: AimTarget (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
+      objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -9166,6 +10089,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2116457632445005431, guid: 12786b453b3a7cc4a815f43857ab7460, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2116457632445005431, guid: 12786b453b3a7cc4a815f43857ab7460, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9367,6 +10298,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building_01 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 5778495434235417856, guid: 2d1aed8ada79e4d4e99084037c3b094a, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778495434235417856, guid: 2d1aed8ada79e4d4e99084037c3b094a, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9388,6 +10327,19 @@ PrefabInstance:
     - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_Name
       value: AimTarget (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 411364702734548953, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7566672165924656073, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'CG'\n\tTransform 'L Calf'\n\tTransform 'R
+        Finger2'\n\tTransform 'R Hand'\n\tTransform 'R Finger11'\n\tTransform 'Spine1'\n\tTransform
+        'Neck'\n\tTransform 'L Forearm'\n\tTransform 'L Hand'\n\tTransform 'R UpperArm'\n\tand
+        more ...\n\tFrom animation clip 'mixamo.com'"
       objectReference: {fileID: 0}
     - target: {fileID: 8507414568228544164, guid: 9e5dc36633ac954449013a8d764c4d2d, type: 3}
       propertyPath: m_LocalScale.x
@@ -9534,7 +10486,7 @@ MonoBehaviour:
   m_Phase1NavMission: {fileID: 1829475779}
   m_Phase2NavMission: {fileID: 1829475779}
   m_PlayerSpawnPoint: {fileID: 260793047}
-  m_MovingDuration: 120
+  m_BattleDuration: 180
   m_ForceControlGroup: 0
   m_DebugFastMode: 0
   m_BlackoutPanel: {fileID: 764585895}
@@ -10526,20 +11478,22 @@ SceneRoots:
   - {fileID: 157306674}
   - {fileID: 1987516115}
   - {fileID: 301212739}
-  - {fileID: 1841733323}
-  - {fileID: 1354256909}
   - {fileID: 828497394}
   - {fileID: 1790435018}
+  - {fileID: 1955699243}
+  - {fileID: 452356169}
+  - {fileID: 1841733323}
+  - {fileID: 1354256909}
   - {fileID: 1932258777}
   - {fileID: 1510559177}
+  - {fileID: 1074444451}
   - {fileID: 1403309803}
   - {fileID: 71039516}
+  - {fileID: 1340743748}
   - {fileID: 1118808447}
   - {fileID: 1973060221}
   - {fileID: 1584399257}
   - {fileID: 1786520492}
-  - {fileID: 1955699243}
-  - {fileID: 452356169}
   - {fileID: 950743841}
   - {fileID: 1671385236}
   - {fileID: 1798897968}

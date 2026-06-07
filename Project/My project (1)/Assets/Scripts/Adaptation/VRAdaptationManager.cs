@@ -45,10 +45,9 @@ namespace VRAdaptation
         [Tooltip("각 Phase 시작 시 플레이어를 이 위치로 리셋한다")]
         [SerializeField] Transform m_PlayerSpawnPoint;
 
-        [Header("Phase Durations (초) — NavMission은 도달 즉시 종료, 여기서는 Moving만 사용")]
-        [Tooltip("Moving Phase 시간 제한")]
-        [SerializeField] float m_MovingDuration   = 120f; // 2분
-        // Static Phase 는 전체 처치 시 자동 종료 — 시간 제한 없음
+        [Header("Phase Durations (초)")]
+        [Tooltip("전투 단계(AimTrainer) 시간 제한 (3분)")]
+        [SerializeField] float m_BattleDuration = 180f; 
 
         [Header("Experiment Condition")]
         [Tooltip("대조군(1군)으로 강제 설정 (Inspector 디버그용)")]
@@ -232,27 +231,24 @@ namespace VRAdaptation
         {
             m_CurrentPhase = AdaptationPhase.AimTrainer_Static;
             OnPhaseChanged.Invoke(m_CurrentPhase);
-            Debug.Log("[VRAdaptation] Battle Phase 시작 — 전체 처치까지 대기");
-
-            bool allKilled = false;
+            Debug.Log($"[VRAdaptation] Battle Phase 시작 — {m_BattleDuration}초 동안 진행");
 
             if (m_AimTrainer != null)
             {
-                m_AimTrainer.OnAllEnemiesKilled = () => allKilled = true;
-                m_AimTrainer.StartBattlePhase(ExperimentCondition.GetConditionName());
+                // 80% 활성화 및 리스폰 시스템 시작
+                m_AimTrainer.StartInfiniteRespawnPhase(ExperimentCondition.GetConditionName(), 0.8f);
             }
 
             if (m_AimTrainerHUD != null)
-                m_AimTrainerHUD.StartStaticHUD(
-                    m_AimTrainer != null ? m_AimTrainer.GetBattleEnemyCount() : 0,
-                    m_XRCamera?.transform);
+                m_AimTrainerHUD.StartTimerHUD(m_BattleDuration, m_XRCamera?.transform);
 
-            while (!allKilled) yield return null;
+            // 3분 동안 대기 (또는 FastMode 시 단축)
+            yield return new WaitForSeconds(D(m_BattleDuration));
 
             if (m_AimTrainer != null) m_AimTrainer.StopBattlePhase();
             if (m_AimTrainerHUD != null) m_AimTrainerHUD.StopHUD();
 
-            Debug.Log("[VRAdaptation] Battle Phase 완료");
+            Debug.Log("[VRAdaptation] Battle Phase 시간 종료 — 모든 타겟 제거");
         }
 
         // ═══════════════════════════════════════════════════════════════

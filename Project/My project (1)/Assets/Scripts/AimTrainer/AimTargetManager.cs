@@ -280,6 +280,98 @@ namespace VRAdaptation.AimTrainer
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // Infinite Respawn Phase (80% 상시 활성화 유지)
+        // ═══════════════════════════════════════════════════════════════
+
+        List<AimTarget> m_AllPool = new();
+        List<AimTarget> m_InactivePool = new();
+
+        /// <summary>
+        /// 씬에 배치된 모든 타겟 중 일정 비율(ratio)만 활성화한다.
+        /// 적을 처치하면 즉시 비활성 풀에서 하나를 골라 리스폰시킨다.
+        /// </summary>
+        public void StartInfiniteRespawnPhase(string condition, float ratio = 0.8f)
+        {
+            if (m_IsRunning) return;
+            m_IsRunning = true;
+            m_Condition = condition;
+
+            m_AllPool.Clear();
+            m_AllPool.AddRange(m_MovingTargets);
+            m_AllPool.AddRange(m_StaticTargets);
+            m_InactivePool.Clear();
+            m_InactivePool.AddRange(m_AllPool);
+
+            // 전체 중 80% 개수 계산
+            int targetActiveCount = Mathf.RoundToInt(m_AllPool.Count * ratio);
+            targetActiveCount = Mathf.Clamp(targetActiveCount, 1, m_AllPool.Count);
+
+            ExperimentDataLogger.Instance.StartLogging(condition);
+
+            // 셔플 후 초기 80% 활성화
+            ShuffleList(m_InactivePool);
+            for (int i = 0; i < targetActiveCount; i++)
+            {
+                ActivateFromPool();
+            }
+
+            Debug.Log($"[AimTrainer] 무한 리스폰 시작 (총 {m_AllPool.Count}개 중 {targetActiveCount}개 상시 활성)");
+        }
+
+        void ActivateFromPool()
+        {
+            if (m_InactivePool.Count == 0) return;
+
+            int randomIndex = Random.Range(0, m_InactivePool.Count);
+            AimTarget t = m_InactivePool[randomIndex];
+            m_InactivePool.RemoveAt(randomIndex);
+
+            if (t != null)
+            {
+                t.OnHit = (tgt) => HandleRespawnHit(tgt);
+                t.OnFriendlyFire = (tgt) => HandleFriendlyFire(tgt);
+                
+                // 타겟 타입에 따른 활성화 방식 결정
+                if (t.GetComponentInChildren<AimTarget>().Type == TargetType.Enemy)
+                {
+                    // Moving 타겟이면 순찰 모드로, 아니면 그냥 활성화
+                    t.Activate(persistAfterHit: false);
+                    LogSpawn(t);
+                }
+                else
+                {
+                    // Friendly는 리스폰 로직에서 제외하거나 별도 관리 가능 (일단 활성화)
+                    t.Activate(persistAfterHit: false);
+                }
+            }
+        }
+
+        void HandleRespawnHit(AimTarget t)
+        {
+            // 1. 데이터 기록
+            float reaction = (Time.time - t.GetSpawnTime()) * 1000f;
+            ExperimentDataLogger.Instance.LogEvent(m_Condition, "Hit", reaction, t.transform.position, GetHeadRotation());
+            AimTrainerHUD.Instance?.RegisterHit();
+
+            // 2. 처치된 타겟을 풀로 반환
+            m_InactivePool.Add(t);
+
+            // 3. 즉시 새로운 타겟 리스폰
+            ActivateFromPool();
+        }
+
+        void ShuffleList<T>(List<T> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                T temp = list[i];
+                int randomIndex = Random.Range(i, list.Count);
+                list[i] = list[randomIndex];
+                list[randomIndex] = temp;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // 공통 핸들러
         // ═══════════════════════════════════════════════════════════════
 
