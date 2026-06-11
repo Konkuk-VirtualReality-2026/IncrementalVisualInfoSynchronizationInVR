@@ -10,7 +10,7 @@
 |------|------|
 | 연구 명칭 | 교차 감각(Cross-modal) 기반 점진적 시각 동기화를 통한 VR 사이버 멀미 저감 |
 | 핵심 가설 | 비시각 감각 선행 → 저정보 시각 → 고정보 시각의 3단계 적응 과정이 멀미를 유의미하게 저감한다 |
-| 콘텐츠 유형 | 1인칭 FPS Aim Trainer (Unity 6) |
+| 콘텐츠 유형 | 1인칭 FPS Aim Trainer (Unreal Engine) |
 | 측정 도구 | VRSQ, SSQ, SUS(Presence), 행동 데이터 |
 | 이론 기반 | 감각 충돌 이론, Rest-frame 가설, 자세 불안정 이론, 통합 모델(Unified Model) |
 
@@ -410,7 +410,7 @@ VRSQ validation, latency motion sickness threshold
 - [ ] Aim Trainer 캐릭터 회전(Yaw) 제한 여부 결정
 
 ### 개발
-- [ ] Unity VR 기본 환경 구성
+- [ ] Unreal Engine VR 기본 환경 구성
 - [ ] Aim Trainer (타겟 생성·점수 시스템) 구현
 - [ ] Phase 1~3 포스트프로세스 및 햅틱/오디오 구현
 - [ ] 조건 전환 + 데이터 자동 수집 시스템
@@ -424,4 +424,3 @@ VRSQ validation, latency motion sickness threshold
 - [ ] IRB(연구윤리) 승인 절차 확인
 - [ ] VRSQ 채점 방식 확인 및 분석 코드 준비
 - [ ] Golden Ratio 관점에서 Presence-Sickness 트레이드오프 논의 섹션 작성
-�
