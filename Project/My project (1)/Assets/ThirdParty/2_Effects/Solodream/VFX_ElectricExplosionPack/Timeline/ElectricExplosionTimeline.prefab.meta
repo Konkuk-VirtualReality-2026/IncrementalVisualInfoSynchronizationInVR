@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c3b73acee2bbfca4fa716d55e3384991
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266721
+  packageName: 'VFX Game Effect: Electric Explosion Pack'
+  packageVersion: 1.0.0
+  assetPath: Assets/Solodream/VFX_ElectricExplosionPack/Timeline/ElectricExplosionTimeline.prefab
+  uploadId: 627535

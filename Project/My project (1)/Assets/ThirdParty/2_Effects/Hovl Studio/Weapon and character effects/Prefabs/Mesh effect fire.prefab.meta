@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: abcd1cbdddd6e2745ba77c6f2c8ddfe8
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 363712
+  packageName: Weapon and charater effects
+  packageVersion: 1.0
+  assetPath: Assets/Hovl Studio/Weapon and character effects/Prefabs/Mesh effect
+    fire.prefab
+  uploadId: 868806

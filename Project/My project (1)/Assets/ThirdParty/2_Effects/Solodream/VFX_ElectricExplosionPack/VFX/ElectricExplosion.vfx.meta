@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 997da0a0f47923d45b671e5176246943
+VisualEffectImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266721
+  packageName: 'VFX Game Effect: Electric Explosion Pack'
+  packageVersion: 1.0.0
+  assetPath: Assets/Solodream/VFX_ElectricExplosionPack/VFX/ElectricExplosion.vfx
+  uploadId: 627535

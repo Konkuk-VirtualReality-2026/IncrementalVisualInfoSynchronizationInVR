@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e0c58e74d852f64478c1e9405254e5d6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266721
+  packageName: 'VFX Game Effect: Electric Explosion Pack'
+  packageVersion: 1.0.0
+  assetPath: Assets/Solodream/VFX_ElectricExplosionPack/Prefabs/ElectricExplosion_Spark.prefab
+  uploadId: 627535

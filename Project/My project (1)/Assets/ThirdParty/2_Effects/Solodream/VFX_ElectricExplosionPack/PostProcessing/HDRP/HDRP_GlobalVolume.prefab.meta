@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: be8ca1d98f83d1b408bfcbe991b4d159
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266721
+  packageName: 'VFX Game Effect: Electric Explosion Pack'
+  packageVersion: 1.0.0
+  assetPath: Assets/Solodream/VFX_ElectricExplosionPack/PostProcessing/HDRP/HDRP_GlobalVolume.prefab
+  uploadId: 627535

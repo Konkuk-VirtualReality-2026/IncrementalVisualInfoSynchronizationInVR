@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 653b17cef089f8f47a72677ffecb9be6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266721
+  packageName: 'VFX Game Effect: Electric Explosion Pack'
+  packageVersion: 1.0.0
+  assetPath: Assets/Solodream/VFX_ElectricExplosionPack/PostProcessing/URP/URP_GlobalVolume.asset
+  uploadId: 627535
