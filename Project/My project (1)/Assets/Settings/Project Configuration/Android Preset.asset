@@ -26,7 +26,8 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
   - {fileID: 4566453721142302828}
-  m_RendererFeatureMap: 
+  - {fileID: 1082297278614471643}
+  m_RendererFeatureMap: db033001a417050f
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   postProcessData: {fileID: 0}
@@ -55,6 +56,27 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &1082297278614471643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1614fc811f8f184697d9bee70ab9fe5, type: 3}
+  m_Name: Decal
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalRendererFeature
+  m_Active: 1
+  m_Settings:
+    technique: 0
+    maxDrawDistance: 1000
+    decalLayers: 0
+    dBufferSettings:
+      surfaceData: 2
+    screenSpaceSettings:
+      normalBlend: 0
 --- !u!114 &4566453721142302828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VRAdaptation.PhaseOutlineFeature
   m_Active: 1
   settings:
+    ForceEnable: 0
     OutlineColor: {r: 0.2, g: 0.6, b: 1, a: 1}
     Thickness: 1.2
     DepthThreshold: 0.015
+    NormalThreshold: 0.5

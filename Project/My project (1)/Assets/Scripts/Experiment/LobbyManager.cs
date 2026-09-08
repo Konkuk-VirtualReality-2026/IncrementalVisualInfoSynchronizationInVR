@@ -17,6 +17,7 @@ namespace VRAdaptation.Experiment
 
         [Header("Scene")]
         [SerializeField] string m_ExperimentSceneName = "BasicScene";
+        [SerializeField] string m_MapTestSceneName = "MeadowTestScene";
 
         [Header("Settings")]
         [SerializeField] int m_CountdownSeconds = 3;
@@ -74,6 +75,13 @@ namespace VRAdaptation.Experiment
             ExperimentCondition.SelectedGroup = ExperimentGroup.Adaptation;
             ExperimentCondition.ParticipantID = m_CurrentID;
             ShowConfirmAndCountdown("2군 (실험군) 선택됨\n3단계 적응 후 조준 훈련을 진행합니다.");
+        }
+
+        // ── 맵 테스트 (실험 플로우 없이 Meadow 맵 자유 탐색) ─────────────────
+
+        public void LoadMapTestScene()
+        {
+            SceneManager.LoadScene(m_MapTestSceneName);
         }
 
         // ── 확인 + 카운트다운 ────────────────────────────────────────────────

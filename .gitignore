@@ -108,3 +108,6 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# 임포트 제외 백업 (컴파일 불가 코드/씬 백업)
+Project/_ExcludedFromImport/
