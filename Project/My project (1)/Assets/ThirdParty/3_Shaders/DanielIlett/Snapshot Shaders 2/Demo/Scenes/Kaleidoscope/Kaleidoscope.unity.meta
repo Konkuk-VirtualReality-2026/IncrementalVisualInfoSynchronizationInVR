@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 57dbf9c2a6ddafd41a6d1ce967c3822c
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Kaleidoscope/Kaleidoscope.unity
+  uploadId: 793016

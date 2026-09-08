@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2f99a3b8454794d49b00c3c2d141cb26
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Colorize/ColorizeMasked.asset
+  uploadId: 793016

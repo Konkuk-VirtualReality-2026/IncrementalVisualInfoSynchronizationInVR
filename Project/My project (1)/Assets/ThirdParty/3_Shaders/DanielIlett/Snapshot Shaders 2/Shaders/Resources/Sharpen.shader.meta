@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: de76f097feb17b249aac5ba9342e25a0
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/Sharpen.shader
+  uploadId: 793016

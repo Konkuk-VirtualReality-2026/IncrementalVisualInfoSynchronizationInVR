@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9ae42bb0bf1d55c45a718b0591b0dfc8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Synthwave.asset
+  uploadId: 793016

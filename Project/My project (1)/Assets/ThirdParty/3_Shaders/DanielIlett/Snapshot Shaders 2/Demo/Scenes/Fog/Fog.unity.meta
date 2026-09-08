@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f6f2d00d5f42024448d7e69850f80424
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Fog/Fog.unity
+  uploadId: 793016

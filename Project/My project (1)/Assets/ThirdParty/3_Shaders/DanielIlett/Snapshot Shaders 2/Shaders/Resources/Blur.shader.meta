@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b86120b09d281b145a9b31ece8c9e873
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/Blur.shader
+  uploadId: 793016

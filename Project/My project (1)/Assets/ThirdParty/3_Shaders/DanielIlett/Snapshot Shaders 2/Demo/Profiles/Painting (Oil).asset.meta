@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f98c6f94a90081847881872f4e430366
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Painting (Oil).asset
+  uploadId: 793016

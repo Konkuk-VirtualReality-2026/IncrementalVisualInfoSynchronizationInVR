@@ -1,0 +1,238 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8633877933014602849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1513e5ea3748040995a9e1146f2361, type: 3}
+  m_Name: Global Mask
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 2
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-969942480405277494
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c9f0ccfbc884e448b03bfcbeaa94e9, type: 3}
+  m_Name: PixelateSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  downsampleSize:
+    m_OverrideState: 1
+    m_Value: 8
+  usePointFiltering:
+    m_OverrideState: 1
+    m_Value: 0
+  expandMask:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: GlitchHologram
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -8633877933014602849}
+  - {fileID: 1677591141827953745}
+  - {fileID: 73162040142964132}
+  - {fileID: -969942480405277494}
+--- !u!114 &73162040142964132
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0844c7bc64db3499869d930dfe1f5d, type: 3}
+  m_Name: ScanlineSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  scanlineTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 8638e1b413e164f41942ed02365f3ec6, type: 3}
+    dimension: 1
+  scanlineStrength:
+    m_OverrideState: 1
+    m_Value: 0.5
+  scanlineSize:
+    m_OverrideState: 1
+    m_Value: 6
+  scanlineScrollSpeed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  usePointFiltering:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &1677591141827953745
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9986aabbfd4ba6344a415ebae05cde38, type: 3}
+  m_Name: GlitchSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 2
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  offsetStrength:
+    m_OverrideState: 1
+    m_Value: 0.003
+  offsetTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 7d495f4dfcb9b51419c8d8ea81ac3623, type: 3}
+    dimension: 1
+  usePointFilter:
+    m_OverrideState: 1
+    m_Value: 1
+  offsetSpeed:
+    m_OverrideState: 1
+    m_Value: 0.3
+  offsetTiling:
+    m_OverrideState: 1
+    m_Value: 35
+  useSliceBandGlitches:
+    m_OverrideState: 1
+    m_Value: 1
+  sliceBandStrength:
+    m_OverrideState: 1
+    m_Value: 0.03
+  sliceBandSpeed:
+    m_OverrideState: 1
+    m_Value: 0.3
+  sliceBandJitter:
+    m_OverrideState: 1
+    m_Value: 0.07
+  sliceBandWidth:
+    m_OverrideState: 1
+    m_Value: 0.35
+  sliceBandMinDuration:
+    m_OverrideState: 1
+    m_Value: 0.1
+  sliceBandMaxDuration:
+    m_OverrideState: 1
+    m_Value: 0.5
+  sliceBandFrequency:
+    m_OverrideState: 1
+    m_Value: 0.7
+  useBlockArtifacts:
+    m_OverrideState: 1
+    m_Value: 1
+  blockArtifactTiling:
+    m_OverrideState: 1
+    m_Value: {x: 20, y: 20}
+  blockArtifactChance:
+    m_OverrideState: 1
+    m_Value: 0.05
+  blockArtifactStrengthMin:
+    m_OverrideState: 1
+    m_Value: -0.03
+  blockArtifactStrengthMax:
+    m_OverrideState: 1
+    m_Value: 0.03
+  blockArtifactSpeed:
+    m_OverrideState: 1
+    m_Value: 0.07

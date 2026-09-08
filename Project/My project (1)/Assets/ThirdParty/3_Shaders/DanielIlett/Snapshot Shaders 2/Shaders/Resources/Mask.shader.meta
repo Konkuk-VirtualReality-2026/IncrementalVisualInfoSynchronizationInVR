@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5eb492fbc1bc9e44e8613f9249b3afb6
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/Mask.shader
+  uploadId: 793016

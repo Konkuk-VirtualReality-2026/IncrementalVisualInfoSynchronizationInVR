@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 96d686c57aaef474198cb3c14809dd00
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Fog/HeightOnly.asset
+  uploadId: 793016

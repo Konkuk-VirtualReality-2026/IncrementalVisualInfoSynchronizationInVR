@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d0cc8be4ff1db4d42a1955f58e5578d7
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Retro/Retro.unity
+  uploadId: 793016

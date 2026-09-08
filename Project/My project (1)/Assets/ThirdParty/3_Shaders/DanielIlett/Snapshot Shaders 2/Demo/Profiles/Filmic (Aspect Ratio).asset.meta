@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a293e379b95f6e94a89db4f398136ee5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Filmic (Aspect Ratio).asset
+  uploadId: 793016

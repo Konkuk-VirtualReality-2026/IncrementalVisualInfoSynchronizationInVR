@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d65c1454c8f716a458ff046fa38d7d3d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Retro/PixelatedSNES.asset
+  uploadId: 793016

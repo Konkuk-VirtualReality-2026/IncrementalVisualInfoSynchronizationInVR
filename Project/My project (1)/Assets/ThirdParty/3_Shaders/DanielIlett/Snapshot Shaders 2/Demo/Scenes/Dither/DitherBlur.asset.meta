@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b9f9877ddb3cc904993bfa8e9cefcccf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Dither/DitherBlur.asset
+  uploadId: 793016

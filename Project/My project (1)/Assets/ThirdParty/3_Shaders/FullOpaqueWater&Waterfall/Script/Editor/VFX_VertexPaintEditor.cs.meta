@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 49ca95980d291b64993b0cc5e5bbe3c5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 316447
+  packageName: Full Opaque Water & WaterFall
+  packageVersion: 1.0
+  assetPath: Assets/FullOpaqueWater&Waterfall/Script/VFX_VertexPaintEditor.cs
+  uploadId: 747156

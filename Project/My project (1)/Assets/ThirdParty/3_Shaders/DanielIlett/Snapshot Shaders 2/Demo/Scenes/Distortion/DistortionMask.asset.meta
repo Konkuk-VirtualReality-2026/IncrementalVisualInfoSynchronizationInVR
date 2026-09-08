@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 674a2ac076689d34eadcf6aab5fa1347
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Distortion/DistortionMask.asset
+  uploadId: 793016

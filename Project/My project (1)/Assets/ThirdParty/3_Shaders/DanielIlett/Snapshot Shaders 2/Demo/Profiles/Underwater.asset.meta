@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3e398779cc2eba642be96945aa889be1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Underwater.asset
+  uploadId: 793016

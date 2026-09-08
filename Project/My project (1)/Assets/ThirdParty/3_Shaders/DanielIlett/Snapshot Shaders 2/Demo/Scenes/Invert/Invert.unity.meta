@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c93abfc6b1382dc4cabf35f7150236ea
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Invert/Invert.unity
+  uploadId: 793016

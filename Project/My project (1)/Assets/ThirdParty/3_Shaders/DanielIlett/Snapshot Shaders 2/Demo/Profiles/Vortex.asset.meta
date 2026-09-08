@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a41684bcd3e199f4292c8c36d3a8acb5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Vortex.asset
+  uploadId: 793016

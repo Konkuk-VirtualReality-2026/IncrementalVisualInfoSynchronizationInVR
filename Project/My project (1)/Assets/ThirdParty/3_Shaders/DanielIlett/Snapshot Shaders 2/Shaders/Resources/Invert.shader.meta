@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d69997d25e9222740bb66d8d49468164
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/Invert.shader
+  uploadId: 793016

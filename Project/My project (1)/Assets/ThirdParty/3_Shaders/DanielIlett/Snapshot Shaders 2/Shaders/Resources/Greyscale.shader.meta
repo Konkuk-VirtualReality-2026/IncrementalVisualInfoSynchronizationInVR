@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 914487b3411a9c342a894d2703d55852
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/Greyscale.shader
+  uploadId: 793016

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: e23ab21d2046a7e4c827947fb4172a50
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Scripts/Base/SnapshotVolumeComponent.cs
+  uploadId: 793016

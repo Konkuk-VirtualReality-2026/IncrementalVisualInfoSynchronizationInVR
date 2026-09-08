@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f8c097c8fc54f0a48942eb86ace88424
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/DemoScene.unity
+  uploadId: 793016

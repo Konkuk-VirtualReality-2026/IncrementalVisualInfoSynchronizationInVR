@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 40077a1aaf52f214f9a9cb7923ed534b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Materials/Transparent.mat
+  uploadId: 793016

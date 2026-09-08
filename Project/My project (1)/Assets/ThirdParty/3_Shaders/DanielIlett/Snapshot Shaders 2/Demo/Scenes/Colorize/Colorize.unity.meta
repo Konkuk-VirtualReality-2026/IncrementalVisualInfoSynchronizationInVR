@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a39bbbfeb26fc3b4e963ce86e8c1cdab
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Colorize/Colorize.unity
+  uploadId: 793016

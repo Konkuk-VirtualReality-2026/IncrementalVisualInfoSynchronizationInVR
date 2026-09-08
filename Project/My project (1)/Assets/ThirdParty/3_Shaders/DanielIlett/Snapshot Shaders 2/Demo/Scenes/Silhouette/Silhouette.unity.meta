@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a4b32fd59ed7ef94793092e514878fca
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Silhouette/Silhouette.unity
+  uploadId: 793016

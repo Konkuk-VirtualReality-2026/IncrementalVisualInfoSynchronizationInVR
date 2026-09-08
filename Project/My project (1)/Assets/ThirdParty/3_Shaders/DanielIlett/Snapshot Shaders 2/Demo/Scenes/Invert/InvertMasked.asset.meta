@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 17a6a07830bcf2d4e865bf43868681cc
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Invert/InvertMasked.asset
+  uploadId: 793016

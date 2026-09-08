@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cbf517df6f84a7749ace33f1469cef48
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Pixelate/Pixelate.unity
+  uploadId: 793016

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f934fe8cb1c23dc42b820a87b854f66f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Scanline/ScanlineMasked.asset
+  uploadId: 793016

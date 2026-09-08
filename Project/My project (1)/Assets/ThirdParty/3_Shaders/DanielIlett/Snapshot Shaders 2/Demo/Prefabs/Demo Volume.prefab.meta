@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e3901d22dbf6f684ca0a375aa943d7cd
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Prefabs/Demo Volume.prefab
+  uploadId: 793016

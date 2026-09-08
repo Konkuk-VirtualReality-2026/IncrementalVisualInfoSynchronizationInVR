@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c8e4eb5a77f8fc745b20cf61abbf770a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Dither/BlueNoiseDither.asset
+  uploadId: 793016

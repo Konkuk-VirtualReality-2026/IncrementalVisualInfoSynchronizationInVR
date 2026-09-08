@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 58ce40cd4ee1c9e44bdc384f41ba6bfc
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Dot Matrix/DotMatrixMask.asset
+  uploadId: 793016

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a697b8199292b2c4194c6d96fff6d759
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Blur/Blur.unity
+  uploadId: 793016

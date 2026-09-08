@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9c9e1047532fccf43882221e69ce896f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 316447
+  packageName: Full Opaque Water & WaterFall
+  packageVersion: 1.0
+  assetPath: Assets/FullOpaqueWater&Waterfall/DemoScene/DemoScene_VFX_WaterOpaque/LightingData.asset
+  uploadId: 747156

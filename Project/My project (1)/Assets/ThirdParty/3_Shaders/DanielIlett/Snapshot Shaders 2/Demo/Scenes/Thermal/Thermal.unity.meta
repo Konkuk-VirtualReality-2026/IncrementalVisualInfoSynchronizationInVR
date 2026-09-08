@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: de5fa75bcebe05c459ba03bad4236035
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Thermal/Thermal.unity
+  uploadId: 793016

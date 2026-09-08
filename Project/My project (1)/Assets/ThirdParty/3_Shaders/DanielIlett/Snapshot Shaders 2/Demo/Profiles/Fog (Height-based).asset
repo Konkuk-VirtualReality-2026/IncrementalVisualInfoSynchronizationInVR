@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Fog (Height-based)
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: 7748447993157232785}
+--- !u!114 &7748447993157232785
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c23c86827d01c849b9fa476fcb5807e, type: 3}
+  m_Name: FogSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  distanceStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  startDistance:
+    m_OverrideState: 1
+    m_Value: 10
+  startDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0, b: 0, a: 0.5019608}
+  fullStrengthDistance:
+    m_OverrideState: 1
+    m_Value: 35
+  fullStrengthDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.5896226, b: 0.5896226, a: 0.7490196}
+  distanceFalloff:
+    m_OverrideState: 0
+    m_Value: 1
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  startHeight:
+    m_OverrideState: 1
+    m_Value: 0.5
+  startHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.39547157, b: 1, a: 0.5019608}
+  fullStrengthHeight:
+    m_OverrideState: 1
+    m_Value: -0.5
+  fullStrengthHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.36320752, g: 0.65473896, b: 1, a: 1}
+  useFogAtSkybox:
+    m_OverrideState: 1
+    m_Value: 1
+  skyboxHeight:
+    m_OverrideState: 1
+    m_Value: -300
+  heightFalloff:
+    m_OverrideState: 0
+    m_Value: 1

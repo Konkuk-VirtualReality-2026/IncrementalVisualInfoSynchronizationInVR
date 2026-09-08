@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6c92623885b9dc246b4c8eef9b722081
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Scripts/Data/SnapshotGradientData.cs
+  uploadId: 793016
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 10200
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

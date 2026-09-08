@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 699affb3b7b5c52458093076375618b3
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Vortex/Vortex.unity
+  uploadId: 793016

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c3e1e1792b191ad42bdae76683a318a6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Profiles/Composite/Night
+    Vision.asset
+  uploadId: 793016

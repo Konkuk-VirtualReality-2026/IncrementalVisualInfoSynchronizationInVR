@@ -1,0 +1,175 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7691511194264330390
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c9f0ccfbc884e448b03bfcbeaa94e9, type: 3}
+  m_Name: PixelateSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  downsampleSize:
+    m_OverrideState: 1
+    m_Value: 4
+  usePointFiltering:
+    m_OverrideState: 0
+    m_Value: 1
+  expandMask:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-5853660802040927484
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0844c7bc64db3499869d930dfe1f5d, type: 3}
+  m_Name: ScanlineSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  scanlineTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 8638e1b413e164f41942ed02365f3ec6, type: 3}
+    dimension: 1
+  scanlineStrength:
+    m_OverrideState: 1
+    m_Value: 0.4
+  scanlineSize:
+    m_OverrideState: 1
+    m_Value: 4
+  scanlineScrollSpeed:
+    m_OverrideState: 0
+    m_Value: 0
+  usePointFiltering:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: PixelatedSNES
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: 1459499901635783216}
+  - {fileID: -7691511194264330390}
+  - {fileID: -5853660802040927484}
+--- !u!114 &1459499901635783216
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71227a7e727fb84a8710842b018e658, type: 3}
+  m_Name: RetroSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  enabled:
+    m_OverrideState: 1
+    m_Value: 1
+  drawingMode:
+    m_OverrideState: 1
+    m_Value: 1
+  redLevels:
+    m_OverrideState: 1
+    m_Value: 14
+  greenLevels:
+    m_OverrideState: 1
+    m_Value: 14
+  blueLevels:
+    m_OverrideState: 1
+    m_Value: 14
+  darkestColor:
+    m_OverrideState: 0
+    m_Value: {r: 0.11, g: 0.21, b: 0.08, a: 1}
+  darkColor:
+    m_OverrideState: 0
+    m_Value: {r: 0.24, g: 0.38, b: 0.21, a: 1}
+  lightColor:
+    m_OverrideState: 0
+    m_Value: {r: 0.57, g: 0.67, b: 0.21, a: 1}
+  lightestColor:
+    m_OverrideState: 0
+    m_Value: {r: 0.75, g: 0.82, b: 0.46, a: 1}
+  powerRamp:
+    m_OverrideState: 1
+    m_Value: 0.75

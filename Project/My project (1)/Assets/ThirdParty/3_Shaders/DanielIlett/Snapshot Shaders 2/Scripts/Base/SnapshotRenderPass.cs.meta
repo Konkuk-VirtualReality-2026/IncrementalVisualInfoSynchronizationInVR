@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 4e4a3b286ad13004697a99c0d41af601
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Scripts/Base/SnapshotRenderPass.cs
+  uploadId: 793016

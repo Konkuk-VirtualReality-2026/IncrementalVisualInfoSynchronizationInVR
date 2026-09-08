@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5d7b52e9bdcbafb478e7691189c91ba4
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Dither/Dither.unity
+  uploadId: 793016

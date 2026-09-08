@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7863084093207568608
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4f60082e9527249ae1c4b5b8b2a54c, type: 3}
+  m_Name: ColorizeSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 2
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 0
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 0
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 1
+  invertMask:
+    m_OverrideState: 1
+    m_Value: 0
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.19117737, g: 0, b: 1, a: 1}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Skybox Mask
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -7863084093207568608}

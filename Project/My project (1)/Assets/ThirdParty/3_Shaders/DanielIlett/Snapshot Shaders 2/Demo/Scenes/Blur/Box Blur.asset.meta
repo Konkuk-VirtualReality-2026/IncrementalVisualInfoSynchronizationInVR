@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 01caa1b2238b3d74886c8a638febc0b2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Blur/Box Blur.asset
+  uploadId: 793016

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cd0e22a05abd00b4dbe75afa92bf75d1
+ShaderIncludeImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Shaders/Resources/SnapshotHelper.hlsl
+  uploadId: 793016

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 317ddbce9ab3a6f4798dcc7946e19a68
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Greyscale/Greyscale.unity
+  uploadId: 793016

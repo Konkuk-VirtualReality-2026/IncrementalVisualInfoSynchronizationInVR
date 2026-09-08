@@ -1,0 +1,225 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9033272629191046068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1513e5ea3748040995a9e1146f2361, type: 3}
+  m_Name: Global Mask
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 2
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-5607023755597713721
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9986aabbfd4ba6344a415ebae05cde38, type: 3}
+  m_Name: GlitchSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  offsetStrength:
+    m_OverrideState: 1
+    m_Value: 0.002
+  offsetTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 7d495f4dfcb9b51419c8d8ea81ac3623, type: 3}
+    dimension: 1
+  usePointFilter:
+    m_OverrideState: 0
+    m_Value: 0
+  offsetSpeed:
+    m_OverrideState: 1
+    m_Value: 0.1
+  offsetTiling:
+    m_OverrideState: 1
+    m_Value: 50
+  useSliceBandGlitches:
+    m_OverrideState: 1
+    m_Value: 1
+  sliceBandStrength:
+    m_OverrideState: 1
+    m_Value: 0.02
+  sliceBandSpeed:
+    m_OverrideState: 1
+    m_Value: 0.5
+  sliceBandJitter:
+    m_OverrideState: 1
+    m_Value: 0.1
+  sliceBandWidth:
+    m_OverrideState: 1
+    m_Value: 0.25
+  sliceBandMinDuration:
+    m_OverrideState: 1
+    m_Value: 0.1
+  sliceBandMaxDuration:
+    m_OverrideState: 1
+    m_Value: 0.6
+  sliceBandFrequency:
+    m_OverrideState: 1
+    m_Value: 0.7
+  useBlockArtifacts:
+    m_OverrideState: 1
+    m_Value: 1
+  blockArtifactTiling:
+    m_OverrideState: 1
+    m_Value: {x: 20, y: 50}
+  blockArtifactChance:
+    m_OverrideState: 1
+    m_Value: 0.01
+  blockArtifactStrengthMin:
+    m_OverrideState: 1
+    m_Value: -0.02
+  blockArtifactStrengthMax:
+    m_OverrideState: 1
+    m_Value: 0.02
+  blockArtifactSpeed:
+    m_OverrideState: 1
+    m_Value: 0.1
+--- !u!114 &-4487594634498947521
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4f60082e9527249ae1c4b5b8b2a54c, type: 3}
+  m_Name: ColorizeSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 2, g: 2, b: 2, a: 1}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: DotMatrixGlitch
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -9033272629191046068}
+  - {fileID: 8713720596216754422}
+  - {fileID: -5607023755597713721}
+  - {fileID: -4487594634498947521}
+--- !u!114 &8713720596216754422
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9871c42e32ee54a409a9f483a9820ff0, type: 3}
+  m_Name: DotMatrixSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 1
+    m_Value: 1
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 2
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  gapWidth:
+    m_OverrideState: 1
+    m_Value: 2
+  dotSize:
+    m_OverrideState: 1
+    m_Value: 2
+  backgroundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}

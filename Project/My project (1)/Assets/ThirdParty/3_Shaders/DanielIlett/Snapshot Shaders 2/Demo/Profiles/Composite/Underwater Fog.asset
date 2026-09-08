@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5385304368857084705
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 782d51b427a49d14ab9ff03dd329df4a, type: 3}
+  m_Name: UnderwaterSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  waveFlowMap:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: b467c2d1bcac8e1469783f73285fe69d, type: 3}
+    dimension: 1
+  waveStrength:
+    m_OverrideState: 1
+    m_Value: 15
+  waveFlowTiling:
+    m_OverrideState: 1
+    m_Value: 1
+  waveFlowSpeed:
+    m_OverrideState: 1
+    m_Value: 0.4
+  causticsMode:
+    m_OverrideState: 1
+    m_Value: 0
+  causticsTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: de45809688a24c443ac6b23cedab33a4, type: 3}
+    dimension: 1
+  causticsTint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 0.4}
+  causticsTiling1:
+    m_OverrideState: 1
+    m_Value: 0.1
+  causticsTiling2:
+    m_OverrideState: 1
+    m_Value: 0.18
+  causticsScrollVelocity1:
+    m_OverrideState: 1
+    m_Value: {x: 0.3, y: 0.1, z: -0.2}
+  causticsScrollVelocity2:
+    m_OverrideState: 1
+    m_Value: {x: -0.1, y: -0.15, z: 0.05}
+  causticsColorSeparation:
+    m_OverrideState: 1
+    m_Value: 0.01
+  causticsStartFade:
+    m_OverrideState: 1
+    m_Value: 20
+  causticsFadeFalloff:
+    m_OverrideState: 1
+    m_Value: 30
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Underwater Fog
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -5385304368857084705}
+  - {fileID: 6637081821822035409}
+--- !u!114 &6637081821822035409
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c23c86827d01c849b9fa476fcb5807e, type: 3}
+  m_Name: FogSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  renderPassEvent:
+    m_OverrideState: 0
+    m_Value: 550
+  maskMode:
+    m_OverrideState: 0
+    m_Value: 0
+  maskSettings:
+    m_OverrideState: 1
+    m_Value:
+      layerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      renderingLayerMask:
+        serializedVersion: 0
+        m_Bits: 4294967295
+      lightModes: 0000000002000000
+      renderQueue: 0
+      drawSkyboxToMask: 0
+  invertMask:
+    m_OverrideState: 0
+    m_Value: 0
+  distanceStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  startDistance:
+    m_OverrideState: 1
+    m_Value: 5
+  startDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.46900558, b: 1, a: 0.5019608}
+  fullStrengthDistance:
+    m_OverrideState: 1
+    m_Value: 15
+  fullStrengthDistanceColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.56078434, g: 0.71630514, b: 1, a: 0.7490196}
+  distanceFalloff:
+    m_OverrideState: 0
+    m_Value: 1
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 0.5
+  startHeight:
+    m_OverrideState: 1
+    m_Value: 0
+  startHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.2048912, b: 1, a: 1}
+  fullStrengthHeight:
+    m_OverrideState: 1
+    m_Value: -1
+  fullStrengthHeightColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.56078434, g: 0.67537236, b: 1, a: 1}
+  useFogAtSkybox:
+    m_OverrideState: 0
+    m_Value: 1
+  skyboxHeight:
+    m_OverrideState: 0
+    m_Value: -100
+  heightFalloff:
+    m_OverrideState: 0
+    m_Value: 1

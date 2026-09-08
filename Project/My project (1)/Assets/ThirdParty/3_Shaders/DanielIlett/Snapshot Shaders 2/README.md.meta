@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1018dcb5c06873d41af43dfe465ec418
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/README.md
+  uploadId: 793016

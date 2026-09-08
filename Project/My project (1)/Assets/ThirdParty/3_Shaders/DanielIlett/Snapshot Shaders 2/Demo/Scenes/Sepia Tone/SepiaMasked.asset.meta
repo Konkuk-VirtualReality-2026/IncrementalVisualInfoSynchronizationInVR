@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 55aafe072177d4649a979b1efba9d1a5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Sepia Tone/SepiaMasked.asset
+  uploadId: 793016

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b0f6e6d946da1834f91c63e06b0c1767
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Scenes/Underwater/Underwater.unity
+  uploadId: 793016

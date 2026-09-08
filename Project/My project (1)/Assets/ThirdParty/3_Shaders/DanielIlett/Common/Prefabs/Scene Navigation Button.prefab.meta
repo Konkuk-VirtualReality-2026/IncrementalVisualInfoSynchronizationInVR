@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e85cb5eb730f931498fedb8681654341
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Common/Prefabs/Scene Navigation Button.prefab
+  uploadId: 793016

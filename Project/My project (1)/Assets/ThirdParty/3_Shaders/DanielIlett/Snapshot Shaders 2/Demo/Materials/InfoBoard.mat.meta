@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 45a73deeca1b48349aaf77357808057b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 331908
+  packageName: Snapshot Shaders 2 for URP
+  packageVersion: 1.0
+  assetPath: Assets/DanielIlett/Snapshot Shaders 2/Demo/Materials/InfoBoard.mat
+  uploadId: 793016
